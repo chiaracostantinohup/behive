@@ -1,17 +1,10 @@
-# Backend (non serve per deploy frontend)
-backend/
-*.py
-*.pyc
-__pycache__/
-.pytest_cache/
-requirements.txt
-
 # Node modules (Vercel li reinstalla)
 node_modules/
 
 # Logs
 *.log
 logs/
+/var/log/
 
 # Environment variables locali
 .env.local
@@ -22,3 +15,11 @@ logs/
 *.test.jsx
 *.spec.js
 *.spec.jsx
+
+# Cache
+.cache/
+.eslintcache
+
+# Build (Vercel lo rigenera)
+build/
+dist/
