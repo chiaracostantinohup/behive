@@ -11,67 +11,67 @@ export const Agents = () => {
   const [showLimitModal, setShowLimitModal] = useState(false);
   const [showRequestModal, setShowRequestModal] = useState(false);
   const [selectedNewAgent, setSelectedNewAgent] = useState(null);
-  
+
   const activeAgents = [
-    {
-      id: 'finance',
-      name: 'Finance Agent',
-      icon: DollarSign,
-      color: 'agent-finance',
-      description: 'Analisi finanziaria, costi e budget',
-      requestsUsed: 420,
-      requestsTotal: 500,
-      status: 'active'
-    },
-    {
-      id: 'marketing',
-      name: 'Marketing Agent',
-      icon: TrendingUp,
-      color: 'agent-marketing',
-      description: 'Campagne, performance e analytics',
-      requestsUsed: 280,
-      requestsTotal: 500,
-      status: 'active'
-    },
-    {
-      id: 'sales',
-      name: 'Sales Agent',
-      icon: Users,
-      color: 'agent-sales',
-      description: 'Pipeline, forecast e reports',
-      requestsUsed: 156,
-      requestsTotal: 500,
-      status: 'active'
-    },
-    {
-      id: 'support',
-      name: 'Support Agent',
-      icon: MessageSquare,
-      color: 'agent-support',
-      description: 'Customer service e ticketing',
-      requestsUsed: 498,
-      requestsTotal: 500,
-      status: 'active'
-    },
-  ];
-  
+  {
+    id: 'finance',
+    name: 'Finance Agent',
+    icon: DollarSign,
+    color: 'agent-finance',
+    description: 'Analisi finanziaria, costi e budget',
+    requestsUsed: 420,
+    requestsTotal: 500,
+    status: 'active'
+  },
+  {
+    id: 'marketing',
+    name: 'Marketing Agent',
+    icon: TrendingUp,
+    color: 'agent-marketing',
+    description: 'Campagne, performance e analytics',
+    requestsUsed: 280,
+    requestsTotal: 500,
+    status: 'active'
+  },
+  {
+    id: 'sales',
+    name: 'Sales Agent',
+    icon: Users,
+    color: 'agent-sales',
+    description: 'Pipeline, forecast e reports',
+    requestsUsed: 156,
+    requestsTotal: 500,
+    status: 'active'
+  },
+  {
+    id: 'support',
+    name: 'Support Agent',
+    icon: MessageSquare,
+    color: 'agent-support',
+    description: 'Customer service e ticketing',
+    requestsUsed: 498,
+    requestsTotal: 500,
+    status: 'active'
+  }];
+
+
   const availableAgents = [
-    { id: 'hr', name: 'HR Agent', icon: Users, description: 'Risorse umane e recruiting' },
-    { id: 'legal', name: 'Legal Agent', icon: Lock, description: 'Compliance e contratti' },
-  ];
-  
+  { id: 'hr', name: 'HR Agent', icon: Users, description: 'Risorse umane e recruiting' },
+  { id: 'legal', name: 'Legal Agent', icon: Lock, description: 'Compliance e contratti' }];
+
+
   const handleAgentClick = (agent) => {
     // Simulate hitting limit on Support Agent
     if (agent.id === 'support' && agent.requestsUsed >= agent.requestsTotal) {
       setShowLimitModal(true);
     }
   };
-  
+
   const handleRequestAgent = (agent) => {
     setSelectedNewAgent(agent);
     setShowRequestModal(true);
   };
-  
+
   return (
     <div className="h-full overflow-y-auto custom-scrollbar p-8">
       <div className="max-w-6xl mx-auto space-y-8">
@@ -88,23 +88,23 @@ export const Agents = () => {
           <h2 className="text-lg font-semibold text-foreground mb-4">Agenti Attivi</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {activeAgents.map((agent, index) => {
-              const usagePercent = (agent.requestsUsed / agent.requestsTotal) * 100;
+              const usagePercent = agent.requestsUsed / agent.requestsTotal * 100;
               const isNearLimit = usagePercent >= 90;
-              
+
               return (
                 <motion.div
                   key={agent.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                >
+                  transition={{ delay: index * 0.1 }}>
+
                   <Card
                     className={cn(
                       "p-6 cursor-pointer transition-smooth hover:border-primary/50",
                       isNearLimit && "border-warning/50"
                     )}
-                    onClick={() => handleAgentClick(agent)}
-                  >
+                    onClick={() => handleAgentClick(agent)}>
+
                     <div className="flex items-start gap-4">
                       <div className={cn("p-3 rounded", `bg-${agent.color}`)}>
                         <agent.icon className="h-6 w-6 text-foreground" />
@@ -112,11 +112,11 @@ export const Agents = () => {
                       <div className="flex-1">
                         <div className="flex items-center justify-between mb-1">
                           <h3 className="font-semibold text-foreground">{agent.name}</h3>
-                          {isNearLimit && (
-                            <Badge variant="outline" className="text-warning border-warning">
+                          {isNearLimit &&
+                          <Badge variant="outline" className="text-warning border-warning">
                               Near Limit
                             </Badge>
-                          )}
+                          }
                         </div>
                         <p className="text-sm text-foreground-muted mb-4">{agent.description}</p>
                         
@@ -130,19 +130,19 @@ export const Agents = () => {
                           </div>
                           <div className="h-2 bg-surface-elevated rounded-full overflow-hidden">
                             <div
-                              className={cn(
-                                "h-full transition-all",
-                                isNearLimit ? "bg-warning" : "bg-primary"
-                              )}
-                              style={{ width: `${usagePercent}%` }}
-                            />
+                              className="h-full transition-all !bg-[#0F26FF]"
+
+
+
+                              style={{ width: `${usagePercent}%` }} />
+
                           </div>
                         </div>
                       </div>
                     </div>
                   </Card>
-                </motion.div>
-              );
+                </motion.div>);
+
             })}
           </div>
         </div>
@@ -151,13 +151,13 @@ export const Agents = () => {
         <div>
           <h2 className="text-lg font-semibold text-foreground mb-4">Agenti Disponibili</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {availableAgents.map((agent, index) => (
-              <motion.div
-                key={agent.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: (activeAgents.length + index) * 0.1 }}
-              >
+            {availableAgents.map((agent, index) =>
+            <motion.div
+              key={agent.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: (activeAgents.length + index) * 0.1 }}>
+
                 <Card className="p-6 border-border-subtle opacity-70 hover:opacity-100 transition-smooth">
                   <div className="flex items-start gap-4">
                     <div className="p-3 rounded bg-muted">
@@ -167,10 +167,10 @@ export const Agents = () => {
                       <h3 className="font-semibold text-foreground mb-1">{agent.name}</h3>
                       <p className="text-sm text-foreground-muted mb-4">{agent.description}</p>
                       <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleRequestAgent(agent)}
-                      >
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleRequestAgent(agent)}>
+
                         <Plus className="h-4 w-4 mr-2" />
                         Richiedi Attivazione
                       </Button>
@@ -178,7 +178,7 @@ export const Agents = () => {
                   </div>
                 </Card>
               </motion.div>
-            ))}
+            )}
             
             {/* Empty Slot */}
             <Card className="p-6 border-dashed border-border-subtle">
@@ -242,8 +242,8 @@ export const Agents = () => {
             </DialogDescription>
           </DialogHeader>
           <div className="py-4 space-y-4">
-            {selectedNewAgent && (
-              <div className="flex items-start gap-4 p-4 bg-surface-elevated rounded-lg border border-border">
+            {selectedNewAgent &&
+            <div className="flex items-start gap-4 p-4 bg-surface-elevated rounded-lg border border-border">
                 <div className="p-3 rounded bg-muted">
                   <selectedNewAgent.icon className="h-5 w-5 text-foreground" />
                 </div>
@@ -252,7 +252,7 @@ export const Agents = () => {
                   <p className="text-sm text-foreground-muted">{selectedNewAgent.description}</p>
                 </div>
               </div>
-            )}
+            }
             <p className="text-sm text-foreground">
               La richiesta verrà inviata al team di sviluppo Behive. 
               Riceverai una notifica quando l'agente sarà disponibile nel tuo piano.
@@ -271,8 +271,8 @@ export const Agents = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
-  );
+    </div>);
+
 };
 
 export default Agents;
