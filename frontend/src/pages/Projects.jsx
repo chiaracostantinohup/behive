@@ -76,7 +76,7 @@ export const Projects = () => {
               Organizza le tue conversazioni in progetti tematici
             </p>
           </div>
-          <Button variant="premium" onClick={() => setShowNewProjectModal(true)}>
+          <Button variant="premium" onClick={() => setShowNewProjectModal(true)} className="inline-flex items-center justify-center whitespace-nowrap transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-primary-hover h-9 font-medium text-sm gap-2 px-4 py-2 !rounded-md shadow-glow text-primary-foreground bg-primary">
             <Plus className="h-4 w-4 mr-2" />
             Nuovo Progetto
           </Button>
@@ -85,11 +85,11 @@ export const Projects = () => {
         {/* Projects Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {projects.map((project, index) =>
-          <motion.div
-            key={project.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}>
+            <motion.div
+              key={project.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}>
 
               <Card className="border hover:border-primary/50 transition-smooth group cursor-pointer !py-[40px] !px-[40px] rounded-xl shadow text-card-foreground bg-card">
                 <div className="flex items-start justify-between mb-3">
@@ -102,10 +102,10 @@ export const Projects = () => {
                     </div>
                   </div>
                   <Button
-                  variant="ghost"
-                  size="icon"
-                  className="opacity-0 group-hover:opacity-100 transition-smooth"
-                  onClick={() => handleOpenSettings(project)}>
+                    variant="ghost"
+                    size="icon"
+                    className="opacity-0 group-hover:opacity-100 transition-smooth"
+                    onClick={() => handleOpenSettings(project)}>
 
                     <Settings className="h-4 w-4" />
                   </Button>
@@ -129,12 +129,12 @@ export const Projects = () => {
                 </div>
               </Card>
             </motion.div>
-          )}
+            )}
           
           {/* New Project Card */}
           <Card
-            className="border border-dashed border-border-subtle hover:border-primary/50 transition-smooth cursor-pointer !pt-[0px] !pb-[0px] !pl-[0px] !pr-[0px] rounded-xl shadow text-card-foreground bg-card"
-            onClick={() => setShowNewProjectModal(true)}>
+              className="border border-dashed border-border-subtle hover:border-primary/50 transition-smooth cursor-pointer !pt-[0px] !pb-[0px] !pl-[0px] !pr-[0px] rounded-xl shadow text-card-foreground bg-card"
+              onClick={() => setShowNewProjectModal(true)}>
 
             <div className="h-full flex flex-col items-center justify-center text-center !pt-[16px] !pb-[16px]">
               <div className="p-3 rounded bg-surface-elevated mb-3">
@@ -175,17 +175,17 @@ export const Projects = () => {
             <div className="space-y-2">
               <Label htmlFor="project-name">Nome Progetto</Label>
               <Input
-                id="project-name"
-                placeholder="Es. Analisi Finanziaria Q1"
-                className="bg-background border-border" />
+                  id="project-name"
+                  placeholder="Es. Analisi Finanziaria Q1"
+                  className="bg-background border-border" />
 
             </div>
             <div className="space-y-2">
               <Label htmlFor="project-desc">Descrizione</Label>
               <Textarea
-                id="project-desc"
-                placeholder="Breve descrizione del progetto..."
-                className="bg-background border-border min-h-[80px]" />
+                  id="project-desc"
+                  placeholder="Breve descrizione del progetto..."
+                  className="bg-background border-border min-h-[80px]" />
 
             </div>
           </div>
@@ -216,11 +216,11 @@ export const Projects = () => {
                 Istruzioni per il progetto
               </Label>
               <Textarea
-                id="instructions"
-                value={projectInstructions}
-                onChange={(e) => setProjectInstructions(e.target.value)}
-                placeholder="Scrivi le istruzioni che Behive dovrà seguire per questo progetto..."
-                className="bg-background border-border min-h-[120px]" />
+                  id="instructions"
+                  value={projectInstructions}
+                  onChange={(e) => setProjectInstructions(e.target.value)}
+                  placeholder="Scrivi le istruzioni che Behive dovrà seguire per questo progetto..."
+                  className="bg-background border-border min-h-[120px]" />
 
             </div>
             
@@ -230,9 +230,9 @@ export const Projects = () => {
               <div className="space-y-3">
                 {/* Attached Files List */}
                 {attachedFiles.map((file) =>
-                <div
-                  key={file.name}
-                  className="flex items-center justify-between p-3 bg-surface-elevated rounded-lg border border-border">
+                  <div
+                    key={file.name}
+                    className="flex items-center justify-between p-3 bg-surface-elevated rounded-lg border border-border">
 
                     <div className="flex items-center gap-3">
                       <FileText className="h-4 w-4 text-foreground-muted" />
@@ -242,14 +242,14 @@ export const Projects = () => {
                       </div>
                     </div>
                     <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleRemoveFile(file.name)}>
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleRemoveFile(file.name)}>
 
                       <X className="h-4 w-4" />
                     </Button>
                   </div>
-                )}
+                  )}
                 
                 {/* Upload Button */}
                 <Button variant="outline" className="w-full">
@@ -273,8 +273,8 @@ export const Projects = () => {
         </DialogContent>
       </Dialog>
       </div>
-    </div>
-  );
+    </div>);
+
 
 };
 
