@@ -99,21 +99,21 @@ export const Agents = () => {
                   transition={{ delay: index * 0.1 }}>
 
                   <Card
-                    className={cn(
-                      "p-6 cursor-pointer transition-smooth hover:border-primary/50",
-                      isNearLimit && "border-warning/50"
-                    )}
+                    className="border cursor-pointer transition-smooth hover:border-primary/50 p-6 rounded-xl shadow text-card-foreground !bg-[#16161A]"
+
+
+
                     onClick={() => handleAgentClick(agent)}>
 
                     <div className="flex items-start gap-4">
-                      <div className={cn("p-3 rounded", `bg-${agent.color}`)}>
+                      <div className="p-3 rounded !bg-[rgba(15,38,255,0.15)]">
                         <agent.icon className="h-6 w-6 text-foreground" />
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center justify-between mb-1">
                           <h3 className="font-semibold text-foreground">{agent.name}</h3>
                           {isNearLimit &&
-                          <Badge variant="outline" className="text-warning border-warning">
+                          <Badge variant="outline" className="inline-flex items-center border transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-warning text-xs font-semibold px-2.5 py-0.5 !rounded-[99px] !text-[#EAB308]">
                               Near Limit
                             </Badge>
                           }
@@ -169,7 +169,7 @@ export const Agents = () => {
                       <Button
                       size="sm"
                       variant="outline"
-                      onClick={() => handleRequestAgent(agent)}>
+                      onClick={() => handleRequestAgent(agent)} className="inline-flex items-center justify-center whitespace-nowrap transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-border hover:bg-surface-elevated h-8 font-medium text-xs gap-2 px-3 !rounded-md text-foreground bg-transparent">
 
                         <Plus className="h-4 w-4 mr-2" />
                         Richiedi Attivazione
