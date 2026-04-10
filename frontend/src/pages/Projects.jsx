@@ -15,39 +15,39 @@ export const Projects = () => {
   const [projectName, setProjectName] = useState('');
   const [projectInstructions, setProjectInstructions] = useState('');
   const [attachedFiles, setAttachedFiles] = useState([]);
-  
+
   const projects = [
-    {
-      id: '1',
-      name: 'Analisi Finanziaria Q1',
-      description: 'Report trimestrale con analisi costi e previsioni',
-      chats: 12,
-      files: 4,
-      lastUpdate: '2 ore fa'
-    },
-    {
-      id: '2',
-      name: 'Campagna Marketing S...',
-      description: 'Strategia e performance campagna social',
-      chats: 8,
-      files: 6,
-      lastUpdate: 'ieri'
-    },
-    {
-      id: '3',
-      name: 'Sales Pipeline Q2',
-      description: 'Analisi opportunità e forecast vendite',
-      chats: 15,
-      files: 3,
-      lastUpdate: '3 giorni fa'
-    },
-  ];
-  
+  {
+    id: '1',
+    name: 'Analisi Finanziaria Q1',
+    description: 'Report trimestrale con analisi costi e previsioni',
+    chats: 12,
+    files: 4,
+    lastUpdate: '2 ore fa'
+  },
+  {
+    id: '2',
+    name: 'Campagna Marketing S...',
+    description: 'Strategia e performance campagna social',
+    chats: 8,
+    files: 6,
+    lastUpdate: 'ieri'
+  },
+  {
+    id: '3',
+    name: 'Sales Pipeline Q2',
+    description: 'Analisi opportunità e forecast vendite',
+    chats: 15,
+    files: 3,
+    lastUpdate: '3 giorni fa'
+  }];
+
+
   const mockFiles = [
-    { name: 'Financial_Report_Q1.pdf', size: '2.4 MB' },
-    { name: 'Budget_Analysis.xlsx', size: '1.1 MB' },
-  ];
-  
+  { name: 'Financial_Report_Q1.pdf', size: '2.4 MB' },
+  { name: 'Budget_Analysis.xlsx', size: '1.1 MB' }];
+
+
   const handleOpenSettings = (project) => {
     setSelectedProject(project);
     setProjectName(project.name);
@@ -55,11 +55,11 @@ export const Projects = () => {
     setAttachedFiles(mockFiles);
     setShowSettingsModal(true);
   };
-  
+
   const handleRemoveFile = (fileName) => {
-    setAttachedFiles(prev => prev.filter(f => f.name !== fileName));
+    setAttachedFiles((prev) => prev.filter((f) => f.name !== fileName));
   };
-  
+
   return (
     <div className="h-full overflow-y-auto custom-scrollbar p-8">
       <div className="max-w-6xl mx-auto space-y-8">
@@ -79,14 +79,14 @@ export const Projects = () => {
         
         {/* Projects Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {projects.map((project, index) => (
-            <motion.div
-              key={project.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-            >
-              <Card className="p-6 hover:border-primary/50 transition-smooth group cursor-pointer">
+          {projects.map((project, index) =>
+          <motion.div
+            key={project.id}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.1 }}>
+
+              <Card className="border hover:border-primary/50 transition-smooth group cursor-pointer !py-[40px] !px-[40px] rounded-xl shadow text-card-foreground bg-card">
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-3">
                     <div className="p-2 rounded bg-surface-elevated">
@@ -97,11 +97,11 @@ export const Projects = () => {
                     </div>
                   </div>
                   <Button
-                    variant="ghost"
-                    size="icon"
-                    className="opacity-0 group-hover:opacity-100 transition-smooth"
-                    onClick={() => handleOpenSettings(project)}
-                  >
+                  variant="ghost"
+                  size="icon"
+                  className="opacity-0 group-hover:opacity-100 transition-smooth"
+                  onClick={() => handleOpenSettings(project)}>
+
                     <Settings className="h-4 w-4" />
                   </Button>
                 </div>
@@ -124,14 +124,14 @@ export const Projects = () => {
                 </div>
               </Card>
             </motion.div>
-          ))}
+          )}
           
           {/* New Project Card */}
           <Card
-            className="p-6 border-dashed border-border-subtle hover:border-primary/50 transition-smooth cursor-pointer"
-            onClick={() => setShowNewProjectModal(true)}
-          >
-            <div className="h-full flex flex-col items-center justify-center text-center py-8">
+            className="border border-dashed border-border-subtle hover:border-primary/50 transition-smooth cursor-pointer !pt-[0px] !pb-[0px] !pl-[0px] !pr-[0px] rounded-xl shadow text-card-foreground bg-card"
+            onClick={() => setShowNewProjectModal(true)}>
+
+            <div className="h-full flex flex-col items-center justify-center text-center !pt-[16px] !pb-[16px]">
               <div className="p-3 rounded bg-surface-elevated mb-3">
                 <Plus className="h-6 w-6 text-foreground-muted" />
               </div>
@@ -172,16 +172,16 @@ export const Projects = () => {
               <Input
                 id="project-name"
                 placeholder="Es. Analisi Finanziaria Q1"
-                className="bg-background border-border"
-              />
+                className="bg-background border-border" />
+
             </div>
             <div className="space-y-2">
               <Label htmlFor="project-desc">Descrizione</Label>
               <Textarea
                 id="project-desc"
                 placeholder="Breve descrizione del progetto..."
-                className="bg-background border-border min-h-[80px]"
-              />
+                className="bg-background border-border min-h-[80px]" />
+
             </div>
           </div>
           <DialogFooter>
@@ -215,8 +215,8 @@ export const Projects = () => {
                 value={projectInstructions}
                 onChange={(e) => setProjectInstructions(e.target.value)}
                 placeholder="Scrivi le istruzioni che Behive dovrà seguire per questo progetto..."
-                className="bg-background border-border min-h-[120px]"
-              />
+                className="bg-background border-border min-h-[120px]" />
+
             </div>
             
             {/* File Attachment */}
@@ -224,11 +224,11 @@ export const Projects = () => {
               <Label className="text-base font-semibold">File di contesto</Label>
               <div className="space-y-3">
                 {/* Attached Files List */}
-                {attachedFiles.map((file) => (
-                  <div
-                    key={file.name}
-                    className="flex items-center justify-between p-3 bg-surface-elevated rounded-lg border border-border"
-                  >
+                {attachedFiles.map((file) =>
+                <div
+                  key={file.name}
+                  className="flex items-center justify-between p-3 bg-surface-elevated rounded-lg border border-border">
+
                     <div className="flex items-center gap-3">
                       <FileText className="h-4 w-4 text-foreground-muted" />
                       <div>
@@ -237,14 +237,14 @@ export const Projects = () => {
                       </div>
                     </div>
                     <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => handleRemoveFile(file.name)}
-                    >
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleRemoveFile(file.name)}>
+
                       <X className="h-4 w-4" />
                     </Button>
                   </div>
-                ))}
+                )}
                 
                 {/* Upload Button */}
                 <Button variant="outline" className="w-full">
@@ -267,8 +267,8 @@ export const Projects = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
-  );
+    </div>);
+
 };
 
 export default Projects;
