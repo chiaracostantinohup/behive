@@ -57,14 +57,14 @@ export const UsersRoles = () => {
       member: { label: 'Member', className: 'bg-surface-elevated text-foreground-muted border border-border' }
     };
     const variant = variants[role] || variants.member;
-    return <Badge className={variant.className}>{variant.label}</Badge>;
+    return <Badge className="inline-flex items-center border transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent hover:bg-primary/80 text-xs font-semibold px-2.5 py-0.5 !rounded-[99px] shadow text-primary-foreground bg-primary">{variant.label}</Badge>;
   };
 
   const getStatusBadge = (status) => {
     if (status === 'invited') {
-      return <Badge variant="outline" className="text-warning border-warning">Invitato</Badge>;
+      return <Badge variant="outline" className="inline-flex items-center border transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-warning text-xs font-semibold px-2.5 py-0.5 !rounded-[99px] text-warning">Invitato</Badge>;
     }
-    return <Badge variant="outline" className="text-success border-success">Attivo</Badge>;
+    return <Badge variant="outline" className="inline-flex items-center border transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-success text-xs font-semibold px-2.5 py-0.5 !rounded-[99px] text-success">Attivo</Badge>;
   };
 
   const handleInviteUser = () => {
