@@ -6,6 +6,7 @@ import { Textarea } from '../components/ui/textarea';
 import { Paperclip, Send, Loader2 } from 'lucide-react';
 import { cn } from '../lib/utils';
 import Topbar from '../components/Topbar';
+import { mockConversations } from '../data/mockConversations';
 
 // Agent configuration with colors
 const agentStyles = {
@@ -50,6 +51,12 @@ export const Chat = () => {
   };
   
   useEffect(() => {
+    // Check if this is a pre-existing conversation
+    if (mockConversations[id]) {
+      setMessages(mockConversations[id].messages);
+      return;
+    }
+    
     // Initialize with message from NewChat if available
     if (location.state?.initialMessage && messages.length === 0) {
       const initialMessage = location.state.initialMessage;
@@ -85,7 +92,7 @@ export const Chat = () => {
         }, 2000);
       }, 1000);
     }
-  }, [location.state, messages.length]);
+  }, [id, location.state, messages.length]);
   
   const handleSend = () => {
     if (!message.trim()) return;

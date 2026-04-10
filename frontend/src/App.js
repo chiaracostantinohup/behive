@@ -40,13 +40,13 @@ function App() {
       <div className="App">
         <Routes>
           <Route path="/login" element={
-            isAuthenticated ? <Navigate to="/chat" replace /> : <Login onLogin={handleLogin} />
+            isAuthenticated ? <Navigate to="/chat/new" replace /> : <Login onLogin={handleLogin} />
           } />
           
           <Route path="/" element={
             isAuthenticated ? <Layout onLogout={handleLogout} /> : <Navigate to="/login" replace />
           }>
-            <Route index element={<Navigate to="/chat" replace />} />
+            <Route index element={<Navigate to="/chat/new" replace />} />
             <Route path="chat" element={<ChatHistory />} />
             <Route path="chat/new" element={<NewChat />} />
             <Route path="chat/:id" element={<Chat />} />
