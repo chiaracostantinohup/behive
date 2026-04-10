@@ -28,10 +28,10 @@ export const Sidebar = ({ onLogout }) => {
 
 
   const recentChats = [
+  { id: '5', title: 'Strategia Q2 - Multi Agente', time: 'OGGI' },
   { id: '1', title: 'Analisi costi operativi Q1', time: 'OGGI' },
-  { id: '2', title: 'Budget forecast H2 2026', time: 'OGGI' },
-  { id: '3', title: 'Report performance team', time: 'IERI' },
-  { id: '4', title: 'Confronto fornitori cloud', time: 'IERI' }];
+  { id: '2', title: 'Budget forecast H2 2026', time: 'IERI' },
+  { id: '3', title: 'Report performance team', time: 'IERI' }];
 
   
   return (

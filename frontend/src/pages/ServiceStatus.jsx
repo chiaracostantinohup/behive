@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Card } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { CheckCircle2, XCircle, AlertCircle, Clock } from 'lucide-react';
+import Topbar from '../components/Topbar';
 
 export const ServiceStatus = () => {
   const services = [
@@ -106,7 +107,10 @@ export const ServiceStatus = () => {
   const overallHealth = (operationalCount / totalServices * 100).toFixed(1);
 
   return (
-    <div className="h-full overflow-y-auto custom-scrollbar p-8">
+    <div className="h-full flex flex-col overflow-hidden">
+      <Topbar />
+      
+      <div className="flex-1 overflow-y-auto custom-scrollbar p-8">
       <div className="max-w-6xl mx-auto space-y-8">
         {/* Header */}
         <div>
@@ -204,6 +208,7 @@ export const ServiceStatus = () => {
             </div>
           </div>
         </Card>
+      </div>
       </div>
     </div>);
 

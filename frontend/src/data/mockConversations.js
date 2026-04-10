@@ -155,5 +155,96 @@ export const mockConversations = {
         timestamp: new Date('2026-04-10T09:24:30')
       }
     ]
+  },
+  
+  // Multi-Agent Collaboration Chat
+  '5': {
+    title: 'Strategia Q2 2026 - Collaborazione Multi-Agente',
+    multiAgent: true,
+    messages: [
+      {
+        id: 'ma1',
+        type: 'user',
+        content: 'Ho bisogno di una strategia integrata per Q2 2026 che copra budget, marketing e vendite. Voglio che tutti gli agenti collaborino.',
+        timestamp: new Date('2026-04-11T10:00:00')
+      },
+      {
+        id: 'ma2',
+        type: 'agent',
+        agentType: 'finance',
+        content: '👋 Finance Agent attivato! Ho analizzato il budget disponibile per Q2:\n\n💰 Budget Totale Q2: €125.000\n• Marketing: €45.000 (36%)\n• Sales Operations: €55.000 (44%)\n• Tech & Tools: €25.000 (20%)\n\nCondivido questi dati con Marketing Agent e Sales Agent per allineare le strategie.',
+        timestamp: new Date('2026-04-11T10:00:20'),
+        collaboration: {
+          sharedWith: ['marketing', 'sales'],
+          dataShared: 'Budget allocation Q2'
+        }
+      },
+      {
+        id: 'ma3',
+        type: 'system',
+        content: '🔄 Finance Agent ha condiviso "Budget Q2 2026" con Marketing Agent e Sales Agent',
+        timestamp: new Date('2026-04-11T10:00:25')
+      },
+      {
+        id: 'ma4',
+        type: 'agent',
+        agentType: 'marketing',
+        content: '📊 Marketing Agent qui! Ho ricevuto il budget da Finance. Con €45.000 posso proporre:\n\n🎯 CAMPAGNE PRIORITARIE:\n1. LinkedIn Ads B2B: €18.000\n2. Content Marketing: €12.000\n3. Email Automation: €8.000\n4. Influencer Partnership: €7.000\n\n📈 Target: 1.500 lead qualificati (+40% vs Q1)\n\nSales Agent, questi numeri sono allineati con il tuo pipeline target?',
+        timestamp: new Date('2026-04-11T10:01:10'),
+        collaboration: {
+          questionFor: 'sales',
+          contextFrom: 'finance'
+        }
+      },
+      {
+        id: 'ma5',
+        type: 'agent',
+        agentType: 'sales',
+        content: '💼 Sales Agent presente! Perfetto Marketing, i 1.500 lead sono allineati.\n\nCon il budget di €55.000 allocato da Finance, ho calcolato:\n\n🎯 PIPELINE TARGET Q2:\n• Lead: 1.500 (da Marketing)\n• Conversion Rate: 12% → 180 opportunità\n• Close Rate: 35% → 63 deal chiusi\n• Revenue Target: €315.000\n\n⚠️ Finance Agent, ho bisogno di €8.000 extra per CRM upgrade. Fattibile?',
+        timestamp: new Date('2026-04-11T10:02:05'),
+        collaboration: {
+          requestTo: 'finance',
+          amount: 8000
+        }
+      },
+      {
+        id: 'ma6',
+        type: 'agent',
+        agentType: 'finance',
+        content: '💡 Analizzo la richiesta di Sales...\n\n✅ APPROVATO! Posso allocare €8.000 extra riducendo il buffer del 20% a 15%.\n\nNUOVO BUDGET Q2:\n• Marketing: €45.000\n• Sales Operations: €63.000 (+€8.000)\n• Tech & Tools: €17.000 (-€8.000)\n\nROI Previsto: +26% grazie al CRM upgrade. Marketing, Sales, siamo allineati?',
+        timestamp: new Date('2026-04-11T10:02:45'),
+        collaboration: {
+          approved: true,
+          budgetAdjustment: '+€8.000 to Sales'
+        }
+      },
+      {
+        id: 'ma7',
+        type: 'agent',
+        agentType: 'marketing',
+        content: '✅ Perfetto Finance! Con questa allocazione posso garantire:\n\n📊 DELIVERABLES Q2:\n✓ 1.500 lead qualificati\n✓ 8 campagne attive\n✓ 3 webinar B2B\n✓ 12 case study\n\nSales Agent, preparati ad avere un pipeline pieno! 🚀',
+        timestamp: new Date('2026-04-11T10:03:20')
+      },
+      {
+        id: 'ma8',
+        type: 'agent',
+        agentType: 'sales',
+        content: '🔥 Team allineato! Ecco il PIANO AZIONE integrato:\n\n📅 TIMELINE Q2:\n• Aprile: Setup CRM + Marketing launch\n• Maggio: Peak lead generation + nurturing\n• Giugno: Focus closing + Q3 planning\n\n🎯 MILESTONE:\n• Week 4: +500 lead\n• Week 8: +1.000 lead\n• Week 12: 63 deal target\n\n✅ Finance: Budget ottimizzato e monitored\n✅ Marketing: Campagne attive\n✅ Sales: Pipeline pronto\n\nTutto chiaro, team! 💪',
+        timestamp: new Date('2026-04-11T10:04:10')
+      },
+      {
+        id: 'ma9',
+        type: 'user',
+        content: 'Perfetto! Tutti gli agenti hanno collaborato brillantemente. Voglio un documento riepilogativo.',
+        timestamp: new Date('2026-04-11T10:05:00')
+      },
+      {
+        id: 'ma10',
+        type: 'agent',
+        agentType: 'finance',
+        content: '📄 Sto generando il documento "Strategia Integrata Q2 2026"...\n\n✅ DOCUMENTO PRONTO!\n\nInclude:\n• Budget breakdown e allocazioni\n• KPI per ogni reparto\n• Timeline operativa\n• Scenari ROI\n• Dashboard integrata\n\nInviato via email a marco@company.com 📧',
+        timestamp: new Date('2026-04-11T10:05:30')
+      }
+    ]
   }
 };

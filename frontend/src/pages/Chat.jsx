@@ -171,12 +171,43 @@ export const Chat = () => {
                         {msg.content}
                       </p>
                       
+                      {/* Collaboration Indicators */}
+                      {msg.collaboration && (
+                        <div className="mt-3 pt-3 border-t border-border">
+                          {msg.collaboration.sharedWith && (
+                            <div className="flex items-center gap-2 text-xs text-foreground-muted">
+                              <span>🔄 Condiviso con:</span>
+                              {msg.collaboration.sharedWith.map(agent => (
+                                <span key={agent} className="px-2 py-0.5 rounded bg-surface text-foreground">
+                                  {agentStyles[agent]?.name || agent}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                          {msg.collaboration.questionFor && (
+                            <div className="text-xs text-foreground-muted">
+                              ❓ Domanda per {agentStyles[msg.collaboration.questionFor]?.name}
+                            </div>
+                          )}
+                        </div>
+                      )}
+                      
                       {msg.isGenerating && (
                         <div className="mt-3 flex items-center gap-2 text-xs text-foreground-muted">
                           <Loader2 className="h-3 w-3 animate-spin" />
                           <span>~30 secondi</span>
                         </div>
                       )}
+                    </div>
+                  </div>
+                </div>
+              )}
+              
+              {msg.type === 'system' && (
+                <div className="w-full max-w-3xl">
+                  <div className="flex items-center justify-center py-2">
+                    <div className="px-4 py-2 rounded-full bg-surface-elevated border border-border text-xs text-foreground-muted">
+                      {msg.content}
                     </div>
                   </div>
                 </div>
