@@ -4,6 +4,7 @@ import { Card } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import { CreditCard, Download, Calendar, ArrowUpRight, Check } from 'lucide-react';
+import Topbar from '../components/Topbar';
 
 export const Payments = () => {
   const currentPlan = {
@@ -68,18 +69,30 @@ export const Payments = () => {
 
 
   return (
-    <div className="h-full overflow-y-auto custom-scrollbar p-8">
+    <div className="h-full flex flex-col overflow-hidden">
+      <Topbar />
+      
+      <div className="flex-1 overflow-y-auto custom-scrollbar p-8">
       <div className="max-w-6xl mx-auto space-y-8">
         {/* Header */}
-        <div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+        >
           <h1 className="text-3xl font-semibold text-foreground mb-2">Payments</h1>
           <p className="text-foreground-muted">
             Gestisci il tuo piano e la fatturazione
           </p>
-        </div>
+        </motion.div>
         
         {/* Current Plan */}
-        <Card className="p-6 border-primary/50">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.1 }}
+        >
+          <Card className="p-6 border-primary/50">
           <div className="flex items-start justify-between mb-6">
             <div>
               <div className="flex items-center gap-3 mb-2">
@@ -106,9 +119,15 @@ export const Payments = () => {
             )}
           </div>
         </Card>
+        </motion.div>
         
         {/* Payment Method */}
-        <Card className="p-6">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.2 }}
+        >
+          <Card className="p-6">
           <h2 className="text-lg font-semibold text-foreground mb-4">Metodo di Pagamento</h2>
           <div className="flex items-center justify-between p-4 bg-surface-elevated rounded-lg border border-border">
             <div className="flex items-center gap-3">
@@ -120,15 +139,21 @@ export const Payments = () => {
                 <p className="text-sm text-foreground-muted">Scadenza 12/2027</p>
               </div>
             </div>
-            <Button variant="outline" size="sm">Modifica</Button>
+            <Button variant="outline" size="sm" className="!rounded-md">Modifica</Button>
           </div>
         </Card>
+        </motion.div>
         
         {/* Invoices */}
-        <Card className="p-6">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.3 }}
+        >
+          <Card className="p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-foreground">Fatture</h2>
-            <Button variant="ghost" size="sm">
+            <Button variant="ghost" size="sm" className="!rounded-md">
               <Download className="h-4 w-4 mr-2" />
               Scarica Tutte
             </Button>
@@ -148,8 +173,8 @@ export const Payments = () => {
                 </div>
                 <div className="flex items-center gap-4">
                   <span className="font-semibold text-foreground">€{invoice.amount}</span>
-                  <Badge variant="outline" className="inline-flex items-center border transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-success text-xs font-semibold px-2.5 py-0.5 !rounded-[66px] text-success">Pagata</Badge>
-                  <Button variant="ghost" size="icon">
+                  <Badge variant="outline" className="inline-flex items-center border transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-success text-xs font-semibold px-2.5 py-0.5 !rounded-[99px] text-success">Pagata</Badge>
+                  <Button variant="ghost" size="icon" className="!rounded-md">
                     <Download className="h-4 w-4" />
                   </Button>
                 </div>
@@ -157,9 +182,14 @@ export const Payments = () => {
             )}
           </div>
         </Card>
+        </motion.div>
         
         {/* Available Plans */}
-        <div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.4 }}
+        >
           <h2 className="text-lg font-semibold text-foreground mb-4">Altri Piani Disponibili</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {plans.map((plan, index) =>
@@ -167,7 +197,7 @@ export const Payments = () => {
               key={plan.name}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}>
+              transition={{ delay: 0.5 + (index * 0.1) }}>
 
                 <Card className={`p-6 ${plan.current ? 'border-primary/50' : ''}`}>
                   <div className="mb-4">
@@ -199,7 +229,8 @@ export const Payments = () => {
               </motion.div>
             )}
           </div>
-        </div>
+        </motion.div>
+      </div>
       </div>
     </div>);
 

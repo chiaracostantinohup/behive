@@ -7,7 +7,9 @@ import { Badge } from '../components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/table';
-import { Database, Cloud, Building2, DollarSign, MessageSquare, Search } from 'lucide-react';
+import { Database, Cloud, Building2, DollarSign, MessageSquare, Search, Plus, ArrowRight } from 'lucide-react';
+import { Label } from '../components/ui/label';
+import { Textarea } from '../components/ui/textarea';
 import { cn } from '../lib/utils';
 import Topbar from '../components/Topbar';
 
@@ -15,6 +17,9 @@ export const Integrations = () => {
   const [activeTab, setActiveTab] = useState('all');
   const [showNotesModal, setShowNotesModal] = useState(false);
   const [selectedDbNotes, setSelectedDbNotes] = useState(null);
+  const [showDbConnectModal, setShowDbConnectModal] = useState(false);
+  const [showDualViewModal, setShowDualViewModal] = useState(false);
+  const [dbFormData, setDbFormData] = useState({ name: '', uri: '', notes: '' });
 
   const databases = [
   {
@@ -70,6 +75,31 @@ export const Integrations = () => {
     setTimeout(() => {
       alert(`Connessione a ${integration.name} completata!`);
     }, 2000);
+  };
+
+  const handleDbConnect = () => {
+    // Check if notes are too long (>150 chars) to trigger dual-view
+    if (dbFormData.notes.length > 150) {
+      setShowDbConnectModal(false);
+      setShowDualViewModal(true);
+    } else {
+      // Simple connection
+      alert(`Database "${dbFormData.name}" connesso con successo!`);
+      setShowDbConnectModal(false);
+      setDbFormData({ name: '', uri: '', notes: '' });
+    }
+  };
+
+  const handleDualViewConfirm = () => {
+    alert(`Database "${dbFormData.name}" connesso con versione ottimizzata!`);
+    setShowDualViewModal(false);
+    setDbFormData({ name: '', uri: '', notes: '' });
+  };
+
+  const generateOptimizedNotes = (originalNotes) => {
+    // Mock AI optimization - in reality this would call Behive AI
+    const lines = originalNotes.split('\n').filter(line => line.trim());
+    return `📊 Database ottimizzato da Behive AI\n\n${lines.slice(0, 3).join('\n')}\n\n🔒 Sicurezza: Configurazione SSL verificata\n⚡ Performance: Query ottimizzate automaticamente\n📅 Backup: Schedulazione automatica attiva`;
   };
 
   return (
@@ -131,6 +161,12 @@ export const Integrations = () => {
             
             {/* Databases */}
             <Section title="Database">
+              <div className="mb-4 flex justify-end">
+                <Button variant="premium" size="sm" onClick={() => setShowDbConnectModal(true)} className="!rounded-md">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Connetti Nuovo Database
+                </Button>
+              </div>
               <DatabaseTable databases={databases} onViewNotes={handleViewNotes} />
             </Section>
           </TabsContent>
@@ -152,7 +188,15 @@ export const Integrations = () => {
           </TabsContent>
           
           <TabsContent value="database">
-            <DatabaseTable databases={databases} onViewNotes={handleViewNotes} />
+            <div className="space-y-4">
+              <div className="flex justify-end">
+                <Button variant="premium" size="sm" onClick={() => setShowDbConnectModal(true)} className="!rounded-md">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Connetti Nuovo Database
+                </Button>
+              </div>
+              <DatabaseTable databases={databases} onViewNotes={handleViewNotes} />
+            </div>
           </TabsContent>
         </Tabs>
       </div>
@@ -194,8 +238,133 @@ export const Integrations = () => {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setShowNotesModal(false)}>
+            <Button variant="outline" onClick={() => setShowNotesModal(false)} className="!rounded-md">
               Chiudi
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Database Connection Modal */}
+      <Dialog open={showDbConnectModal} onOpenChange={setShowDbConnectModal}>
+        <DialogContent className="bg-surface border-border max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="text-foreground">Connetti Nuovo Database</DialogTitle>
+            <DialogDescription className="text-foreground-muted">
+              Configura la connessione al tuo database
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="db-name">Nome Database</Label>
+              <Input
+                id="db-name"
+                placeholder="Es. Production DB"
+                value={dbFormData.name}
+                onChange={(e) => setDbFormData({ ...dbFormData, name: e.target.value })}
+                className="bg-background border-border"
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="db-uri">URI Connessione</Label>
+              <Input
+                id="db-uri"
+                placeholder="postgresql://host:port/database"
+                value={dbFormData.uri}
+                onChange={(e) => setDbFormData({ ...dbFormData, uri: e.target.value })}
+                className="bg-background border-border font-mono text-sm"
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="db-notes">
+                Note <span className="text-foreground-subtle text-xs">(opzionale)</span>
+              </Label>
+              <Textarea
+                id="db-notes"
+                placeholder="Aggiungi note sulla configurazione, tabelle principali, backup..."
+                value={dbFormData.notes}
+                onChange={(e) => setDbFormData({ ...dbFormData, notes: e.target.value })}
+                className="bg-background border-border min-h-[120px] resize-none"
+              />
+              {dbFormData.notes.length > 150 && (
+                <p className="text-xs text-[#EAB308] flex items-center gap-1">
+                  <ArrowRight className="h-3 w-3" />
+                  Note lunghe rilevate - Behive ottimizzerà automaticamente la versione finale
+                </p>
+              )}
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => {
+              setShowDbConnectModal(false);
+              setDbFormData({ name: '', uri: '', notes: '' });
+            }} className="!rounded-md">
+              Annulla
+            </Button>
+            <Button 
+              variant="premium" 
+              onClick={handleDbConnect}
+              disabled={!dbFormData.name || !dbFormData.uri}
+              className="!rounded-md"
+            >
+              Connetti Database
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Dual-View Modal (Original vs Behive Optimized) */}
+      <Dialog open={showDualViewModal} onOpenChange={setShowDualViewModal}>
+        <DialogContent className="bg-surface border-border max-w-5xl">
+          <DialogHeader>
+            <DialogTitle className="text-foreground">Note Database - Confronto Versioni</DialogTitle>
+            <DialogDescription className="text-foreground-muted">
+              Behive ha ottimizzato le tue note per una migliore leggibilità e struttura
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid grid-cols-2 gap-6 py-4">
+            {/* Original Version */}
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-foreground-muted"></div>
+                <h4 className="text-sm font-semibold text-foreground">Versione Originale</h4>
+              </div>
+              <div className="p-4 bg-background rounded-lg border border-border max-h-[300px] overflow-y-auto custom-scrollbar">
+                <p className="text-sm text-foreground-muted whitespace-pre-wrap">
+                  {dbFormData.notes}
+                </p>
+              </div>
+            </div>
+            
+            {/* Behive Optimized Version */}
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-primary"></div>
+                <h4 className="text-sm font-semibold text-foreground">Versione Behive (Ottimizzata)</h4>
+              </div>
+              <div className="p-4 bg-surface-elevated rounded-lg border border-primary/30 max-h-[300px] overflow-y-auto custom-scrollbar">
+                <p className="text-sm text-foreground whitespace-pre-wrap">
+                  {generateOptimizedNotes(dbFormData.notes)}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-surface-elevated p-4 rounded-lg border border-primary/20">
+            <p className="text-xs text-foreground-muted">
+              💡 La versione ottimizzata verrà salvata automaticamente. Potrai sempre consultare le note originali.
+            </p>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => {
+              setShowDualViewModal(false);
+              setDbFormData({ name: '', uri: '', notes: '' });
+            }} className="!rounded-md">
+              Annulla
+            </Button>
+            <Button variant="premium" onClick={handleDualViewConfirm} className="!rounded-md">
+              Conferma Connessione
             </Button>
           </DialogFooter>
         </DialogContent>
