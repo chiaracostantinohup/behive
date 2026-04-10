@@ -21,7 +21,7 @@ export const UsersRoles = () => {
     id: '1',
     name: 'Marco Albertini',
     email: 'marco@company.com',
-    role: 'superadmin',
+    role: 'admin',
     status: 'active',
     lastActive: '2 min fa'
   },
@@ -53,8 +53,7 @@ export const UsersRoles = () => {
 
   const getRoleBadge = (role) => {
     const variants = {
-      superadmin: { label: 'Superadmin', className: 'bg-primary text-primary-foreground' },
-      admin: { label: 'Admin', className: 'bg-agent-marketing text-foreground' },
+      admin: { label: 'Admin', className: 'bg-primary text-primary-foreground' },
       member: { label: 'Member', className: 'bg-surface-elevated text-foreground-muted border border-border' }
     };
     const variant = variants[role] || variants.member;
@@ -145,19 +144,18 @@ export const UsersRoles = () => {
           </motion.div>
           
           {/* Role Descriptions */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {['Superadmin', 'Admin', 'Member'].map((role, index) =>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {['Admin', 'Member'].map((role, index) =>
             <motion.div
               key={role}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.2 + index * 0.1 }}>
+              transition={{ duration: 0.3, delay: 0.2 + (index * 0.1) }}>
 
                 <Card className="p-6">
                   <h3 className="font-semibold text-foreground mb-2">{role}</h3>
                   <p className="text-sm text-foreground-muted">
-                    {role === 'Superadmin' && 'Accesso completo a tutte le funzionalità, gestione utenti e configurazioni'}
-                    {role === 'Admin' && 'Gestione progetti, integrazioni e inviti utenti'}
+                    {role === 'Admin' && 'Gestione progetti, integrazioni, inviti utenti e configurazioni'}
                     {role === 'Member' && 'Accesso a chat e progetti assegnati'}
                   </p>
                 </Card>
@@ -200,7 +198,6 @@ export const UsersRoles = () => {
                 <SelectContent className="bg-surface border-border">
                   <SelectItem value="member">Member</SelectItem>
                   <SelectItem value="admin">Admin</SelectItem>
-                  <SelectItem value="superadmin">Superadmin</SelectItem>
                 </SelectContent>
               </Select>
             </div>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { MessageSquare, Users, FolderKanban, Boxes, Plug, Bell, Activity, CreditCard, HelpCircle, LogOut, Plus, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
+import { MessageSquare, Users, FolderKanban, Boxes, Plug, Bell, Activity, CreditCard, Plus, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { Button } from './ui/button';
 import { Separator } from './ui/separator';
@@ -33,12 +33,7 @@ export const Sidebar = ({ onLogout }) => {
   { id: '3', title: 'Report performance team', time: 'IERI' },
   { id: '4', title: 'Confronto fornitori cloud', time: 'IERI' }];
 
-
-  const handleLogout = () => {
-    if (onLogout) onLogout();
-    navigate('/login');
-  };
-
+  
   return (
     <aside
       className={cn(
@@ -218,51 +213,6 @@ export const Sidebar = ({ onLogout }) => {
             </div>
           }
         </button>
-        
-        {/* Help & Logout */}
-        <div className="flex gap-2">
-          {!isCollapsed ?
-          <>
-              <Button
-              variant="ghost"
-              size="sm"
-              className="flex-1 justify-start"
-              onClick={() => navigate('/help')}>
-
-                <HelpCircle className="h-4 w-4 mr-2" />
-                Guida
-              </Button>
-              <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleLogout}
-              title="Logout">
-
-                <LogOut className="h-4 w-4" />
-              </Button>
-            </> :
-
-          <>
-              <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => navigate('/help')}
-              title="Guida"
-              className="flex-1">
-
-                <HelpCircle className="h-4 w-4" />
-              </Button>
-              <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleLogout}
-              title="Logout">
-
-                <LogOut className="h-4 w-4" />
-              </Button>
-            </>
-          }
-        </div>
       </div>
     </aside>);
 
