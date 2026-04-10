@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/table';
 import { Database, Cloud, Building2, DollarSign, MessageSquare, Search } from 'lucide-react';
 import { cn } from '../lib/utils';
+import Topbar from '../components/Topbar';
 
 export const Integrations = () => {
   const [activeTab, setActiveTab] = useState('all');
@@ -72,7 +73,11 @@ export const Integrations = () => {
   };
   
   return (
-    <div className="h-full overflow-y-auto custom-scrollbar p-8">
+    <div className="h-full flex flex-col overflow-hidden">
+      {/* Topbar */}
+      <Topbar />
+      
+      <div className="flex-1 overflow-y-auto custom-scrollbar p-8">
       <div className="max-w-6xl mx-auto space-y-8">
         {/* Header */}
         <div>
@@ -195,6 +200,7 @@ export const Integrations = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      </div>
     </div>
   );
 };

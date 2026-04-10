@@ -7,6 +7,7 @@ import { Label } from '../components/ui/label';
 import { Textarea } from '../components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../components/ui/dialog';
 import { FolderKanban, MessageSquare, FileText, Clock, Plus, Settings, X } from 'lucide-react';
+import Topbar from '../components/Topbar';
 
 export const Projects = () => {
   const [showNewProjectModal, setShowNewProjectModal] = useState(false);
@@ -61,7 +62,11 @@ export const Projects = () => {
   };
 
   return (
-    <div className="h-full overflow-y-auto custom-scrollbar p-8">
+    <div className="h-full flex flex-col overflow-hidden">
+      {/* Topbar */}
+      <Topbar />
+      
+      <div className="flex-1 overflow-y-auto custom-scrollbar p-8">
       <div className="max-w-6xl mx-auto space-y-8">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -267,7 +272,9 @@ export const Projects = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>);
+      </div>
+    </div>
+  );
 
 };
 
