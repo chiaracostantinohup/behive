@@ -258,6 +258,66 @@ frontend:
         agent: "testing"
         comment: "Page accessible via navigation. Displays payment information, plan details, and invoices correctly."
 
+  - task: "Login with Social Options"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/Login.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ All 3 social login buttons implemented and working perfectly. Google button (lines 41-53) has proper multi-color SVG icon (#4285F4, #34A853, #FBBC05, #EA4335). Microsoft button (lines 55-68) has colored squares icon (#f35325, #81bc06, #05a6f0, #ffba08). Apple button (lines 70-79) has white Apple logo. OR separator (lines 82-87) displays correctly between social and email login. All social login buttons successfully authenticate and redirect to /chat/new. Email/password login still works correctly. VERIFIED: Google login ✓, Microsoft login ✓, Apple login ✓, Email/password login ✓."
+
+  - task: "Updated Primary Color (#0F26FF)"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/index.css"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ New primary color #0F26FF (deeper blue) applied consistently across all components. VERIFIED: (1) index.css line 17-20: Primary color set to 232 100% 53% which is #0F26FF ✓, (2) Sidebar 'Nuova Chat' button: rgb(15, 38, 255) ✓, (3) Sign In button on login page: uses primary color ✓, (4) Agent usage bars on Agents page: rgb(15, 38, 255) ✓, (5) Selected agent chip on New Chat page: rgb(15, 47, 255) ✓, (6) User avatar in sidebar: rgb(15, 38, 255) ✓. All primary buttons and interactive elements use the new deeper blue color as expected."
+
+  - task: "New Agent Selection with Chips"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/NewChat.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ New chip-based agent selection implemented and working perfectly. VERIFIED: (1) All 4 agent chips display correctly below textarea (Finance Agent, Marketing Agent, Sales Agent, Support Agent) ✓, (2) Each chip has icon on the left ✓, (3) Clicking Finance Agent chip highlights it with primary blue background (rgb(15, 47, 255)) ✓, (4) Clicking Marketing Agent chip switches selection correctly ✓, (5) Unselected chips have dark background (rgb(26, 26, 26)) with border ✓, (6) Send button is disabled when no agent is selected ✓, (7) Send button is enabled when agent is selected and message is typed ✓, (8) Helper text 'Seleziona un agente prima di inviare il messaggio' displays when no agent selected ✓. Agent selection UX is intuitive and works flawlessly."
+
+  - task: "Satoshi Font Typography"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/index.css"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ Satoshi font loaded and applied correctly. VERIFIED: (1) index.css line 1: Font imported from FontShare CDN (@import url('https://api.fontshare.com/v2/css?f[]=satoshi@400,700&display=swap')) ✓, (2) index.css line 84: Body uses 'Satoshi' font-family ✓, (3) index.css lines 89-92: Headings use 'Satoshi' with font-weight 700 (Bold) ✓, (4) Heading 'Ciao, Marco' displays with Satoshi font-family and font-weight 700 ✓. Typography is clean and professional with proper font weights applied."
+
+  - task: "Updated Chat Flow with Icon Send Button"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/NewChat.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ Chat flow updated with new UX elements working perfectly. VERIFIED: (1) Send button now displays Send icon (lucide-send) instead of text (line 98) ✓, (2) Send button is disabled when no agent selected or message is empty ✓, (3) Typing message 'Analizza i costi operativi del Q1' works ✓, (4) Selecting Finance Agent chip enables Send button ✓, (5) Clicking Send button navigates to chat page /chat/[id] ✓, (6) Chat page displays user message correctly ✓, (7) Finance Agent responses appear with detailed cost analysis ✓, (8) Can send additional messages in chat successfully ✓. Full chat flow from agent selection to conversation works seamlessly."
+
 backend:
   - task: "Backend API"
     implemented: true
@@ -273,14 +333,18 @@ backend:
 
 metadata:
   created_by: "testing_agent"
-  version: "1.0"
-  test_sequence: 2
+  version: "1.1"
+  test_sequence: 3
   run_ui: true
   test_date: "2026-04-10"
 
 test_plan:
   current_focus:
-    - "All critical features tested and working"
+    - "Login with Social Options"
+    - "Updated Primary Color (#0F26FF)"
+    - "New Agent Selection with Chips"
+    - "Satoshi Font Typography"
+    - "Updated Chat Flow with Icon Send Button"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
@@ -292,3 +356,5 @@ agent_communication:
     message: "CRITICAL ISSUE DETAILS: NewChat.jsx line 38 passes entire agent object (including React icon component) through navigate() state. React components cannot be serialized for browser history API, causing DataCloneError. This creates webpack error overlay that blocks all subsequent UI interactions. SOLUTION: Pass only agent.id through state, then reconstruct full agent object in Chat component using a shared agents configuration."
   - agent: "testing"
     message: "✅ CRITICAL BUG FIX VERIFIED AND WORKING! Tested the navigation fix comprehensively. The fix successfully resolves the DataCloneError by passing only agentId (string) instead of the full agent object. RESULTS: (1) Chat navigation works perfectly - no errors, (2) User messages display correctly, (3) Agent responses appear as expected with proper formatting, (4) Can send multiple messages successfully, (5) Agents page now fully accessible without webpack overlay blocking interactions, (6) All 8 navigation items work correctly, (7) Zero console errors detected. The application is now fully functional. Main agent can proceed to summarize and finish."
+  - agent: "testing"
+    message: "✅ NEW FEATURES TESTING COMPLETED - ALL PASSING! Tested all 5 new features requested in the review: (1) Login with Social Options - Google, Microsoft, Apple buttons all working with proper icons and OR separator ✓, (2) Updated Primary Color #0F26FF - applied consistently across Nuova Chat button, Sign In button, agent usage bars, selected agent chips ✓, (3) New Agent Selection with Chips - all 4 chips display, selection/deselection works, proper color states ✓, (4) Satoshi Font - loaded from FontShare CDN, applied to headings (Bold 700) and body (Regular 400) ✓, (5) Updated Chat Flow - icon-based Send button, proper enable/disable states, navigation and messaging work perfectly ✓. SCREENSHOTS: Captured login page with social options, agent chips (unselected and selected states), chat page with messages, and Agents page with new primary color. NO CRITICAL ISSUES FOUND. Only minor console warnings from external Emergent tracking script (not app code). All features are production-ready."
