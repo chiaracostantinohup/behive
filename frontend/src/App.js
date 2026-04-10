@@ -40,7 +40,7 @@ function App() {
       <div className="App">
         <Routes>
           <Route path="/login" element={
-            isAuthenticated ? <Navigate to="/chat/new" replace /> : <Login onLogin={handleLogin} />
+            isAuthenticated ? <Navigate to="/chat" replace /> : <Login onLogin={handleLogin} />
           } />
           
           <Route path="/" element={
