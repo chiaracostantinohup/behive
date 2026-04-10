@@ -5,6 +5,7 @@ import Layout from './components/Layout';
 import Login from './pages/Login';
 import NewChat from './pages/NewChat';
 import Chat from './pages/Chat';
+import ChatHistory from './pages/ChatHistory';
 import Agents from './pages/Agents';
 import Projects from './pages/Projects';
 import Integrations from './pages/Integrations';
@@ -45,7 +46,8 @@ function App() {
           <Route path="/" element={
             isAuthenticated ? <Layout onLogout={handleLogout} /> : <Navigate to="/login" replace />
           }>
-            <Route index element={<Navigate to="/chat/new" replace />} />
+            <Route index element={<Navigate to="/chat" replace />} />
+            <Route path="chat" element={<ChatHistory />} />
             <Route path="chat/new" element={<NewChat />} />
             <Route path="chat/:id" element={<Chat />} />
             <Route path="agents" element={<Agents />} />
@@ -58,7 +60,7 @@ function App() {
             <Route path="help" element={<Help />} />
           </Route>
           
-          <Route path="*" element={<Navigate to={isAuthenticated ? "/chat/new" : "/login"} replace />} />
+          <Route path="*" element={<Navigate to={isAuthenticated ? "/chat" : "/login"} replace />} />
         </Routes>
         <Toaster />
       </div>

@@ -13,7 +13,7 @@ export const Sidebar = ({ onLogout }) => {
   const isActive = (path) => location.pathname.startsWith(path);
 
   const navItems = [
-  { icon: MessageSquare, label: 'Chat', path: '/chat/new' },
+  { icon: MessageSquare, label: 'Chat', path: '/chat' },
   { icon: Boxes, label: 'Agenti', path: '/agents' },
   { icon: FolderKanban, label: 'Progetti', path: '/projects' },
   { icon: Plug, label: 'Integrazioni', path: '/integrations' }];

@@ -330,6 +330,78 @@ frontend:
         agent: "testing"
         comment: "⚠️ PARTIAL IMPLEMENTATION - Topbar component created and working on SOME pages but MISSING on Projects and Integrations pages. VERIFIED WORKING: (1) New Chat page (/chat/new) - Topbar present with help icon (question mark) and bell notification icon ✓, (2) Notification badge correctly shows '3' on New Chat page ✓, (3) Icons are right-aligned with proper spacing (gap-2) ✓, (4) Chat page (/chat/:id) - Topbar present, notification badge correctly hidden ✓, (5) Agents page (/agents) - Topbar present with both icons ✓, (6) Topbar height is 56px (h-14) ✓, (7) Border-bottom present (1px) ✓, (8) Badge positioned correctly (top-right with -top-1 -right-1) ✓. MISSING IMPLEMENTATION: (1) Projects page (/projects) - NO Topbar import or usage in Projects.jsx ✗, (2) Integrations page (/integrations) - NO Topbar import or usage in Integrations.jsx ✗. CODE VERIFICATION: grep shows only NewChat.jsx, Chat.jsx, and Agents.jsx import Topbar component. Projects.jsx and Integrations.jsx do NOT import Topbar. MINOR ISSUE: Icon size is 16px instead of expected 20px (h-5 w-5 should render as 20px, but renders as 16px - likely browser zoom or CSS issue, not critical). Chat functionality works perfectly with Topbar present - message sending, navigation, and display all working correctly."
 
+  - task: "Chat Restructure - Chat History Page"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/ChatHistory.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ Chat History page fully implemented and working correctly. VERIFIED: (1) Page accessible at /chat route ✓, (2) Heading 'Chat' with subtitle 'Tutte le tue conversazioni con gli agenti Behive' ✓, (3) Conversations grouped by date: OGGI, IERI, QUESTA SETTIMANA ✓, (4) Each conversation card displays: title, preview text, agent name, timestamp ✓, (5) Clicking conversation card navigates to /chat/:id correctly ✓, (6) 5 conversation cards total (2 OGGI, 2 IERI, 1 QUESTA SETTIMANA) ✓, (7) Topbar present with help and notification icons ✓. All functionality working as designed."
+
+  - task: "Chat Restructure - Login Redirect"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: "✗ CRITICAL ISSUE: Login redirects to /chat/new instead of /chat (Chat History page). PROBLEM: App.js line 43 has 'Navigate to=\"/chat/new\"' which redirects authenticated users to New Chat page. EXPECTED BEHAVIOR: After login, users should see Chat History page at /chat to view their past conversations. CURRENT BEHAVIOR: After login, users see New Chat page at /chat/new. FIX REQUIRED: Change App.js line 43 from '<Navigate to=\"/chat/new\" replace />' to '<Navigate to=\"/chat\" replace />'. This is a simple one-line fix."
+
+  - task: "Chat Restructure - Remove Agent Selection"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/NewChat.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ Agent selection chips successfully removed from New Chat page. VERIFIED: (1) No agent selection chips visible on /chat/new page ✓, (2) Greeting 'Ciao, Marco. Come posso aiutarti?' displays correctly ✓, (3) Quick prompts (4 cards) visible and clickable ✓, (4) Textarea with placeholder 'Chiedi qualcosa a Behive...' present ✓, (5) Can type message and send without selecting agent ✓, (6) Send button (icon-based) works correctly ✓. Feature removal complete and working as designed."
+
+  - task: "Chat Restructure - Centered Container"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/Chat.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ Chat interface uses centered container (max-w-3xl) correctly. VERIFIED: (1) Chat messages container has max-w-3xl class ✓, (2) Container is centered with mx-auto ✓, (3) User messages aligned to right (items-end) ✓, (4) Agent messages aligned to left (items-start) ✓, (5) Input area also uses max-w-3xl centered container ✓, (6) Layout is clean and focused, not full-width ✓. Design implementation matches requirements perfectly."
+
+  - task: "Chat Restructure - Agent Chip Styling"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/Chat.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ Agent chip styling implemented correctly with chip ABOVE message. VERIFIED: (1) Finance Agent chip: text color #00E5A0 (green), background rgba(0, 229, 160, 0.4), border 1px solid #00E5A0 ✓, (2) Marketing Agent chip: text color #FF6B9D (pink), background rgba(255, 107, 157, 0.4), border 1px solid #FF6B9D ✓, (3) Agent chip appears ABOVE message in space-y-3 container (single visual block) ✓, (4) Message has border-left matching agent color ✓, (5) Chip displays agent name in uppercase (e.g., 'FINANCE AGENT') ✓, (6) NO icon in chip, just text ✓. Visual verification from screenshots confirms all styling is correct and matches design requirements."
+
+  - task: "Chat Restructure - Auto-Detection"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/Chat.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ Agent auto-detection working correctly based on message keywords. VERIFIED: (1) Message with 'costi operativi' detected as Finance Agent ✓, (2) Message with 'marketing' detected as Marketing Agent ✓, (3) Detection logic in Chat.jsx detectAgent() function (lines 40-50) ✓, (4) Keywords checked: cost/budget/financial/finanziaria → Finance, marketing/campaign/campagna → Marketing, sales/vendite/pipeline → Sales ✓, (5) Default agent is Finance if no keywords match ✓. Auto-detection is intelligent and works seamlessly without user intervention."
+
 backend:
   - task: "Backend API"
     implemented: true
@@ -352,7 +424,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Topbar Component Implementation"
+    - "Chat Restructure - Login Redirect"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
@@ -368,3 +440,5 @@ agent_communication:
     message: "✅ NEW FEATURES TESTING COMPLETED - ALL PASSING! Tested all 5 new features requested in the review: (1) Login with Social Options - Google, Microsoft, Apple buttons all working with proper icons and OR separator ✓, (2) Updated Primary Color #0F26FF - applied consistently across Nuova Chat button, Sign In button, agent usage bars, selected agent chips ✓, (3) New Agent Selection with Chips - all 4 chips display, selection/deselection works, proper color states ✓, (4) Satoshi Font - loaded from FontShare CDN, applied to headings (Bold 700) and body (Regular 400) ✓, (5) Updated Chat Flow - icon-based Send button, proper enable/disable states, navigation and messaging work perfectly ✓. SCREENSHOTS: Captured login page with social options, agent chips (unselected and selected states), chat page with messages, and Agents page with new primary color. NO CRITICAL ISSUES FOUND. Only minor console warnings from external Emergent tracking script (not app code). All features are production-ready."
   - agent: "testing"
     message: "⚠️ TOPBAR TESTING COMPLETED - PARTIAL IMPLEMENTATION FOUND! The Topbar component has been created and is working correctly on 3 out of 5 main pages. WORKING PAGES: (1) New Chat page - Topbar with notification badge '3' ✓, (2) Chat page - Topbar without badge ✓, (3) Agents page - Topbar present ✓. MISSING PAGES: (1) Projects page - NO Topbar import or usage ✗, (2) Integrations page - NO Topbar import or usage ✗. CODE VERIFICATION: grep -r 'import.*Topbar' shows only NewChat.jsx, Chat.jsx, and Agents.jsx import the Topbar component. Projects.jsx and Integrations.jsx do NOT have Topbar imported. VISUAL VERIFICATION: All topbar elements working correctly where implemented - help icon (question mark), bell notification icon, notification badge with '3', right-aligned icons with proper spacing (gap-2), height 56px, border-bottom 1px. Chat functionality works perfectly with Topbar. MINOR ISSUE: Icon size renders as 16px instead of 20px (non-critical). CONSOLE WARNINGS: React duplicate key warnings detected (non-critical, should be fixed). RECOMMENDATION: Main agent needs to add Topbar component to Projects.jsx and Integrations.jsx following the same pattern used in NewChat.jsx, Chat.jsx, and Agents.jsx."
+  - agent: "testing"
+    message: "🔄 CHAT RESTRUCTURE TESTING COMPLETED - 1 CRITICAL ISSUE FOUND! Tested the new chat interface restructure with Chat History page, removed agent selection, centered container, and agent chip styling. RESULTS: (1) ✗ CRITICAL: Login redirects to /chat/new instead of /chat (Chat History page) - App.js line 43 needs to change from '/chat/new' to '/chat', (2) ✓ Chat History page fully implemented with conversations grouped by date (OGGI, IERI, QUESTA SETTIMANA), (3) ✓ Conversation cards show title, preview, agent name, timestamp, (4) ✓ Clicking conversation navigates to /chat/:id correctly, (5) ✓ 'Nuova Chat' button navigates to /chat/new, (6) ✓ New Chat page has NO agent selection chips (feature removed), (7) ✓ Greeting + quick prompts + textarea present, (8) ✓ Can send message without selecting agent, (9) ✓ Chat interface has centered container (max-w-3xl), (10) ✓ Agent chip appears ABOVE message in single visual block, (11) ✓ Agent chip styling CORRECT (Finance Agent: green #00E5A0, Marketing Agent: pink #FF6B9D, both with 40% opacity background and matching border), (12) ✓ Message border-left matches agent color, (13) ✓ Auto-detection works (Marketing Agent detected for 'marketing' keyword). MINOR: React duplicate key warnings in console (non-critical). FIX REQUIRED: Change App.js line 43 from 'Navigate to=\"/chat/new\"' to 'Navigate to=\"/chat\"' so login redirects to Chat History page instead of New Chat page."
