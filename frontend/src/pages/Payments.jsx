@@ -12,61 +12,61 @@ export const Payments = () => {
     period: 'mese',
     nextBilling: '15 Febbraio 2026',
     features: [
-      '2.000 richieste per agente/mese',
-      '4 agenti attivi inclusi',
-      'Integrazioni illimitate',
-      'Progetti illimitati',
-      'Supporto prioritario'
-    ]
+    '2.000 richieste per agente/mese',
+    '4 agenti attivi inclusi',
+    'Integrazioni illimitate',
+    'Progetti illimitati',
+    'Supporto prioritario']
+
   };
-  
+
   const invoices = [
-    { id: 'INV-2026-001', date: '15 Gen 2026', amount: 99, status: 'paid' },
-    { id: 'INV-2025-012', date: '15 Dic 2025', amount: 99, status: 'paid' },
-    { id: 'INV-2025-011', date: '15 Nov 2025', amount: 99, status: 'paid' },
-    { id: 'INV-2025-010', date: '15 Ott 2025', amount: 99, status: 'paid' },
-  ];
-  
+  { id: 'INV-2026-001', date: '15 Gen 2026', amount: 99, status: 'paid' },
+  { id: 'INV-2025-012', date: '15 Dic 2025', amount: 99, status: 'paid' },
+  { id: 'INV-2025-011', date: '15 Nov 2025', amount: 99, status: 'paid' },
+  { id: 'INV-2025-010', date: '15 Ott 2025', amount: 99, status: 'paid' }];
+
+
   const plans = [
-    {
-      name: 'Starter',
-      price: 29,
-      period: 'mese',
-      features: [
-        '500 richieste per agente/mese',
-        '2 agenti attivi',
-        '5 integrazioni',
-        '10 progetti',
-        'Supporto email'
-      ]
-    },
-    {
-      name: 'Pro',
-      price: 99,
-      period: 'mese',
-      current: true,
-      features: [
-        '2.000 richieste per agente/mese',
-        '4 agenti attivi',
-        'Integrazioni illimitate',
-        'Progetti illimitati',
-        'Supporto prioritario'
-      ]
-    },
-    {
-      name: 'Enterprise',
-      price: 299,
-      period: 'mese',
-      features: [
-        'Richieste illimitate',
-        'Tutti gli agenti',
-        'Integrazioni custom',
-        'SLA garantito',
-        'Supporto dedicato 24/7'
-      ]
-    },
-  ];
-  
+  {
+    name: 'Starter',
+    price: 29,
+    period: 'mese',
+    features: [
+    '500 richieste per agente/mese',
+    '2 agenti attivi',
+    '5 integrazioni',
+    '10 progetti',
+    'Supporto email']
+
+  },
+  {
+    name: 'Pro',
+    price: 99,
+    period: 'mese',
+    current: true,
+    features: [
+    '2.000 richieste per agente/mese',
+    '4 agenti attivi',
+    'Integrazioni illimitate',
+    'Progetti illimitati',
+    'Supporto prioritario']
+
+  },
+  {
+    name: 'Enterprise',
+    price: 299,
+    period: 'mese',
+    features: [
+    'Richieste illimitate',
+    'Tutti gli agenti',
+    'Integrazioni custom',
+    'SLA garantito',
+    'Supporto dedicato 24/7']
+
+  }];
+
+
   return (
     <div className="h-full overflow-y-auto custom-scrollbar p-8">
       <div className="max-w-6xl mx-auto space-y-8">
@@ -84,7 +84,7 @@ export const Payments = () => {
             <div>
               <div className="flex items-center gap-3 mb-2">
                 <h2 className="text-2xl font-semibold text-foreground">{currentPlan.name}</h2>
-                <Badge className="bg-primary text-primary-foreground">Attivo</Badge>
+                <Badge className="inline-flex items-center border transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent hover:bg-primary/80 text-xs font-semibold px-2.5 py-0.5 !rounded-[99px] shadow text-primary-foreground bg-primary">Attivo</Badge>
               </div>
               <div className="flex items-baseline gap-2">
                 <span className="text-3xl font-bold text-foreground">€{currentPlan.price}</span>
@@ -94,16 +94,16 @@ export const Payments = () => {
                 Prossimo rinnovo: {currentPlan.nextBilling}
               </p>
             </div>
-            <Button variant="outline">Gestisci Piano</Button>
+            <Button variant="outline" className="inline-flex items-center justify-center whitespace-nowrap transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-border hover:bg-surface-elevated h-9 font-medium text-sm gap-2 px-4 py-2 !rounded-md text-foreground bg-transparent">Gestisci Piano</Button>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {currentPlan.features.map((feature, index) => (
-              <div key={index} className="flex items-center gap-2">
+            {currentPlan.features.map((feature, index) =>
+            <div key={index} className="flex items-center gap-2">
                 <Check className="h-4 w-4 text-success flex-shrink-0" />
                 <span className="text-sm text-foreground">{feature}</span>
               </div>
-            ))}
+            )}
           </div>
         </Card>
         
@@ -134,11 +134,11 @@ export const Payments = () => {
             </Button>
           </div>
           <div className="space-y-2">
-            {invoices.map((invoice) => (
-              <div
-                key={invoice.id}
-                className="flex items-center justify-between p-4 bg-surface-elevated rounded-lg border border-border hover:border-primary/50 transition-smooth"
-              >
+            {invoices.map((invoice) =>
+            <div
+              key={invoice.id}
+              className="flex items-center justify-between p-4 bg-surface-elevated rounded-lg border border-border hover:border-primary/50 transition-smooth">
+
                 <div className="flex items-center gap-4">
                   <Calendar className="h-5 w-5 text-foreground-muted" />
                   <div>
@@ -148,13 +148,13 @@ export const Payments = () => {
                 </div>
                 <div className="flex items-center gap-4">
                   <span className="font-semibold text-foreground">€{invoice.amount}</span>
-                  <Badge variant="outline" className="text-success border-success">Pagata</Badge>
+                  <Badge variant="outline" className="inline-flex items-center border transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-success text-xs font-semibold px-2.5 py-0.5 !rounded-[66px] text-success">Pagata</Badge>
                   <Button variant="ghost" size="icon">
                     <Download className="h-4 w-4" />
                   </Button>
                 </div>
               </div>
-            ))}
+            )}
           </div>
         </Card>
         
@@ -162,13 +162,13 @@ export const Payments = () => {
         <div>
           <h2 className="text-lg font-semibold text-foreground mb-4">Altri Piani Disponibili</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {plans.map((plan, index) => (
-              <motion.div
-                key={plan.name}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-              >
+            {plans.map((plan, index) =>
+            <motion.div
+              key={plan.name}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}>
+
                 <Card className={`p-6 ${plan.current ? 'border-primary/50' : ''}`}>
                   <div className="mb-4">
                     <h3 className="text-xl font-semibold text-foreground mb-2">{plan.name}</h3>
@@ -179,30 +179,30 @@ export const Payments = () => {
                   </div>
                   
                   <div className="space-y-3 mb-6">
-                    {plan.features.map((feature, idx) => (
-                      <div key={idx} className="flex items-start gap-2">
+                    {plan.features.map((feature, idx) =>
+                  <div key={idx} className="flex items-start gap-2">
                         <Check className="h-4 w-4 text-success flex-shrink-0 mt-0.5" />
                         <span className="text-sm text-foreground-muted">{feature}</span>
                       </div>
-                    ))}
+                  )}
                   </div>
                   
-                  {plan.current ? (
-                    <Badge className="w-full justify-center bg-primary text-primary-foreground">Piano Attuale</Badge>
-                  ) : (
-                    <Button variant="outline" className="w-full">
+                  {plan.current ?
+                <Badge className="inline-flex items-center border transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent hover:bg-primary/80 w-full justify-center text-xs font-semibold px-2.5 py-0.5 !rounded-[99px] shadow text-primary-foreground bg-primary">Piano Attuale</Badge> :
+
+                <Button variant="outline" className="inline-flex items-center justify-center whitespace-nowrap transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-border hover:bg-surface-elevated h-9 w-full font-medium text-sm gap-2 px-4 py-2 !rounded-md text-foreground bg-transparent">
                       {plan.price > currentPlan.price ? 'Upgrade' : 'Downgrade'}
                       <ArrowUpRight className="h-4 w-4 ml-2" />
                     </Button>
-                  )}
+                }
                 </Card>
               </motion.div>
-            ))}
+            )}
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>);
+
 };
 
 export default Payments;
