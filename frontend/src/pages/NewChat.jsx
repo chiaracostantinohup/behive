@@ -3,31 +3,44 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { Textarea } from '../components/ui/textarea';
-import { Paperclip, Send } from 'lucide-react';
+import { Paperclip, Send, TrendingUp, FileText, BarChart3, Target } from 'lucide-react';
+import { cn } from '../lib/utils';
 import Topbar from '../components/Topbar';
+import { agents } from '../config/agents';
 
 export const NewChat = () => {
   const navigate = useNavigate();
   const [message, setMessage] = useState('');
+  const [selectedAgent, setSelectedAgent] = useState(null);
   
   const prompts = [
-    'Analizza i costi operativi del Q1',
-    'Genera un report di sintesi per il management',
-    'Confronta le performance delle ultime campagne',
-    'Crea un forecast per il prossimo trimestre',
+    { text: 'Analizza i costi operativi del Q1', icon: BarChart3 },
+    { text: 'Genera un report di sintesi per il management', icon: FileText },
+    { text: 'Confronta le performance delle ultime campagne', icon: TrendingUp },
+    { text: 'Crea un forecast per il prossimo trimestre', icon: Target },
   ];
   
   const handleSendMessage = () => {
     if (!message.trim()) {
       return;
     }
-    // Navigate to a new chat with the message
+    // Navigate to a new chat with the message and optional agent selection
     const chatId = Math.random().toString(36).substr(2, 9);
-    navigate(`/chat/${chatId}`, { state: { initialMessage: message } });
+    navigate(`/chat/${chatId}`, { 
+      state: { 
+        initialMessage: message,
+        selectedAgentId: selectedAgent?.id // Optional: will auto-detect if null
+      } 
+    });
   };
   
   const handlePromptClick = (prompt) => {
-    setMessage(prompt);
+    setMessage(prompt.text);
+  };
+  
+  const handleAgentSelect = (agent) => {
+    // Toggle selection - click again to deselect
+    setSelectedAgent(selectedAgent?.id === agent.id ? null : agent);
   };
   
   return (
@@ -39,7 +52,7 @@ export const NewChat = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-3xl space-y-8">
+          className="w-full max-w-5xl space-y-8">
 
         {/* Greeting */}
         <div className="text-center space-y-2">
@@ -51,20 +64,24 @@ export const NewChat = () => {
           </p>
         </div>
         
-        {/* Quick Prompts */}
-        <div className="grid grid-cols-2 gap-3">
-          {prompts.map((prompt, index) => (
-            <motion.button
-              key={index}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              onClick={() => handlePromptClick(prompt)}
-              className="p-4 bg-surface border border-border rounded-lg text-left hover:bg-surface-elevated hover:border-primary/50 transition-smooth"
-            >
-              <p className="text-sm text-foreground">{prompt}</p>
-            </motion.button>
-          ))}
+        {/* Quick Prompts - 4 columns desktop, 2 columns tablet/mobile */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          {prompts.map((prompt, index) => {
+            const Icon = prompt.icon;
+            return (
+              <motion.button
+                key={index}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                onClick={() => handlePromptClick(prompt)}
+                className="p-4 bg-surface border border-border rounded-lg text-left hover:bg-surface-elevated hover:border-primary/50 transition-smooth group"
+              >
+                <Icon className="h-5 w-5 text-foreground-muted mb-3 group-hover:text-primary transition-smooth" />
+                <p className="text-sm text-foreground leading-snug">{prompt.text}</p>
+              </motion.button>
+            );
+          })}
         </div>
         
         {/* Message Input */}
@@ -95,6 +112,44 @@ export const NewChat = () => {
                 <Send className="h-4 w-4" />
               </Button>
             </div>
+          </div>
+          
+          {/* Agent Selection Chips (Optional) */}
+          <div className="space-y-2">
+            <p className="text-xs text-foreground-subtle">
+              Filtra per agente (facoltativo):
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {agents.map((agent) => {
+                const Icon = agent.icon;
+                const isSelected = selectedAgent?.id === agent.id;
+                return (
+                  <button
+                    key={agent.id}
+                    onClick={() => handleAgentSelect(agent)}
+                    className={cn(
+                      "flex items-center gap-2 px-4 py-2 rounded-full border transition-smooth",
+                      isSelected
+                        ? "bg-primary border-primary text-primary-foreground"
+                        : "bg-surface border-border hover:border-primary/50 text-foreground"
+                    )}
+                  >
+                    <Icon className="h-4 w-4" />
+                    <span className="text-sm font-medium">{agent.name}</span>
+                  </button>
+                );
+              })}
+            </div>
+            {selectedAgent && (
+              <p className="text-xs text-foreground-subtle">
+                La tua domanda sarà inviata a {selectedAgent.name}
+              </p>
+            )}
+            {!selectedAgent && (
+              <p className="text-xs text-foreground-subtle">
+                Nessun agente selezionato - il sistema rileverà automaticamente l'agente più adatto
+              </p>
+            )}
           </div>
         </div>
         

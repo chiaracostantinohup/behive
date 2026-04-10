@@ -60,7 +60,9 @@ export const Chat = () => {
     // Initialize with message from NewChat if available
     if (location.state?.initialMessage && messages.length === 0) {
       const initialMessage = location.state.initialMessage;
-      const detectedAgent = detectAgent(initialMessage);
+      
+      // Use selected agent if provided, otherwise auto-detect
+      const agentType = location.state?.selectedAgentId || detectAgent(initialMessage);
       
       // Add user message
       setMessages([{
@@ -75,7 +77,7 @@ export const Chat = () => {
         setMessages(prev => [...prev, {
           id: '2',
           type: 'agent',
-          agentType: detectedAgent,
+          agentType: agentType,
           content: `Perfetto, sto analizzando la tua richiesta: "${initialMessage}". Ti preparerò un report dettagliato con tutti i dati rilevanti.`,
           timestamp: new Date()
         }]);
@@ -85,7 +87,7 @@ export const Chat = () => {
           setMessages(prev => [...prev, {
             id: '3',
             type: 'agent',
-            agentType: detectedAgent,
+            agentType: agentType,
             content: `Ecco i risultati principali:\n\n• Totale costi operativi Q1: €234.500\n• Variazione YoY: +12.3%\n• Categoria principale: Personale (68%)\n• Efficienza operativa: 87%\n\nVuoi un breakdown più dettagliato per centro di costo?`,
             timestamp: new Date()
           }]);
