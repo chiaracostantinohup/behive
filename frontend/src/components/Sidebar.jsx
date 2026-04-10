@@ -149,7 +149,7 @@ export const Sidebar = ({ onLogout }) => {
           <p className="text-xs text-foreground-muted mb-2">
             Hai usato <span className="text-foreground font-medium">1.420</span> di <span className="text-foreground font-medium">2.000</span> richieste
           </p>
-          <button className="text-xs text-primary hover:underline">Vedi piani →</button>
+          <button className="hover:underline text-xs !text-[#3B82F6]">Vedi piani →</button>
         </div>
         
         {/* User Profile */}
