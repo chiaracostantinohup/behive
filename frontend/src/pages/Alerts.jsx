@@ -13,46 +13,46 @@ export const Alerts = () => {
   const [slackAlerts, setSlackAlerts] = useState(false);
   const [costThreshold, setCostThreshold] = useState('10000');
   const [usageThreshold, setUsageThreshold] = useState('80');
-  
+
   const alertRules = [
-    {
-      id: '1',
-      name: 'Costi Operativi Elevati',
-      description: 'Notifica quando i costi superano la soglia mensile',
-      icon: TrendingUp,
-      color: 'text-warning',
-      enabled: true,
-      threshold: '€10.000'
-    },
-    {
-      id: '2',
-      name: 'Utilizzo Richieste',
-      description: 'Notifica quando l\'utilizzo supera la soglia',
-      icon: Bell,
-      color: 'text-primary',
-      enabled: true,
-      threshold: '80%'
-    },
-    {
-      id: '3',
-      name: 'Performance Degradation',
-      description: 'Notifica in caso di rallentamenti del sistema',
-      icon: TrendingDown,
-      color: 'text-destructive',
-      enabled: false,
-      threshold: 'Auto'
-    },
-    {
-      id: '4',
-      name: 'Errori Critici',
-      description: 'Notifica immediata per errori di sistema',
-      icon: AlertTriangle,
-      color: 'text-destructive',
-      enabled: true,
-      threshold: 'Immediata'
-    },
-  ];
-  
+  {
+    id: '1',
+    name: 'Costi Operativi Elevati',
+    description: 'Notifica quando i costi superano la soglia mensile',
+    icon: TrendingUp,
+    color: 'text-warning',
+    enabled: true,
+    threshold: '€10.000'
+  },
+  {
+    id: '2',
+    name: 'Utilizzo Richieste',
+    description: 'Notifica quando l\'utilizzo supera la soglia',
+    icon: Bell,
+    color: 'text-primary',
+    enabled: true,
+    threshold: '80%'
+  },
+  {
+    id: '3',
+    name: 'Performance Degradation',
+    description: 'Notifica in caso di rallentamenti del sistema',
+    icon: TrendingDown,
+    color: 'text-destructive',
+    enabled: false,
+    threshold: 'Auto'
+  },
+  {
+    id: '4',
+    name: 'Errori Critici',
+    description: 'Notifica immediata per errori di sistema',
+    icon: AlertTriangle,
+    color: 'text-destructive',
+    enabled: true,
+    threshold: 'Immediata'
+  }];
+
+
   return (
     <div className="h-full overflow-y-auto custom-scrollbar p-8">
       <div className="max-w-4xl mx-auto space-y-8">
@@ -83,8 +83,8 @@ export const Alerts = () => {
               <div className="flex items-center gap-3">
                 <MessageSquare className="h-5 w-5 text-foreground-muted" />
                 <div>
-                  <p className="font-medium text-foreground">Slack</p>
-                  <p className="text-sm text-foreground-muted">#behive-alerts</p>
+                  <p className="font-medium text-foreground">SMS</p>
+                  <p className="text-sm text-foreground-muted">+39 346 555 555</p>
                 </div>
               </div>
               <Switch checked={slackAlerts} onCheckedChange={setSlackAlerts} />
@@ -96,13 +96,13 @@ export const Alerts = () => {
         <div>
           <h2 className="text-lg font-semibold text-foreground mb-4">Regole di Alert</h2>
           <div className="space-y-3">
-            {alertRules.map((rule, index) => (
-              <motion.div
-                key={rule.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-              >
+            {alertRules.map((rule, index) =>
+            <motion.div
+              key={rule.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}>
+
                 <Card className="p-5">
                   <div className="flex items-start justify-between">
                     <div className="flex items-start gap-4 flex-1">
@@ -122,7 +122,7 @@ export const Alerts = () => {
                   </div>
                 </Card>
               </motion.div>
-            ))}
+            )}
           </div>
         </div>
         
@@ -137,8 +137,8 @@ export const Alerts = () => {
                 type="number"
                 value={costThreshold}
                 onChange={(e) => setCostThreshold(e.target.value)}
-                className="bg-background border-border"
-              />
+                className="bg-background border-border" />
+
               <p className="text-xs text-foreground-subtle">
                 Riceverai una notifica quando i costi mensili superano questo valore
               </p>
@@ -153,8 +153,8 @@ export const Alerts = () => {
                 max="100"
                 value={usageThreshold}
                 onChange={(e) => setUsageThreshold(e.target.value)}
-                className="bg-background border-border"
-              />
+                className="bg-background border-border" />
+
               <p className="text-xs text-foreground-subtle">
                 Riceverai una notifica quando l'utilizzo supera questa percentuale
               </p>
@@ -177,12 +177,12 @@ export const Alerts = () => {
           </div>
           
           <div className="mt-6 flex justify-end">
-            <Button variant="premium">Salva Configurazione</Button>
+            <Button variant="premium" className="inline-flex items-center justify-center whitespace-nowrap transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-primary-hover h-9 font-medium text-sm gap-2 px-4 py-2 !rounded-md shadow-glow text-primary-foreground !bg-[#0F26FF]">Salva Configurazione</Button>
           </div>
         </Card>
       </div>
-    </div>
-  );
+    </div>);
+
 };
 
 export default Alerts;
