@@ -9,36 +9,36 @@ import { ScrollArea } from './ui/scroll-area';
 export const Sidebar = ({ onLogout }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  
+
   const isActive = (path) => location.pathname.startsWith(path);
-  
+
   const navItems = [
-    { icon: MessageSquare, label: 'Chat', path: '/chat/new' },
-    { icon: Boxes, label: 'Agenti', path: '/agents' },
-    { icon: FolderKanban, label: 'Progetti', path: '/projects' },
-    { icon: Plug, label: 'Integrazioni', path: '/integrations' },
-  ];
-  
+  { icon: MessageSquare, label: 'Chat', path: '/chat/new' },
+  { icon: Boxes, label: 'Agenti', path: '/agents' },
+  { icon: FolderKanban, label: 'Progetti', path: '/projects' },
+  { icon: Plug, label: 'Integrazioni', path: '/integrations' }];
+
+
   const managementItems = [
-    { icon: Users, label: 'Utenti', path: '/users' },
-    { icon: Bell, label: 'Alert', path: '/alerts' },
-    { icon: Activity, label: 'Service Status', path: '/service-status' },
-    { icon: CreditCard, label: 'Payments', path: '/payments' },
-  ];
-  
+  { icon: Users, label: 'Utenti', path: '/users' },
+  { icon: Bell, label: 'Alert', path: '/alerts' },
+  { icon: Activity, label: 'Service Status', path: '/service-status' },
+  { icon: CreditCard, label: 'Payments', path: '/payments' }];
+
+
   // Mock recent chats
   const recentChats = [
-    { id: '1', title: 'Analisi costi operativi Q1', time: 'OGGI' },
-    { id: '2', title: 'Budget forecast H2 2026', time: 'OGGI' },
-    { id: '3', title: 'Report performance team', time: 'IERI' },
-    { id: '4', title: 'Confronto fornitori cloud', time: 'IERI' },
-  ];
-  
+  { id: '1', title: 'Analisi costi operativi Q1', time: 'OGGI' },
+  { id: '2', title: 'Budget forecast H2 2026', time: 'OGGI' },
+  { id: '3', title: 'Report performance team', time: 'IERI' },
+  { id: '4', title: 'Confronto fornitori cloud', time: 'IERI' }];
+
+
   const handleLogout = () => {
     if (onLogout) onLogout();
     navigate('/login');
   };
-  
+
   return (
     <aside className="w-64 h-screen bg-surface border-r border-border flex flex-col">
       {/* Logo */}
@@ -50,9 +50,9 @@ export const Sidebar = ({ onLogout }) => {
       <div className="p-3">
         <Button
           variant="premium"
-          className="w-full justify-start"
-          onClick={() => navigate('/chat/new')}
-        >
+          className="inline-flex items-center whitespace-nowrap transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-primary-hover h-9 w-full justify-start font-medium text-sm gap-2 px-4 py-2 shadow-glow text-primary-foreground !bg-[#0F26FF]"
+          onClick={() => navigate('/chat/new')}>
+
           <Plus className="h-4 w-4" />
           Nuova Chat
         </Button>
@@ -61,21 +61,21 @@ export const Sidebar = ({ onLogout }) => {
       <ScrollArea className="flex-1 px-3">
         {/* Main Navigation */}
         <nav className="space-y-1 mb-6">
-          {navItems.map((item) => (
-            <Link key={item.path} to={item.path}>
+          {navItems.map((item) =>
+          <Link key={item.path} to={item.path}>
               <button
-                className={cn(
-                  "w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-smooth",
-                  isActive(item.path)
-                    ? "bg-surface-elevated text-foreground border-l-2 border-primary"
-                    : "text-foreground-muted hover:bg-surface-elevated hover:text-foreground"
-                )}
-              >
+              className={cn(
+                "w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-smooth",
+                isActive(item.path) ?
+                "bg-surface-elevated text-foreground border-l-2 border-primary" :
+                "text-foreground-muted hover:bg-surface-elevated hover:text-foreground"
+              )}>
+
                 <item.icon className="h-4 w-4" />
                 {item.label}
               </button>
             </Link>
-          ))}
+          )}
         </nav>
         
         <Separator className="my-4 bg-border" />
@@ -86,21 +86,21 @@ export const Sidebar = ({ onLogout }) => {
             GESTIONE
           </h3>
           <nav className="space-y-1">
-            {managementItems.map((item) => (
-              <Link key={item.path} to={item.path}>
+            {managementItems.map((item) =>
+            <Link key={item.path} to={item.path}>
                 <button
-                  className={cn(
-                    "w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-smooth",
-                    isActive(item.path)
-                      ? "bg-surface-elevated text-foreground border-l-2 border-primary"
-                      : "text-foreground-muted hover:bg-surface-elevated hover:text-foreground"
-                  )}
-                >
+                className={cn(
+                  "w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-smooth",
+                  isActive(item.path) ?
+                  "bg-surface-elevated text-foreground border-l-2 border-primary" :
+                  "text-foreground-muted hover:bg-surface-elevated hover:text-foreground"
+                )}>
+
                   <item.icon className="h-4 w-4" />
                   {item.label}
                 </button>
               </Link>
-            ))}
+            )}
           </nav>
         </div>
         
@@ -112,28 +112,28 @@ export const Sidebar = ({ onLogout }) => {
             OGGI
           </h3>
           <nav className="space-y-1 mb-4">
-            {recentChats.filter(c => c.time === 'OGGI').map((chat) => (
-              <Link key={chat.id} to={`/chat/${chat.id}`}>
+            {recentChats.filter((c) => c.time === 'OGGI').map((chat) =>
+            <Link key={chat.id} to={`/chat/${chat.id}`}>
                 <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-foreground-muted hover:bg-surface-elevated hover:text-foreground rounded-md transition-smooth truncate">
                   <MessageSquare className="h-3 w-3 flex-shrink-0" />
                   <span className="truncate">{chat.title}</span>
                 </button>
               </Link>
-            ))}
+            )}
           </nav>
           
           <h3 className="px-3 mb-2 text-xs font-semibold text-foreground-subtle uppercase tracking-wider">
             IERI
           </h3>
           <nav className="space-y-1">
-            {recentChats.filter(c => c.time === 'IERI').map((chat) => (
-              <Link key={chat.id} to={`/chat/${chat.id}`}>
+            {recentChats.filter((c) => c.time === 'IERI').map((chat) =>
+            <Link key={chat.id} to={`/chat/${chat.id}`}>
                 <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-foreground-muted hover:bg-surface-elevated hover:text-foreground rounded-md transition-smooth truncate">
                   <MessageSquare className="h-3 w-3 flex-shrink-0" />
                   <span className="truncate">{chat.title}</span>
                 </button>
               </Link>
-            ))}
+            )}
           </nav>
         </div>
       </ScrollArea>
@@ -155,12 +155,12 @@ export const Sidebar = ({ onLogout }) => {
         {/* User Profile */}
         <div className="flex items-center justify-between px-3 py-2 hover:bg-surface-elevated rounded-md transition-smooth cursor-pointer">
           <div className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-xs font-semibold text-primary-foreground">
+            <div className="h-8 w-8 flex items-center justify-center text-xs font-semibold rounded-full text-primary-foreground !bg-[#0F26FF]">
               MA
             </div>
             <div className="flex flex-col">
               <span className="text-xs font-medium text-foreground">Marco Albertini</span>
-              <span className="text-xs text-foreground-subtle">Superadmin</span>
+              <span className="text-xs text-foreground-subtle">Admin</span>
             </div>
           </div>
         </div>
@@ -171,8 +171,8 @@ export const Sidebar = ({ onLogout }) => {
             variant="ghost"
             size="sm"
             className="flex-1 justify-start"
-            onClick={() => navigate('/help')}
-          >
+            onClick={() => navigate('/help')}>
+
             <HelpCircle className="h-4 w-4" />
             Guida
           </Button>
@@ -180,14 +180,14 @@ export const Sidebar = ({ onLogout }) => {
             variant="ghost"
             size="icon"
             onClick={handleLogout}
-            title="Logout"
-          >
+            title="Logout">
+
             <LogOut className="h-4 w-4" />
           </Button>
         </div>
       </div>
-    </aside>
-  );
+    </aside>);
+
 };
 
 export default Sidebar;
