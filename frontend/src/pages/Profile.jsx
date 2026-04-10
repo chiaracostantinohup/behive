@@ -18,8 +18,8 @@ export const Profile = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-          >
+            transition={{ duration: 0.3 }}>
+
             <h1 className="text-3xl font-bold text-foreground mb-2">Profilo</h1>
             <p className="text-foreground-muted">
               Gestisci le tue informazioni personali e aziendali
@@ -30,8 +30,8 @@ export const Profile = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.1 }}
-          >
+            transition={{ duration: 0.3, delay: 0.1 }}>
+
             <Card className="p-6">
               <div className="flex items-center gap-3 mb-6">
                 <div className="p-2 rounded bg-surface-elevated">
@@ -46,8 +46,8 @@ export const Profile = () => {
                   <Input
                     id="name"
                     defaultValue="Marco Albertini"
-                    className="bg-background border-border"
-                  />
+                    className="bg-background border-border" />
+
                 </div>
                 
                 <div className="space-y-2">
@@ -58,8 +58,8 @@ export const Profile = () => {
                       id="email"
                       type="email"
                       defaultValue="marco@company.com"
-                      className="pl-10 bg-background border-border"
-                    />
+                      className="pl-10 bg-background border-border" />
+
                   </div>
                 </div>
                 
@@ -70,8 +70,8 @@ export const Profile = () => {
                     <Input
                       id="phone"
                       defaultValue="+39 346 555 1234"
-                      className="pl-10 bg-background border-border"
-                    />
+                      className="pl-10 bg-background border-border" />
+
                   </div>
                 </div>
                 
@@ -81,13 +81,13 @@ export const Profile = () => {
                     id="role"
                     defaultValue="Superadmin"
                     disabled
-                    className="bg-muted border-border"
-                  />
+                    className="bg-muted border-border" />
+
                 </div>
               </div>
               
               <div className="mt-6 flex justify-end">
-                <Button variant="premium">Salva Modifiche</Button>
+                <Button variant="premium" className="inline-flex items-center justify-center whitespace-nowrap transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-primary-hover h-9 font-medium text-sm gap-2 px-4 py-2 !rounded-md shadow-glow text-primary-foreground bg-primary">Salva Modifiche</Button>
               </div>
             </Card>
           </motion.div>
@@ -96,8 +96,8 @@ export const Profile = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.2 }}
-          >
+            transition={{ duration: 0.3, delay: 0.2 }}>
+
             <Card className="p-6">
               <div className="flex items-center gap-3 mb-6">
                 <div className="p-2 rounded bg-surface-elevated">
@@ -112,8 +112,8 @@ export const Profile = () => {
                   <Input
                     id="company"
                     defaultValue="Acme Corporation S.r.l."
-                    className="bg-background border-border"
-                  />
+                    className="bg-background border-border" />
+
                 </div>
                 
                 <div className="space-y-2">
@@ -121,8 +121,8 @@ export const Profile = () => {
                   <Input
                     id="vat"
                     defaultValue="IT12345678901"
-                    className="bg-background border-border"
-                  />
+                    className="bg-background border-border" />
+
                 </div>
                 
                 <div className="space-y-2 md:col-span-2">
@@ -132,8 +132,8 @@ export const Profile = () => {
                     <Input
                       id="address"
                       defaultValue="Via Roma 123, 20121 Milano, Italia"
-                      className="pl-10 bg-background border-border"
-                    />
+                      className="pl-10 bg-background border-border" />
+
                   </div>
                 </div>
                 
@@ -142,8 +142,8 @@ export const Profile = () => {
                   <Input
                     id="industry"
                     defaultValue="Software & Technology"
-                    className="bg-background border-border"
-                  />
+                    className="bg-background border-border" />
+
                 </div>
                 
                 <div className="space-y-2">
@@ -152,13 +152,13 @@ export const Profile = () => {
                     id="employees"
                     defaultValue="45"
                     type="number"
-                    className="bg-background border-border"
-                  />
+                    className="bg-background border-border" />
+
                 </div>
               </div>
               
               <div className="mt-6 flex justify-end">
-                <Button variant="premium">Salva Modifiche</Button>
+                <Button variant="premium" className="inline-flex items-center justify-center whitespace-nowrap transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-primary-hover h-9 font-medium text-sm gap-2 px-4 py-2 !rounded-md shadow-glow text-primary-foreground bg-primary">Salva Modifiche</Button>
               </div>
             </Card>
           </motion.div>
@@ -167,8 +167,8 @@ export const Profile = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.3 }}
-          >
+            transition={{ duration: 0.3, delay: 0.3 }}>
+
             <Card className="p-6">
               <div className="flex items-center gap-3 mb-6">
                 <div className="p-2 rounded bg-surface-elevated">
@@ -253,15 +253,15 @@ export const Profile = () => {
               </div>
               
               <div className="mt-6 flex justify-end gap-3">
-                <Button variant="outline">Scarica Contratto</Button>
-                <Button variant="outline">Gestisci Piano</Button>
+                <Button variant="outline" className="inline-flex items-center justify-center whitespace-nowrap transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-border hover:bg-surface-elevated h-9 font-medium text-sm gap-2 px-4 py-2 !rounded-md text-foreground bg-transparent">Scarica Contratto</Button>
+                <Button variant="outline" className="inline-flex items-center justify-center whitespace-nowrap transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-border hover:bg-surface-elevated h-9 font-medium text-sm gap-2 px-4 py-2 !rounded-md text-foreground bg-transparent">Gestisci Piano</Button>
               </div>
             </Card>
           </motion.div>
         </div>
       </div>
-    </div>
-  );
+    </div>);
+
 };
 
 export default Profile;
