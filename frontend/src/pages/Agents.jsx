@@ -50,7 +50,7 @@ export const Agents = () => {
     icon: MessageSquare,
     color: 'agent-support',
     description: 'Customer service e ticketing',
-    requestsUsed: 498,
+    requestsUsed: 300,
     requestsTotal: 500,
     status: 'active'
   }];
@@ -62,8 +62,8 @@ export const Agents = () => {
 
 
   const handleAgentClick = (agent) => {
-    // Simulate hitting limit on Support Agent
-    if (agent.id === 'support' && agent.requestsUsed >= agent.requestsTotal) {
+    // Simulate hitting limit on Support Agent (now at 60%)
+    if (agent.id === 'support' && agent.requestsUsed >= 300) {
       setShowLimitModal(true);
     }
   };
@@ -93,8 +93,8 @@ export const Agents = () => {
           <h2 className="text-lg font-semibold text-foreground mb-4">Agenti Attivi</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {activeAgents.map((agent, index) => {
-              const usagePercent = agent.requestsUsed / agent.requestsTotal * 100;
-              const isNearLimit = usagePercent >= 90;
+              const usagePercent = (agent.requestsUsed / agent.requestsTotal) * 100;
+              const isNearLimit = usagePercent >= 60;
 
               return (
                 <motion.div
@@ -119,7 +119,7 @@ export const Agents = () => {
                           <h3 className="font-semibold text-foreground">{agent.name}</h3>
                           {isNearLimit &&
                           <Badge variant="outline" className="inline-flex items-center border transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-warning text-xs font-semibold px-2.5 py-0.5 !rounded-[99px] !text-[#EAB308]">
-                              Near Limit
+                              Vicino al limite
                             </Badge>
                           }
                         </div>
@@ -135,12 +135,12 @@ export const Agents = () => {
                           </div>
                           <div className="h-2 bg-surface-elevated rounded-full overflow-hidden">
                             <div
-                              className="h-full transition-all !bg-[#0F26FF]"
-
-
-
-                              style={{ width: `${usagePercent}%` }} />
-
+                              className="h-full transition-all"
+                              style={{ 
+                                width: `${usagePercent}%`,
+                                backgroundColor: isNearLimit ? '#EAB308' : '#0F26FF'
+                              }}
+                            />
                           </div>
                         </div>
                       </div>
@@ -172,10 +172,11 @@ export const Agents = () => {
                       <h3 className="font-semibold text-foreground mb-1">{agent.name}</h3>
                       <p className="text-sm text-foreground-muted mb-4">{agent.description}</p>
                       <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => handleRequestAgent(agent)} className="inline-flex items-center justify-center whitespace-nowrap transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-border hover:bg-surface-elevated h-8 font-medium text-xs gap-2 px-3 !rounded-md text-foreground bg-transparent">
-
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleRequestAgent(agent)}
+                        style={{ borderRadius: '6px' }}
+                      >
                         <Plus className="h-4 w-4 mr-2" />
                         Richiedi Attivazione
                       </Button>
@@ -241,23 +242,76 @@ export const Agents = () => {
       <Dialog open={showRequestModal} onOpenChange={setShowRequestModal}>
         <DialogContent className="bg-surface border-border">
           <DialogHeader>
-            <DialogTitle className="text-foreground">Richiedi Attivazione Agente</DialogTitle>
+            <DialogTitle className="text-foreground">Richiedi attivazione agente</DialogTitle>
             <DialogDescription className="text-foreground-muted">
-              Behive ha rilevato che potresti beneficiare di {selectedNewAgent?.name}
+              L'attivazione è soggetta al tuo piano contrattuale
             </DialogDescription>
           </DialogHeader>
           <div className="py-4 space-y-4">
-            {selectedNewAgent &&
-            <div className="flex items-start gap-4 p-4 bg-surface-elevated rounded-lg border border-border">
-                <div className="p-3 rounded bg-muted">
-                  <selectedNewAgent.icon className="h-5 w-5 text-foreground" />
+            {selectedNewAgent && (
+              <>
+                <div className="flex items-start gap-4 p-4 bg-surface-elevated rounded-lg border border-border">
+                  <div className="p-3 rounded bg-muted">
+                    <selectedNewAgent.icon className="h-5 w-5 text-foreground" />
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-foreground mb-1">{selectedNewAgent.name}</h4>
+                    <p className="text-sm text-foreground-muted">
+                      {selectedNewAgent.id === 'hr' ? 'Recruiting · Onboarding · Screening' : selectedNewAgent.description}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h4 className="font-medium text-foreground mb-1">{selectedNewAgent.name}</h4>
-                  <p className="text-sm text-foreground-muted">{selectedNewAgent.description}</p>
-                </div>
-              </div>
-            }
+                
+                {/* Benefits List */}
+                {selectedNewAgent.id === 'hr' && (
+                  <div className="space-y-3">
+                    <h4 className="font-semibold text-foreground text-sm">Cosa può fare:</h4>
+                    <ul className="space-y-2">
+                      <li className="flex items-start gap-2 text-sm text-foreground-muted">
+                        <span className="text-success mt-0.5">✓</span>
+                        <span>Screening automatico dei CV ricevuti</span>
+                      </li>
+                      <li className="flex items-start gap-2 text-sm text-foreground-muted">
+                        <span className="text-success mt-0.5">✓</span>
+                        <span>Scheduling dei colloqui con i candidati</span>
+                      </li>
+                      <li className="flex items-start gap-2 text-sm text-foreground-muted">
+                        <span className="text-success mt-0.5">✓</span>
+                        <span>Onboarding guidato per nuovi dipendenti</span>
+                      </li>
+                      <li className="flex items-start gap-2 text-sm text-foreground-muted">
+                        <span className="text-success mt-0.5">✓</span>
+                        <span>Generazione lettere di assunzione e contratti</span>
+                      </li>
+                    </ul>
+                  </div>
+                )}
+                
+                {selectedNewAgent.id === 'legal' && (
+                  <div className="space-y-3">
+                    <h4 className="font-semibold text-foreground text-sm">Cosa può fare:</h4>
+                    <ul className="space-y-2">
+                      <li className="flex items-start gap-2 text-sm text-foreground-muted">
+                        <span className="text-success mt-0.5">✓</span>
+                        <span>Revisione e analisi contratti</span>
+                      </li>
+                      <li className="flex items-start gap-2 text-sm text-foreground-muted">
+                        <span className="text-success mt-0.5">✓</span>
+                        <span>Verifica compliance normative</span>
+                      </li>
+                      <li className="flex items-start gap-2 text-sm text-foreground-muted">
+                        <span className="text-success mt-0.5">✓</span>
+                        <span>Generazione template legali</span>
+                      </li>
+                      <li className="flex items-start gap-2 text-sm text-foreground-muted">
+                        <span className="text-success mt-0.5">✓</span>
+                        <span>Alerting scadenze contrattuali</span>
+                      </li>
+                    </ul>
+                  </div>
+                )}
+              </>
+            )}
             <p className="text-sm text-foreground">
               La richiesta verrà inviata al team di sviluppo Behive. 
               Riceverai una notifica quando l'agente sarà disponibile nel tuo piano.
@@ -267,11 +321,14 @@ export const Agents = () => {
             <Button variant="outline" onClick={() => setShowRequestModal(false)}>
               Annulla
             </Button>
-            <Button variant="premium" onClick={() => {
-              setShowRequestModal(false);
-              // Show success toast
-            }}>
-              Invia Richiesta
+            <Button 
+              variant="premium" 
+              onClick={() => {
+                setShowRequestModal(false);
+                // Show success toast
+              }}
+            >
+              Invia richiesta
             </Button>
           </DialogFooter>
         </DialogContent>
