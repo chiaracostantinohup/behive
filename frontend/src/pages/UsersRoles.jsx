@@ -15,42 +15,42 @@ export const UsersRoles = () => {
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviteRole, setInviteRole] = useState('member');
-  
+
   const users = [
-    {
-      id: '1',
-      name: 'Marco Albertini',
-      email: 'marco@company.com',
-      role: 'superadmin',
-      status: 'active',
-      lastActive: '2 min fa'
-    },
-    {
-      id: '2',
-      name: 'Laura Bianchi',
-      email: 'laura@company.com',
-      role: 'admin',
-      status: 'active',
-      lastActive: '1 ora fa'
-    },
-    {
-      id: '3',
-      name: 'Giuseppe Verdi',
-      email: 'giuseppe@company.com',
-      role: 'member',
-      status: 'active',
-      lastActive: '3 giorni fa'
-    },
-    {
-      id: '4',
-      name: 'Sofia Romano',
-      email: 'sofia@company.com',
-      role: 'member',
-      status: 'invited',
-      lastActive: '-'
-    }
-  ];
-  
+  {
+    id: '1',
+    name: 'Marco Albertini',
+    email: 'marco@company.com',
+    role: 'superadmin',
+    status: 'active',
+    lastActive: '2 min fa'
+  },
+  {
+    id: '2',
+    name: 'Laura Bianchi',
+    email: 'laura@company.com',
+    role: 'admin',
+    status: 'active',
+    lastActive: '1 ora fa'
+  },
+  {
+    id: '3',
+    name: 'Giuseppe Verdi',
+    email: 'giuseppe@company.com',
+    role: 'member',
+    status: 'active',
+    lastActive: '3 giorni fa'
+  },
+  {
+    id: '4',
+    name: 'Sofia Romano',
+    email: 'sofia@company.com',
+    role: 'member',
+    status: 'invited',
+    lastActive: '-'
+  }];
+
+
   const getRoleBadge = (role) => {
     const variants = {
       superadmin: { label: 'Superadmin', className: 'bg-primary text-primary-foreground' },
@@ -60,20 +60,20 @@ export const UsersRoles = () => {
     const variant = variants[role] || variants.member;
     return <Badge className={variant.className}>{variant.label}</Badge>;
   };
-  
+
   const getStatusBadge = (status) => {
     if (status === 'invited') {
       return <Badge variant="outline" className="text-warning border-warning">Invitato</Badge>;
     }
     return <Badge variant="outline" className="text-success border-success">Attivo</Badge>;
   };
-  
+
   const handleInviteUser = () => {
     setShowInviteModal(false);
     setInviteEmail('');
     setInviteRole('member');
   };
-  
+
   return (
     <div className="h-full flex flex-col overflow-hidden">
       <Topbar />
@@ -85,15 +85,15 @@ export const UsersRoles = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
-            className="flex items-center justify-between"
-          >
+            className="flex items-center justify-between">
+
             <div>
               <h1 className="text-3xl font-semibold text-foreground mb-2">Utenti & Ruoli</h1>
               <p className="text-foreground-muted">
                 Gestisci i membri del team e i loro permessi
               </p>
             </div>
-            <Button variant="premium" onClick={() => setShowInviteModal(true)}>
+            <Button variant="premium" onClick={() => setShowInviteModal(true)} className="inline-flex items-center justify-center whitespace-nowrap transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-primary-hover h-9 font-medium text-sm gap-2 px-4 py-2 !rounded-md shadow-glow text-primary-foreground bg-primary">
               <Plus className="h-4 w-4 mr-2" />
               Invita Utente
             </Button>
@@ -103,8 +103,8 @@ export const UsersRoles = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.1 }}
-          >
+            transition={{ duration: 0.3, delay: 0.1 }}>
+
             <Card>
               <Table>
                 <TableHeader>
@@ -118,12 +118,12 @@ export const UsersRoles = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {users.map((user) => (
-                    <TableRow key={user.id} className="border-border">
+                  {users.map((user) =>
+                  <TableRow key={user.id} className="border-border">
                       <TableCell className="font-medium text-foreground">
                         <div className="flex items-center gap-3">
                           <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-xs font-semibold text-primary-foreground">
-                            {user.name.split(' ').map(n => n[0]).join('')}
+                            {user.name.split(' ').map((n) => n[0]).join('')}
                           </div>
                           {user.name}
                         </div>
@@ -138,7 +138,7 @@ export const UsersRoles = () => {
                         </Button>
                       </TableCell>
                     </TableRow>
-                  ))}
+                  )}
                 </TableBody>
               </Table>
             </Card>
@@ -146,13 +146,13 @@ export const UsersRoles = () => {
           
           {/* Role Descriptions */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {['Superadmin', 'Admin', 'Member'].map((role, index) => (
-              <motion.div
-                key={role}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: 0.2 + (index * 0.1) }}
-              >
+            {['Superadmin', 'Admin', 'Member'].map((role, index) =>
+            <motion.div
+              key={role}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.2 + index * 0.1 }}>
+
                 <Card className="p-6">
                   <h3 className="font-semibold text-foreground mb-2">{role}</h3>
                   <p className="text-sm text-foreground-muted">
@@ -162,7 +162,7 @@ export const UsersRoles = () => {
                   </p>
                 </Card>
               </motion.div>
-            ))}
+            )}
           </div>
         </div>
       </div>
@@ -187,8 +187,8 @@ export const UsersRoles = () => {
                   placeholder="utente@company.com"
                   value={inviteEmail}
                   onChange={(e) => setInviteEmail(e.target.value)}
-                  className="pl-10 bg-background border-border"
-                />
+                  className="pl-10 bg-background border-border" />
+
               </div>
             </div>
             <div className="space-y-2">
@@ -205,8 +205,8 @@ export const UsersRoles = () => {
               </Select>
             </div>
           </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setShowInviteModal(false)}>
+          <DialogFooter className="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 !rounded-md">
+            <Button variant="outline" onClick={() => setShowInviteModal(false)} className="inline-flex items-center justify-center whitespace-nowrap transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-border hover:bg-surface-elevated h-9 font-medium text-sm gap-2 px-4 py-2 !rounded-md text-foreground bg-transparent">
               Annulla
             </Button>
             <Button variant="premium" onClick={handleInviteUser} disabled={!inviteEmail}>
@@ -215,8 +215,8 @@ export const UsersRoles = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
-  );
+    </div>);
+
 };
 
 export default UsersRoles;
