@@ -4,9 +4,10 @@ import { motion } from 'framer-motion';
 import { Button } from '../components/ui/button';
 import { Textarea } from '../components/ui/textarea';
 import { Badge } from '../components/ui/badge';
-import { Paperclip, Loader2 } from 'lucide-react';
+import { Paperclip, Loader2, Send } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { getAgentById } from '../config/agents';
+import Topbar from '../components/Topbar';
 
 export const Chat = () => {
   const { id } = useParams();
@@ -86,6 +87,9 @@ export const Chat = () => {
   
   return (
     <div className="h-full flex flex-col">
+      {/* Topbar */}
+      <Topbar showNotificationBadge={false} />
+      
       {/* Chat Messages */}
       <div className="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-6">
         {messages.map((msg, index) => (
@@ -164,7 +168,7 @@ export const Chat = () => {
                 size="sm"
                 variant="premium"
               >
-                Invia
+                <Send className="h-4 w-4" />
               </Button>
             </div>
           </div>

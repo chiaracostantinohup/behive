@@ -6,6 +6,7 @@ import { Badge } from '../components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../components/ui/dialog';
 import { DollarSign, TrendingUp, Users, MessageSquare, Plus, Lock, Zap } from 'lucide-react';
 import { cn } from '../lib/utils';
+import Topbar from '../components/Topbar';
 
 export const Agents = () => {
   const [showLimitModal, setShowLimitModal] = useState(false);
@@ -73,7 +74,11 @@ export const Agents = () => {
   };
 
   return (
-    <div className="h-full overflow-y-auto custom-scrollbar p-8">
+    <div className="h-full flex flex-col overflow-hidden">
+      {/* Topbar */}
+      <Topbar />
+      
+      <div className="flex-1 overflow-y-auto custom-scrollbar p-8">
       <div className="max-w-6xl mx-auto space-y-8">
         {/* Header */}
         <div>
@@ -271,7 +276,9 @@ export const Agents = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>);
+      </div>
+    </div>
+  );
 
 };
 

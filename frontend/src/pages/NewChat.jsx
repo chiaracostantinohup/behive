@@ -7,6 +7,7 @@ import { Badge } from '../components/ui/badge';
 import { Paperclip, Send } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { agents } from '../config/agents';
+import Topbar from '../components/Topbar';
 
 export const NewChat = () => {
   const navigate = useNavigate();
@@ -38,11 +39,15 @@ export const NewChat = () => {
   };
 
   return (
-    <div className="h-full flex flex-col items-center justify-center p-8">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-3xl space-y-8">
+    <div className="h-full flex flex-col">
+      {/* Topbar */}
+      <Topbar showNotificationBadge={true} notificationCount={3} />
+      
+      <div className="flex-1 overflow-y-auto custom-scrollbar flex items-center justify-center p-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="w-full max-w-3xl space-y-8">
 
         {/* Greeting */}
         <div className="text-center space-y-2">
@@ -138,7 +143,9 @@ export const NewChat = () => {
           Behive può commettere errori. Verifica le informazioni importanti.
         </p>
       </motion.div>
-    </div>);
+      </div>
+    </div>
+  );
 
 };
 
