@@ -4,8 +4,9 @@ import { motion } from 'framer-motion';
 import { Button } from '../components/ui/button';
 import { Textarea } from '../components/ui/textarea';
 import { Badge } from '../components/ui/badge';
-import { Paperclip, Loader2, DollarSign, TrendingUp } from 'lucide-react';
+import { Paperclip, Loader2 } from 'lucide-react';
 import { cn } from '../lib/utils';
+import { getAgentById } from '../config/agents';
 
 export const Chat = () => {
   const { id } = useParams();
@@ -14,10 +15,13 @@ export const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   
+  // Get agent from config using the agentId from state
+  const agent = location.state?.agentId ? getAgentById(location.state.agentId) : getAgentById('finance');
+  
   useEffect(() => {
     // Initialize with message from NewChat if available
     if (location.state?.initialMessage && messages.length === 0) {
-      const { agent, initialMessage } = location.state;
+      const initialMessage = location.state.initialMessage;
       
       // Add user message
       setMessages([{
@@ -49,7 +53,7 @@ export const Chat = () => {
         }, 2000);
       }, 1000);
     }
-  }, [location.state, messages.length]);
+  }, [location.state, messages.length, agent]);
   
   const handleSend = () => {
     if (!message.trim()) return;
@@ -70,7 +74,7 @@ export const Chat = () => {
       const agentMessage = {
         id: (Date.now() + 1).toString(),
         type: 'agent',
-        agent: location.state?.agent || { id: 'finance', name: 'Finance Agent', icon: DollarSign, color: 'agent-finance' },
+        agent: agent,
         content: 'Sto generando il report dettagliato con il confronto YoY. Ti preparo anche la sintesi executive per il management.',
         timestamp: new Date(),
         isGenerating: true

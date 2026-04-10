@@ -4,22 +4,16 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { Textarea } from '../components/ui/textarea';
 import { Badge } from '../components/ui/badge';
-import { Paperclip, Sparkles, ChevronDown, DollarSign, TrendingUp, Users, MessageSquare } from 'lucide-react';
+import { Paperclip, Sparkles, ChevronDown } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '../components/ui/dialog';
 import { cn } from '../lib/utils';
+import { agents } from '../config/agents';
 
 export const NewChat = () => {
   const navigate = useNavigate();
   const [message, setMessage] = useState('');
   const [selectedAgent, setSelectedAgent] = useState(null);
   const [showAgentSelector, setShowAgentSelector] = useState(false);
-  
-  const agents = [
-    { id: 'finance', name: 'Finance Agent', icon: DollarSign, color: 'agent-finance', description: 'Analisi finanziaria, costi e budget' },
-    { id: 'marketing', name: 'Marketing Agent', icon: TrendingUp, color: 'agent-marketing', description: 'Campagne, performance e analytics' },
-    { id: 'sales', name: 'Sales Agent', icon: Users, color: 'agent-sales', description: 'Pipeline, forecast e reports' },
-    { id: 'support', name: 'Support Agent', icon: MessageSquare, color: 'agent-support', description: 'Customer service e ticketing' },
-  ];
   
   const prompts = [
     'Analizza i costi operativi del Q1',
@@ -33,9 +27,9 @@ export const NewChat = () => {
       setShowAgentSelector(true);
       return;
     }
-    // Navigate to a new chat with the selected agent
+    // Navigate to a new chat with the selected agent ID (not the object)
     const chatId = Math.random().toString(36).substr(2, 9);
-    navigate(`/chat/${chatId}`, { state: { agent: selectedAgent, initialMessage: message } });
+    navigate(`/chat/${chatId}`, { state: { agentId: selectedAgent.id, initialMessage: message } });
   };
   
   const handleAgentSelect = (agent) => {
