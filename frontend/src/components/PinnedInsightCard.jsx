@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { X } from 'lucide-react';
 import { Card } from './ui/card';
 import { Button } from './ui/button';
@@ -25,13 +26,12 @@ export const PinnedInsightCard = ({
       {/* Metadata footer */}
       <div className="flex items-center gap-3 flex-wrap pt-1 border-t border-border">
         {/* Source conversation link */}
-        <span
+        <Link
+          to={`/chat/${sourceConversationId}`}
           className="text-xs text-primary hover:underline cursor-pointer"
-          role="button"
-          tabIndex={0}
         >
           {sourceConversationTitle}
-        </span>
+        </Link>
 
         {/* Date */}
         <span className="text-xs text-foreground-muted">{pinDate}</span>
