@@ -17,52 +17,61 @@ export const UsersRoles = () => {
   const [inviteRole, setInviteRole] = useState('member');
 
   const users = [
-  {
-    id: '1',
-    name: 'Marco Albertini',
-    email: 'marco@company.com',
-    role: 'admin',
-    status: 'active',
-    lastActive: '2 min fa'
-  },
-  {
-    id: '2',
-    name: 'Laura Bianchi',
-    email: 'laura@company.com',
-    role: 'admin',
-    status: 'active',
-    lastActive: '1 ora fa'
-  },
-  {
-    id: '3',
-    name: 'Giuseppe Verdi',
-    email: 'giuseppe@company.com',
-    role: 'member',
-    status: 'active',
-    lastActive: '3 giorni fa'
-  },
-  {
-    id: '4',
-    name: 'Sofia Romano',
-    email: 'sofia@company.com',
-    role: 'member',
-    status: 'invited',
-    lastActive: '-'
-  }];
-
+    {
+      id: '1',
+      name: 'Marco Albertini',
+      email: 'marco@company.com',
+      role: 'admin',
+      status: 'attivo',
+      lastActive: '2 min fa'
+    },
+    {
+      id: '2',
+      name: 'Laura Bianchi',
+      email: 'laura@company.com',
+      role: 'admin',
+      status: 'attivo',
+      lastActive: '1 ora fa'
+    },
+    {
+      id: '3',
+      name: 'Giuseppe Verdi',
+      email: 'giuseppe@company.com',
+      role: 'member',
+      status: 'attivo',
+      lastActive: '3 giorni fa'
+    },
+    {
+      id: '4',
+      name: 'Sofia Romano',
+      email: 'sofia@company.com',
+      role: 'member',
+      status: 'inattivo',
+      lastActive: '-'
+    },
+    {
+      id: '5',
+      name: 'Luca Ferrari',
+      email: 'luca@company.com',
+      role: 'viewer',
+      status: 'attivo',
+      lastActive: '5 ore fa'
+    }
+  ];
 
   const getRoleBadge = (role) => {
     const variants = {
-      admin: { label: 'Admin', className: 'bg-primary text-primary-foreground' },
-      member: { label: 'Member', className: 'bg-surface-elevated text-foreground-muted border border-border' }
+      admin: { label: 'Amministratore', className: 'bg-primary text-primary-foreground' },
+      member: { label: 'Membro', className: 'bg-surface-elevated text-foreground-muted border border-border' },
+      viewer: { label: 'Lettore', className: 'bg-muted text-foreground-muted border border-border' }
     };
     const variant = variants[role] || variants.member;
     return <Badge className={variant.className}>{variant.label}</Badge>;
   };
 
   const getStatusBadge = (status) => {
-    if (status === 'invited') {
-      return <Badge variant="outline" className="text-warning border-warning">Invitato</Badge>;
+    if (status === 'inattivo') {
+      return <Badge variant="outline" className="text-destructive border-destructive">Inattivo</Badge>;
     }
     return <Badge variant="outline" className="text-success border-success">Attivo</Badge>;
   };
@@ -73,10 +82,16 @@ export const UsersRoles = () => {
     setInviteRole('member');
   };
 
+  const roleDescriptions = [
+    { role: 'Amministratore', description: 'Gestione progetti, integrazioni, inviti utenti e configurazioni' },
+    { role: 'Membro', description: 'Accesso a chat e progetti assegnati' },
+    { role: 'Lettore', description: 'Accesso in sola lettura a conversazioni e report' }
+  ];
+
   return (
     <div className="h-full flex flex-col overflow-hidden">
       <Topbar />
-      
+
       <div className="flex-1 overflow-y-auto custom-scrollbar p-8">
         <div className="max-w-6xl mx-auto space-y-8">
           {/* Header */}
@@ -84,26 +99,24 @@ export const UsersRoles = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
-            className="flex items-center justify-between">
-
+            className="flex items-center justify-between"
+          >
             <div>
               <h1 className="text-3xl font-semibold text-foreground mb-2">Utenti & Ruoli</h1>
-              <p className="text-foreground-muted">
-                Gestisci i membri del team e i loro permessi
-              </p>
+              <p className="text-foreground-muted">Gestisci i membri del team e i loro permessi</p>
             </div>
             <Button variant="premium" onClick={() => setShowInviteModal(true)} className="inline-flex items-center justify-center whitespace-nowrap transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-primary-hover h-9 font-medium text-sm gap-2 px-4 py-2 !rounded-md shadow-glow text-primary-foreground bg-primary">
               <Plus className="h-4 w-4 mr-2" />
               Invita Utente
             </Button>
           </motion.div>
-          
+
           {/* Users Table */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.1 }}>
-
+            transition={{ duration: 0.3, delay: 0.1 }}
+          >
             <Card>
               <Table>
                 <TableHeader>
@@ -111,14 +124,14 @@ export const UsersRoles = () => {
                     <TableHead className="text-foreground">Utente</TableHead>
                     <TableHead className="text-foreground">Email</TableHead>
                     <TableHead className="text-foreground">Ruolo</TableHead>
-                    <TableHead className="text-foreground">Status</TableHead>
+                    <TableHead className="text-foreground">Stato</TableHead>
                     <TableHead className="text-foreground">Ultimo Accesso</TableHead>
                     <TableHead className="text-foreground"></TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {users.map((user) =>
-                  <TableRow key={user.id} className="border-border">
+                  {users.map((user) => (
+                    <TableRow key={user.id} className="border-border">
                       <TableCell className="font-medium text-foreground">
                         <div className="flex items-center gap-3">
                           <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-xs font-semibold text-primary-foreground">
@@ -137,34 +150,31 @@ export const UsersRoles = () => {
                         </Button>
                       </TableCell>
                     </TableRow>
-                  )}
+                  ))}
                 </TableBody>
               </Table>
             </Card>
           </motion.div>
-          
-          {/* Role Descriptions */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {['Admin', 'Member'].map((role, index) =>
-            <motion.div
-              key={role}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.2 + (index * 0.1) }}>
 
+          {/* Role Descriptions */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {roleDescriptions.map((item, index) => (
+              <motion.div
+                key={item.role}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.2 + index * 0.1 }}
+              >
                 <Card className="p-6">
-                  <h3 className="font-semibold text-foreground mb-2">{role}</h3>
-                  <p className="text-sm text-foreground-muted">
-                    {role === 'Admin' && 'Gestione progetti, integrazioni, inviti utenti e configurazioni'}
-                    {role === 'Member' && 'Accesso a chat e progetti assegnati'}
-                  </p>
+                  <h3 className="font-semibold text-foreground mb-2">{item.role}</h3>
+                  <p className="text-sm text-foreground-muted">{item.description}</p>
                 </Card>
               </motion.div>
-            )}
+            ))}
           </div>
         </div>
       </div>
-      
+
       {/* Invite User Modal */}
       <Dialog open={showInviteModal} onOpenChange={setShowInviteModal}>
         <DialogContent className="bg-surface border-border">
@@ -185,8 +195,8 @@ export const UsersRoles = () => {
                   placeholder="utente@company.com"
                   value={inviteEmail}
                   onChange={(e) => setInviteEmail(e.target.value)}
-                  className="pl-10 bg-background border-border" />
-
+                  className="pl-10 bg-background border-border"
+                />
               </div>
             </div>
             <div className="space-y-2">
@@ -196,8 +206,9 @@ export const UsersRoles = () => {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="bg-surface border-border">
-                  <SelectItem value="member">Member</SelectItem>
-                  <SelectItem value="admin">Admin</SelectItem>
+                  <SelectItem value="member">Membro</SelectItem>
+                  <SelectItem value="viewer">Lettore</SelectItem>
+                  <SelectItem value="admin">Amministratore</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -212,8 +223,8 @@ export const UsersRoles = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>);
-
+    </div>
+  );
 };
 
 export default UsersRoles;
