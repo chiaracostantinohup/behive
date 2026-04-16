@@ -8,7 +8,6 @@ import { Badge } from '../components/ui/badge';
 import { Mic, MicOff, Send, CheckCircle2, Circle, ChevronDown, ChevronRight, Square } from 'lucide-react';
 import { toast } from 'sonner';
 import Topbar from '../components/Topbar';
-import { mockSessions, mockDomainCoverage } from '../data/mockOnboardingData';
 
 const MOCK_MESSAGES = [
   { id: 'm1', type: 'agent', text: "Ciao! Sono l'Onboarding Agent. Iniziamo con il dominio Finance. Puoi descrivermi come funziona il processo di approvazione budget nella tua azienda?" },
