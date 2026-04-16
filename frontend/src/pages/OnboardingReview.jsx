@@ -441,7 +441,7 @@ const CatalogTab = () => {
                     </thead>
                     <tbody>
                       {entity.crossSystemMappings.map((m, i) => (
-                        <tr key={i} className="border-b border-border/50">
+                        <tr key={`${m.fromSystem}-${m.fromField}-${m.toSystem}`} className="border-b border-border/50">
                           <td className="py-1.5 pr-3 text-foreground font-medium">{m.fromSystem}</td>
                           <td className="py-1.5 pr-3 text-foreground-muted font-mono">{m.fromField.split('.')[1]}</td>
                           <td className="py-1.5 pr-3 text-foreground font-medium">{m.toSystem}</td>
