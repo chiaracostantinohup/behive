@@ -1,102 +1,67 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Card } from '../components/ui/card';
-import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
-import { Label } from '../components/ui/label';
 import { Switch } from '../components/ui/switch';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../components/ui/dialog';
-import { Slider } from '../components/ui/slider';
-import { Bell, Mail, MessageSquare, TrendingUp, TrendingDown, AlertTriangle, Settings } from 'lucide-react';
+import { Checkbox } from '../components/ui/checkbox';
+import { Label } from '../components/ui/label';
+import { Mail, MessageSquare, Activity, TrendingUp, Users, BookOpen } from 'lucide-react';
 import Topbar from '../components/Topbar';
 
 export const Alerts = () => {
   const [emailAlerts, setEmailAlerts] = useState(true);
-  const [slackAlerts, setSlackAlerts] = useState(false);
-  const [selectedRule, setSelectedRule] = useState(null);
-  const [showConfigModal, setShowConfigModal] = useState(false);
-  
-  const [alertRules, setAlertRules] = useState([
+  const [smsAlerts, setSmsAlerts] = useState(false);
+
+  const [notifPrefs, setNotifPrefs] = useState([
     {
-      id: '1',
-      name: 'Costi Operativi Elevati',
-      description: 'Notifica quando i costi superano la soglia mensile',
+      id: 'integration_health',
+      icon: Activity,
+      title: 'Salute integrazioni',
+      description: 'Notifiche quando un\'integrazione va offline o presenta errori',
+      enabled: true,
+      inApp: true,
+      email: true
+    },
+    {
+      id: 'quota',
       icon: TrendingUp,
-      color: 'text-warning',
+      title: 'Soglie di utilizzo',
+      description: 'Avvisi quando il consumo si avvicina ai limiti del piano',
       enabled: true,
-      thresholdValue: 10000,
-      thresholdType: 'currency',
-      thresholdUnit: '€'
+      inApp: true,
+      email: true
     },
     {
-      id: '2',
-      name: 'Utilizzo Richieste',
-      description: 'Notifica quando l\'utilizzo supera la soglia',
-      icon: Bell,
-      color: 'text-primary',
+      id: 'team_activity',
+      icon: Users,
+      title: 'Attività del team',
+      description: 'Aggiornamenti su inviti, modifiche di ruolo e nuovi utenti',
       enabled: true,
-      thresholdValue: 80,
-      thresholdType: 'percentage',
-      thresholdUnit: '%'
+      inApp: true,
+      email: false
     },
     {
-      id: '3',
-      name: 'Performance Degradation',
-      description: 'Notifica in caso di rallentamenti del sistema',
-      icon: TrendingDown,
-      color: 'text-destructive',
-      enabled: false,
-      thresholdValue: 500,
-      thresholdType: 'milliseconds',
-      thresholdUnit: 'ms'
-    },
-    {
-      id: '4',
-      name: 'Errori Critici',
-      description: 'Notifica immediata per errori di sistema',
-      icon: AlertTriangle,
-      color: 'text-destructive',
+      id: 'knowledge_updates',
+      icon: BookOpen,
+      title: 'Aggiornamenti knowledge base',
+      description: 'Notifiche quando nuovi documenti vengono indicizzati',
       enabled: true,
-      thresholdValue: 1,
-      thresholdType: 'count',
-      thresholdUnit: 'errori'
+      inApp: true,
+      email: false
     }
   ]);
 
-  const handleConfigRule = (rule) => {
-    setSelectedRule({ ...rule });
-    setShowConfigModal(true);
+  const toggleEnabled = (id) => {
+    setNotifPrefs(notifPrefs.map(p => p.id === id ? { ...p, enabled: !p.enabled } : p));
   };
 
-  const handleSaveRule = () => {
-    setAlertRules(alertRules.map(rule => 
-      rule.id === selectedRule.id ? selectedRule : rule
-    ));
-    setShowConfigModal(false);
-    setSelectedRule(null);
-  };
-
-  const toggleRuleEnabled = (id) => {
-    setAlertRules(alertRules.map(rule => 
-      rule.id === id ? { ...rule, enabled: !rule.enabled } : rule
-    ));
-  };
-
-  const getThresholdDisplay = (rule) => {
-    if (rule.thresholdType === 'currency') {
-      return `${rule.thresholdUnit}${rule.thresholdValue.toLocaleString()}`;
-    } else if (rule.thresholdType === 'percentage') {
-      return `${rule.thresholdValue}${rule.thresholdUnit}`;
-    } else {
-      return `${rule.thresholdValue} ${rule.thresholdUnit}`;
-    }
+  const toggleChannel = (id, channel) => {
+    setNotifPrefs(notifPrefs.map(p => p.id === id ? { ...p, [channel]: !p[channel] } : p));
   };
 
   return (
     <div className="h-full flex flex-col overflow-hidden">
       <Topbar />
-      
+
       <div className="flex-1 overflow-y-auto custom-scrollbar p-8">
         <div className="max-w-4xl mx-auto space-y-8">
           {/* Header */}
@@ -105,12 +70,10 @@ export const Alerts = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <h1 className="text-3xl font-semibold text-foreground mb-2">Alert & Thresholds</h1>
-            <p className="text-foreground-muted">
-              Configura le notifiche e le soglie di monitoraggio
-            </p>
+            <h1 className="text-3xl font-semibold text-foreground mb-2">Alert & Notifiche</h1>
+            <p className="text-foreground-muted">Configura le preferenze di notifica per il tuo account</p>
           </motion.div>
-          
+
           {/* Notification Channels */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -130,7 +93,7 @@ export const Alerts = () => {
                   </div>
                   <Switch checked={emailAlerts} onCheckedChange={setEmailAlerts} />
                 </div>
-                
+
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <MessageSquare className="h-5 w-5 text-foreground-muted" />
@@ -139,151 +102,74 @@ export const Alerts = () => {
                       <p className="text-sm text-foreground-muted">+39 346 555 555</p>
                     </div>
                   </div>
-                  <Switch checked={slackAlerts} onCheckedChange={setSlackAlerts} />
+                  <Switch checked={smsAlerts} onCheckedChange={setSmsAlerts} />
                 </div>
               </div>
             </Card>
           </motion.div>
-          
-          {/* Alert Rules */}
-          <div>
-            <h2 className="text-lg font-semibold text-foreground mb-4">Regole di Alert</h2>
-            <div className="space-y-3">
-              {alertRules.map((rule, index) => (
-                <motion.div
-                  key={rule.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: 0.2 + (index * 0.1) }}
-                >
-                  <Card className="p-5">
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-start gap-4 flex-1">
-                        <div className="p-2 rounded bg-surface-elevated">
-                          <rule.icon className={`h-5 w-5 ${rule.color}`} />
-                        </div>
-                        <div className="flex-1">
-                          <h3 className="font-medium text-foreground mb-1">{rule.name}</h3>
-                          <p className="text-sm text-foreground-muted mb-2">{rule.description}</p>
-                          <div className="flex items-center gap-4">
-                            <div className="flex items-center gap-2">
-                              <span className="text-xs text-foreground-subtle">Soglia:</span>
-                              <span className="text-xs font-medium text-foreground">{getThresholdDisplay(rule)}</span>
-                            </div>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleConfigRule(rule)}
-                              className="text-xs text-primary hover:text-primary-hover !rounded-md"
-                            >
-                              <Settings className="h-3 w-3 mr-1" />
-                              Configura
-                            </Button>
-                          </div>
-                        </div>
-                      </div>
-                      <Switch 
-                        checked={rule.enabled}
-                        onCheckedChange={() => toggleRuleEnabled(rule.id)}
-                      />
+
+          {/* Notification Preferences */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.2 }}
+          >
+            <Card className="p-6">
+              <div className="flex items-center justify-between mb-2">
+                <h2 className="text-lg font-semibold text-foreground">Preferenze notifiche</h2>
+                <div className="flex items-center gap-6 text-xs text-foreground-muted pr-1">
+                  <span className="w-12 text-center">In-app</span>
+                  <span className="w-12 text-center">Email</span>
+                </div>
+              </div>
+              <p className="text-sm text-foreground-muted mb-6">Scegli quali eventi generano notifiche e tramite quale canale</p>
+
+              <div className="divide-y divide-border">
+                {notifPrefs.map((pref, index) => (
+                  <motion.div
+                    key={pref.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.2, delay: 0.3 + index * 0.05 }}
+                    className="py-4 flex items-center gap-4"
+                  >
+                    <Switch
+                      checked={pref.enabled}
+                      onCheckedChange={() => toggleEnabled(pref.id)}
+                      className="flex-shrink-0"
+                    />
+                    <div className="p-2 rounded bg-surface-elevated flex-shrink-0">
+                      <pref.icon className="h-4 w-4 text-foreground-muted" />
                     </div>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
-          </div>
+                    <div className="flex-1 min-w-0">
+                      <p className={`font-medium text-sm ${pref.enabled ? 'text-foreground' : 'text-foreground-muted'}`}>
+                        {pref.title}
+                      </p>
+                      <p className="text-xs text-foreground-muted mt-0.5">{pref.description}</p>
+                    </div>
+                    <div className="flex items-center gap-6 flex-shrink-0 pr-1">
+                      <div className="w-12 flex justify-center">
+                        <Checkbox
+                          checked={pref.inApp && pref.enabled}
+                          onCheckedChange={() => pref.enabled && toggleChannel(pref.id, 'inApp')}
+                          disabled={!pref.enabled}
+                        />
+                      </div>
+                      <div className="w-12 flex justify-center">
+                        <Checkbox
+                          checked={pref.email && pref.enabled}
+                          onCheckedChange={() => pref.enabled && toggleChannel(pref.id, 'email')}
+                          disabled={!pref.enabled}
+                        />
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </Card>
+          </motion.div>
         </div>
       </div>
-
-      {/* Configuration Modal */}
-      <Dialog open={showConfigModal} onOpenChange={setShowConfigModal}>
-        <DialogContent className="bg-surface border-border max-w-md">
-          <DialogHeader>
-            <DialogTitle className="text-foreground">Configura Regola Alert</DialogTitle>
-            <DialogDescription className="text-foreground-muted">
-              {selectedRule?.name}
-            </DialogDescription>
-          </DialogHeader>
-          
-          {selectedRule && (
-            <div className="space-y-6 py-4">
-              {/* Threshold Slider */}
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <Label>Soglia</Label>
-                  <span className="text-sm font-medium text-foreground">
-                    {getThresholdDisplay(selectedRule)}
-                  </span>
-                </div>
-                
-                <Slider
-                  value={[selectedRule.thresholdValue]}
-                  onValueChange={(value) => setSelectedRule({ ...selectedRule, thresholdValue: value[0] })}
-                  min={selectedRule.thresholdType === 'currency' ? 1000 : selectedRule.thresholdType === 'percentage' ? 0 : 0}
-                  max={selectedRule.thresholdType === 'currency' ? 50000 : selectedRule.thresholdType === 'percentage' ? 100 : 1000}
-                  step={selectedRule.thresholdType === 'currency' ? 1000 : selectedRule.thresholdType === 'percentage' ? 5 : 50}
-                  className="w-full"
-                />
-                
-                <div className="flex justify-between text-xs text-foreground-subtle">
-                  <span>
-                    {selectedRule.thresholdType === 'currency' ? '€1.000' : selectedRule.thresholdType === 'percentage' ? '0%' : '0ms'}
-                  </span>
-                  <span>
-                    {selectedRule.thresholdType === 'currency' ? '€50.000' : selectedRule.thresholdType === 'percentage' ? '100%' : '1000ms'}
-                  </span>
-                </div>
-              </div>
-
-              {/* Alert Preview */}
-              <div className="p-4 bg-surface-elevated rounded-lg border border-border">
-                <p className="text-xs text-foreground-subtle mb-2">Anteprima Alert</p>
-                <div className="flex items-start gap-3">
-                  <selectedRule.icon className={`h-5 w-5 ${selectedRule.color} mt-0.5`} />
-                  <div>
-                    <p className="text-sm font-medium text-foreground">{selectedRule.name}</p>
-                    <p className="text-xs text-foreground-muted mt-1">
-                      Riceverai una notifica quando il valore supera {getThresholdDisplay(selectedRule)}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Frequency */}
-              <div className="space-y-2">
-                <Label>Frequenza Notifiche</Label>
-                <Select defaultValue="instant">
-                  <SelectTrigger className="bg-background border-border">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className="bg-surface border-border">
-                    <SelectItem value="instant">Immediata</SelectItem>
-                    <SelectItem value="hourly">Ogni ora</SelectItem>
-                    <SelectItem value="daily">Giornaliera</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          )}
-          
-          <DialogFooter>
-            <Button 
-              variant="outline" 
-              onClick={() => setShowConfigModal(false)}
-              className="!rounded-md"
-            >
-              Annulla
-            </Button>
-            <Button 
-              variant="premium" 
-              onClick={handleSaveRule}
-              className="!rounded-md"
-            >
-              Salva Modifiche
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };
