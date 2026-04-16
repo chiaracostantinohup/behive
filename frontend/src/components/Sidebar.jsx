@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { MessageSquare, Users, FolderKanban, Boxes, Plug, Bell, Activity, CreditCard, Plus, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
+import { MessageSquare, Users, FolderKanban, Boxes, Plug, Bell, Activity, CreditCard, Plus, ChevronDown, ChevronLeft, ChevronRight, BookOpen, ShoppingBag } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { Button } from './ui/button';
 import { Separator } from './ui/separator';
@@ -17,7 +17,9 @@ export const Sidebar = ({ onLogout }) => {
   { icon: MessageSquare, label: 'Chat', path: '/chat' },
   { icon: Boxes, label: 'Agenti', path: '/agents' },
   { icon: FolderKanban, label: 'Progetti', path: '/projects' },
-  { icon: Plug, label: 'Integrazioni', path: '/integrations' }];
+  { icon: Plug, label: 'Integrazioni', path: '/integrations' },
+  { icon: BookOpen, label: 'Onboarding', path: '/onboarding' },
+  { icon: ShoppingBag, label: 'Marketplace', path: '/marketplace' }];
 
 
   const managementItems = [

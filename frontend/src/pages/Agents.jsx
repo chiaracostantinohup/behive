@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Card } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -103,12 +104,10 @@ export const Agents = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}>
 
+                  <Link to={'/agents/' + agent.id} className="block">
                   <Card
                       className="border cursor-pointer transition-smooth hover:border-primary/50 p-6 rounded-xl shadow text-card-foreground !bg-[#16161A]"
-
-
-
-                      onClick={() => handleAgentClick(agent)}>
+                      >
 
                     <div className="flex items-start gap-4">
                       <div className="p-3 rounded !bg-[rgba(15,38,255,0.15)]">
@@ -146,6 +145,7 @@ export const Agents = () => {
                       </div>
                     </div>
                   </Card>
+                  </Link>
                 </motion.div>);
 
               })}

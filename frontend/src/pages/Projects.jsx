@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Card } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -91,6 +92,7 @@ export const Projects = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}>
 
+              <Link to={'/projects/' + project.id} className="block">
               <Card className="border hover:border-primary/50 transition-smooth group cursor-pointer !py-[40px] !px-[40px] rounded-xl shadow text-card-foreground bg-card">
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-3">
@@ -128,9 +130,10 @@ export const Projects = () => {
                   </div>
                 </div>
               </Card>
+              </Link>
             </motion.div>
             )}
-          
+
           {/* New Project Card */}
           <Card
               className="border border-dashed border-border-subtle hover:border-primary/50 transition-smooth cursor-pointer !pt-[0px] !pb-[0px] !pl-[0px] !pr-[0px] rounded-xl shadow text-card-foreground bg-card"

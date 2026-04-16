@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Card } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -390,6 +391,8 @@ const IntegrationGrid = ({ integrations, onConnect }) =>
     animate={{ opacity: 1, y: 0 }}
     transition={{ delay: index * 0.05 }}>
 
+        {integration.status === 'connected' ? (
+        <Link to={'/integrations/' + integration.id} className="block">
         <Card className="p-6 hover:border-primary/50 transition-smooth">
           <div className="flex items-start justify-between mb-4">
             <div className="flex items-center gap-3">
@@ -423,6 +426,31 @@ const IntegrationGrid = ({ integrations, onConnect }) =>
             </Button>
       }
         </Card>
+        </Link>
+        ) : (
+        <Card className="p-6 hover:border-primary/50 transition-smooth">
+          <div className="flex items-start justify-between mb-4">
+            <div className="flex items-center gap-3">
+              {integration.icon ?
+          <div className="text-2xl">{integration.icon}</div> :
+
+          <div className={cn("w-10 h-10 rounded flex items-center justify-center text-white font-semibold", integration.color)}>
+                  {integration.abbr}
+                </div>
+          }
+              <div>
+                <h3 className="font-medium text-foreground">{integration.name}</h3>
+              </div>
+            </div>
+          </div>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => onConnect(integration)} className="inline-flex items-center justify-center whitespace-nowrap transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-border hover:bg-surface-elevated h-8 font-medium text-xs gap-2 px-3 !rounded-md text-foreground bg-transparent">
+              Connetti
+            </Button>
+        </Card>
+        )}
       </motion.div>
   )}
   </div>;

@@ -20,6 +20,8 @@ import ServiceStatus from './pages/ServiceStatus';
 import Payments from './pages/Payments';
 import Help from './pages/Help';
 import Profile from './pages/Profile';
+import Onboarding from './pages/Onboarding';
+import Marketplace from './pages/Marketplace';
 import './App.css';
 
 function App() {
@@ -72,6 +74,8 @@ function App() {
             <Route path="payments" element={<Payments />} />
             <Route path="help" element={<Help />} />
             <Route path="profile" element={<Profile />} />
+            <Route path="onboarding" element={<Onboarding />} />
+            <Route path="marketplace" element={<Marketplace />} />
           </Route>
           
           <Route path="*" element={<Navigate to={isAuthenticated ? "/chat" : "/login"} replace />} />
