@@ -12,6 +12,8 @@ import Projects from './pages/Projects';
 import ProjectDashboard from './pages/ProjectDashboard';
 import ProjectConversation from './pages/ProjectConversation';
 import Integrations from './pages/Integrations';
+import IntegrationDetail from './pages/IntegrationDetail';
+import SearchResults from './pages/SearchResults';
 import UsersRoles from './pages/UsersRoles';
 import Alerts from './pages/Alerts';
 import ServiceStatus from './pages/ServiceStatus';
@@ -62,6 +64,8 @@ function App() {
             <Route path="projects/:projectId" element={<ProjectDashboard />} />
             <Route path="projects/:projectId/chat/:chatId" element={<ProjectConversation />} />
             <Route path="integrations" element={<Integrations />} />
+            <Route path="integrations/:integrationId" element={<IntegrationDetail />} />
+            <Route path="search" element={<SearchResults />} />
             <Route path="users" element={<UsersRoles />} />
             <Route path="alerts" element={<Alerts />} />
             <Route path="service-status" element={<ServiceStatus />} />
