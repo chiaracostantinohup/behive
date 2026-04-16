@@ -7,6 +7,7 @@ import NewChat from './pages/NewChat';
 import Chat from './pages/Chat';
 import ChatHistory from './pages/ChatHistory';
 import Agents from './pages/Agents';
+import AgentDetail from './pages/AgentDetail';
 import Projects from './pages/Projects';
 import Integrations from './pages/Integrations';
 import UsersRoles from './pages/UsersRoles';
@@ -52,6 +53,9 @@ function App() {
             <Route path="chat/new" element={<NewChat />} />
             <Route path="chat/:id" element={<Chat />} />
             <Route path="agents" element={<Agents />} />
+            <Route path="agents/:agentId" element={<AgentDetail />} />
+            <Route path="agents/:agentId/activity" element={<AgentDetail />} />
+            <Route path="agents/:agentId/settings" element={<AgentDetail />} />
             <Route path="projects" element={<Projects />} />
             <Route path="integrations" element={<Integrations />} />
             <Route path="users" element={<UsersRoles />} />
