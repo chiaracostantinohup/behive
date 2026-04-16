@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { HelpCircle, Bell, CheckCircle, AlertCircle, UserPlus, Database, X } from 'lucide-react';
+import { HelpCircle, Bell, CheckCircle, AlertCircle, UserPlus, Database, X, Search } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
@@ -7,6 +8,8 @@ import { ScrollArea } from './ui/scroll-area';
 import { cn } from '../lib/utils';
 
 export const Topbar = ({ title }) => {
+  const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState('');
   const [notifications, setNotifications] = useState([
     {
       id: '1',
@@ -71,14 +74,34 @@ export const Topbar = ({ title }) => {
   return (
     <div className="h-14 border-b border-border bg-surface flex items-center justify-between px-6">
       {/* Left side - Title */}
-      <div>
+      <div className="flex-shrink-0">
         {title && (
           <h2 className="text-sm font-medium text-foreground">{title}</h2>
         )}
       </div>
-      
+
+      {/* Center - Search */}
+      <div className="flex-1 flex justify-center px-4 max-w-md mx-auto">
+        <div className="relative w-full">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground-muted" />
+          <input
+            type="text"
+            placeholder="Cerca..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && searchQuery.trim()) {
+                navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+                setSearchQuery('');
+              }
+            }}
+            className="w-full pl-9 pr-3 py-1.5 text-sm bg-surface-elevated border border-border rounded-md text-foreground placeholder:text-foreground-muted focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30"
+          />
+        </div>
+      </div>
+
       {/* Right side - Icons */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 flex-shrink-0">
         <Button
           variant="ghost"
           size="icon"

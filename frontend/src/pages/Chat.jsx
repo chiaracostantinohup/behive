@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Button } from '../components/ui/button';
@@ -6,7 +6,12 @@ import { Textarea } from '../components/ui/textarea';
 import { Paperclip, Send, Loader2 } from 'lucide-react';
 import { cn } from '../lib/utils';
 import Topbar from '../components/Topbar';
-import { mockConversations } from '../data/mockConversations';
+import { useChatMessages } from '../hooks/useChatMessages';
+import { AgentRoutingLabel } from '../components/AgentRoutingLabel';
+import { ReasoningTrail } from '../components/ReasoningTrail';
+import { ToolResult } from '../components/ToolResult';
+import { CitationTag } from '../components/CitationTag';
+import { SuggestedAction } from '../components/SuggestedAction';
 
 // Agent configuration with colors
 const agentStyles = {
@@ -34,96 +39,16 @@ export const Chat = () => {
   const { id } = useParams();
   const location = useLocation();
   const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  
-  // Auto-detect agent based on message content (mock logic)
-  const detectAgent = (text) => {
-    const lowerText = text.toLowerCase();
-    if (lowerText.includes('cost') || lowerText.includes('budget') || lowerText.includes('financial') || lowerText.includes('finanziaria')) {
-      return 'finance';
-    } else if (lowerText.includes('marketing') || lowerText.includes('campaign') || lowerText.includes('campagna')) {
-      return 'marketing';
-    } else if (lowerText.includes('sales') || lowerText.includes('vendite') || lowerText.includes('pipeline')) {
-      return 'sales';
-    }
-    return 'finance'; // Default
-  };
-  
-  useEffect(() => {
-    // Check if this is a pre-existing conversation
-    if (mockConversations[id]) {
-      setMessages(mockConversations[id].messages);
-      return;
-    }
-    
-    // Initialize with message from NewChat if available
-    if (location.state?.initialMessage && messages.length === 0) {
-      const initialMessage = location.state.initialMessage;
-      
-      // Use selected agent if provided, otherwise auto-detect
-      const agentType = location.state?.selectedAgentId || detectAgent(initialMessage);
-      
-      // Add user message
-      setMessages([{
-        id: '1',
-        type: 'user',
-        content: initialMessage,
-        timestamp: new Date()
-      }]);
-      
-      // Simulate agent response
-      setTimeout(() => {
-        setMessages(prev => [...prev, {
-          id: '2',
-          type: 'agent',
-          agentType: agentType,
-          content: `Perfetto, sto analizzando la tua richiesta: "${initialMessage}". Ti preparerò un report dettagliato con tutti i dati rilevanti.`,
-          timestamp: new Date()
-        }]);
-        
-        // Add a follow-up with data
-        setTimeout(() => {
-          setMessages(prev => [...prev, {
-            id: '3',
-            type: 'agent',
-            agentType: agentType,
-            content: `Ecco i risultati principali:\n\n• Totale costi operativi Q1: €234.500\n• Variazione YoY: +12.3%\n• Categoria principale: Personale (68%)\n• Efficienza operativa: 87%\n\nVuoi un breakdown più dettagliato per centro di costo?`,
-            timestamp: new Date()
-          }]);
-        }, 2000);
-      }, 1000);
-    }
-  }, [id, location.state, messages.length]);
-  
+  const { messages, isLoading, sendMessage } = useChatMessages({
+    conversationId: id,
+    initialMessage: location.state?.initialMessage,
+    selectedAgentId: location.state?.selectedAgentId,
+  });
+
   const handleSend = () => {
     if (!message.trim()) return;
-    
-    const userMessage = {
-      id: Date.now().toString(),
-      type: 'user',
-      content: message,
-      timestamp: new Date()
-    };
-    
-    setMessages(prev => [...prev, userMessage]);
-    const detectedAgent = detectAgent(message);
+    sendMessage(message);
     setMessage('');
-    setIsLoading(true);
-    
-    // Simulate agent response
-    setTimeout(() => {
-      const agentMessage = {
-        id: (Date.now() + 1).toString(),
-        type: 'agent',
-        agentType: detectedAgent,
-        content: 'Sto generando il report dettagliato con il confronto YoY. Ti preparo anche la sintesi executive per il management.',
-        timestamp: new Date(),
-        isGenerating: true
-      };
-      setMessages(prev => [...prev, agentMessage]);
-      setIsLoading(false);
-    }, 1500);
   };
   
   return (
@@ -148,18 +73,18 @@ export const Chat = () => {
                 <div className="w-full max-w-3xl mb-6">
                   {/* Agent chip with message as single block */}
                   <div className="space-y-3">
-                    {/* Agent Chip */}
-                    <div
-                      className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold"
-                      style={{
-                        color: agentStyles[msg.agentType].textColor,
-                        backgroundColor: agentStyles[msg.agentType].bgColor,
-                        border: `1px solid ${agentStyles[msg.agentType].borderColor}`
-                      }}
-                    >
-                      {agentStyles[msg.agentType].name.toUpperCase()}
-                    </div>
-                    
+                    {/* Agent Routing Label */}
+                    <AgentRoutingLabel
+                      agentName={agentStyles[msg.agentType]?.name}
+                      routingType={msg.routingType || 'auto'}
+                      reason={msg.routingReason}
+                    />
+
+                    {/* Reasoning Trail (only if steps present) */}
+                    {msg.reasoningSteps?.length > 0 && (
+                      <ReasoningTrail steps={msg.reasoningSteps} isStreaming={false} />
+                    )}
+
                     {/* Agent Message */}
                     <div
                       className="px-5 py-4 rounded-lg bg-surface-elevated"
@@ -170,7 +95,25 @@ export const Chat = () => {
                       <p className="text-sm whitespace-pre-wrap leading-relaxed text-foreground">
                         {msg.content}
                       </p>
-                      
+
+                      {/* Tool Results */}
+                      {(msg.toolResults || []).map((tr, i) => (
+                        <ToolResult key={i} type={tr.type} data={tr.data} />
+                      ))}
+
+                      {/* Citations */}
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {(msg.citations || []).map((citation, i) => (
+                          <CitationTag key={i} {...citation} />
+                        ))}
+                      </div>
+
+                      {/* Suggested Actions */}
+                      <SuggestedAction
+                        actions={msg.suggestedActions || []}
+                        onSendMessage={(text) => { sendMessage(text); }}
+                      />
+
                       {/* Collaboration Indicators */}
                       {msg.collaboration && (
                         <div className="mt-3 pt-3 border-t border-border">
@@ -191,7 +134,7 @@ export const Chat = () => {
                           )}
                         </div>
                       )}
-                      
+
                       {msg.isGenerating && (
                         <div className="mt-3 flex items-center gap-2 text-xs text-foreground-muted">
                           <Loader2 className="h-3 w-3 animate-spin" />
