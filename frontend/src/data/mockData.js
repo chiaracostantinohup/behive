@@ -17,12 +17,12 @@ export const mockAgents = [
     status: 'active',
     isNearLimit: true, // 420/500 = 84%
     dataSources: [
-      { id: 'ds-f1', name: 'SAP Business One', status: 'healthy', lastSync: new Date('2026-04-16T06:00:00') },
+      { id: 'ds-f1', name: 'SAP Business One', status: 'degraded', lastSync: new Date('2026-04-16T06:00:00') },
       { id: 'ds-f2', name: 'PostgreSQL – Finance DB', status: 'healthy', lastSync: new Date('2026-04-16T05:45:00') },
-      { id: 'ds-f3', name: 'Google Drive – Bilanci', status: 'degraded', lastSync: new Date('2026-04-15T22:10:00') },
+      { id: 'ds-f3', name: 'Google Drive – Bilanci', status: 'healthy', lastSync: new Date('2026-04-15T22:10:00') },
     ],
     knowledgeCoverage: {
-      percentage: 82,
+      percentage: 66, // avg(95+88+60+20)/4 = 65.75 ≈ 66
       domains: [
         { name: 'Analisi costi', percentage: 95, readiness: 'ready' },
         { name: 'Forecast & budget', percentage: 88, readiness: 'ready' },
@@ -62,7 +62,7 @@ export const mockAgents = [
       { id: 'ds-m3', name: 'Slack – Marketing', status: 'healthy', lastSync: new Date('2026-04-16T07:05:00') },
     ],
     knowledgeCoverage: {
-      percentage: 74,
+      percentage: 64, // avg(90+85+55+25)/4 = 63.75 ≈ 64
       domains: [
         { name: 'Campagne digital', percentage: 90, readiness: 'ready' },
         { name: 'Lead generation', percentage: 85, readiness: 'ready' },
@@ -101,7 +101,7 @@ export const mockAgents = [
       { id: 'ds-s2', name: 'HubSpot', status: 'healthy', lastSync: new Date('2026-04-16T07:00:00') },
     ],
     knowledgeCoverage: {
-      percentage: 68,
+      percentage: 58, // avg(92+78+48+15)/4 = 58.25 ≈ 58
       domains: [
         { name: 'Pipeline CRM', percentage: 92, readiness: 'ready' },
         { name: 'Forecast vendite', percentage: 78, readiness: 'ready' },
@@ -133,14 +133,14 @@ export const mockAgents = [
     requestsUsed: 310,
     requestsTotal: 500,
     status: 'active',
-    isNearLimit: true, // 310/500 = 62%
+    isNearLimit: false, // 310/500 = 62% — below ~80% near-limit threshold
     dataSources: [
       { id: 'ds-su1', name: 'Zendesk', status: 'healthy', lastSync: new Date('2026-04-16T07:15:00') },
       { id: 'ds-su2', name: 'Slack – Support', status: 'healthy', lastSync: new Date('2026-04-16T07:10:00') },
-      { id: 'ds-su3', name: 'PostgreSQL – Ticket DB', status: 'critical', lastSync: new Date('2026-04-14T18:30:00') },
+      { id: 'ds-su3', name: 'PostgreSQL – Ticket DB', status: 'healthy', lastSync: new Date('2026-04-14T18:30:00') },
     ],
     knowledgeCoverage: {
-      percentage: 71,
+      percentage: 59, // avg(88+76+52+18)/4 = 58.5 ≈ 59
       domains: [
         { name: 'Gestione ticket', percentage: 88, readiness: 'ready' },
         { name: 'FAQ & knowledge base', percentage: 76, readiness: 'ready' },
@@ -796,9 +796,9 @@ export const mockEnrichedConversations = {
         suggestedActions: [],
         timestamp: new Date('2026-04-10T09:00:15'),
       },
-      // ── User message (unchanged) ───────────────────────────────────────────
+      // ── Finance Agent initial analysis response ────────────────────────────
       {
-        id: 'm3-user-proxy',
+        id: 'm3-finance-response',
         type: 'agent',
         agentType: 'finance',
         content:
@@ -911,6 +911,15 @@ export const mockEnrichedConversations = {
           "Sì, vorrei capire meglio l'aumento del 12.3% rispetto all'anno scorso. Quali sono i driver principali di questa crescita?",
         timestamp: new Date('2026-04-10T09:02:00'),
       },
+      // ── Plain agent message m5 (from mockConversations) ───────────────────
+      {
+        id: 'm5',
+        type: 'agent',
+        agentType: 'finance',
+        content:
+          "Ottima domanda. Analizziamo i driver principali della crescita:\n\n🔍 DRIVER DI CRESCITA (+€25.700):\n\n1. **Personale (+€18.200 | 70% dell'aumento)**\n   - 3 nuove assunzioni in Q1\n   - Incrementi contrattuali annuali\n   - Bonus Q4 2025 pagati in Q1\n\n2. **Infrastruttura IT (+€5.800 | 23%)**\n   - Migrazione cloud completata\n   - Nuove licenze SaaS enterprise\n\n3. **Marketing (+€1.200 | 5%)**\n   - Incremento budget campagne digitali\n\n4. **Spese generali (+€500 | 2%)**\n   - Aumento costi energia/ufficio",
+        timestamp: new Date('2026-04-10T09:02:30'),
+      },
       // ── Enriched agent message 3 — WorkflowFragment ────────────────────────
       {
         id: 'm-enriched-3',
@@ -1018,6 +1027,105 @@ export const mockEnrichedConversations = {
         content:
           'Verifico subito i dati di budget vs actual:\n\n✅ NUOVE ASSUNZIONI\n- Budget: 2 assunzioni (€12.000), Actual: 3 (€18.200) → Scostamento +€6.200\n\n✅ MIGRAZIONE CLOUD\n- Budget: €28.000, Actual: €35.175 → Scostamento +€7.175\n\n⚠️ Totale scostamento: +€13.375 (+5.7% over budget)',
         timestamp: new Date('2026-04-10T09:04:45'),
+      },
+      // ── Plain messages m8–m21 (from mockConversations) ────────────────────
+      {
+        id: 'm8',
+        type: 'user',
+        content: 'Capisco. Quali sono le previsioni per Q2? Rientreremo nel budget previsto?',
+        timestamp: new Date('2026-04-10T09:06:00'),
+      },
+      {
+        id: 'm9',
+        type: 'agent',
+        agentType: 'finance',
+        content:
+          "Analizzo il forecast Q2 basato sui trend attuali:\n\n📊 **FORECAST Q2 2026**\n\n💰 Budget previsto Q2: €225.000\n💰 Forecast actual Q2: €238.900\n\n⚠️ **Previsto over budget: +€13.900 (6.2%)**\n\n🔴 FATTORI CRITICI:\n• Costi personale rimangono elevati (3 assunzioni permanenti)\n• Cloud: costi ricorrenti ora a regime\n• Marketing: campagna lancio prodotto pianificata\n\n🟢 OPPORTUNITÀ RISPARMIO:\n• Rinegoziazione contratti fornitori: -€8.000\n• Ottimizzazione licenze software: -€3.500\n• **Potenziale saving totale: -€11.500**",
+        timestamp: new Date('2026-04-10T09:07:15'),
+      },
+      {
+        id: 'm10',
+        type: 'user',
+        content: 'Ottimo. Puoi prepararmi un report executive da presentare al board? Max 1 pagina con i punti chiave.',
+        timestamp: new Date('2026-04-10T09:08:30'),
+      },
+      {
+        id: 'm11',
+        type: 'agent',
+        agentType: 'finance',
+        content:
+          "Certamente! Ecco il report executive summary:\n\n📄 **EXECUTIVE SUMMARY - COSTI OPERATIVI Q1 2026**\n\n**SITUAZIONE ATTUALE**\n• Costi operativi Q1: €234.500 (+12.3% YoY)\n• Scostamento da budget: +€13.375 (+5.7%)\n• Efficienza operativa: 87%\n\n**DRIVER PRINCIPALI**\n• Personale (68%): 3 nuove assunzioni vs 2 pianificate\n• IT Infrastructure (15%): migrazione cloud completata\n• Costi one-time: €7.175 (non ricorrenti)\n\n**OUTLOOK Q2**\n• Forecast: €238.900 (vs budget €225.000)\n• Over budget previsto: +6.2%\n• Piano saving identificato: -€11.500\n\n**RACCOMANDAZIONI**\n1. Implementare piano risparmio immediato\n2. Freeze hiring temporaneo (salvo posizioni critiche)\n3. Revisione contratti fornitori entro fine aprile",
+        timestamp: new Date('2026-04-10T09:09:00'),
+      },
+      {
+        id: 'm12',
+        type: 'user',
+        content: 'Perfetto. Riguardo al piano risparmio da €11.500, quali contratti fornitori specifici dovremmo rinegoziare?',
+        timestamp: new Date('2026-04-10T09:11:00'),
+      },
+      {
+        id: 'm13',
+        type: 'agent',
+        agentType: 'finance',
+        content:
+          "Ecco l'analisi dettagliata dei contratti da rinegoziare:\n\n💼 **CONTRATTI PRIORITARI**\n\n1. **AWS Cloud Services** - €4.200/trimestre\n   - Contratto attuale: pay-as-you-go\n   - Opportunità: Reserved Instances\n   - **Saving potenziale: -€3.800/trim**\n\n2. **Salesforce Enterprise** - €2.800/trimestre\n   - Licenze: 45 utenti (utilizzo effettivo: 32)\n   - Opportunità: riduzione licenze\n   - **Saving potenziale: -€2.100/trim**\n\n3. **Microsoft 365 Business** - €1.650/trimestre\n   - Opportunità: passaggio a piano annuale\n   - **Saving potenziale: -€600/trim**\n\n4. **Fornitore energia** - €980/trimestre\n   - Contratto in scadenza a maggio\n   - **Saving potenziale: -€350/trim**\n\n**TOTALE SAVING: €6.850/trim** (€27.400/anno)",
+        timestamp: new Date('2026-04-10T09:12:00'),
+      },
+      {
+        id: 'm14',
+        type: 'user',
+        content: 'Molto bene. Chi dovrebbe occuparsi delle rinegoziazioni? E quali sono i tempi stimati?',
+        timestamp: new Date('2026-04-10T09:14:00'),
+      },
+      {
+        id: 'm15',
+        type: 'agent',
+        agentType: 'finance',
+        content:
+          "📋 **PIANO OPERATIVO RINEGOZIAZIONI**\n\n**RESPONSABILITÀ**\n• AWS: CTO + Procurement\n• Salesforce: Head of Sales + IT Manager  \n• Microsoft: IT Manager\n• Energia: Facility Manager + CFO\n\n**TIMELINE**\n\n🗓️ **Settimana 1-2 (15-26 Aprile)**\n- Analisi utilizzo dettagliato\n- Preparazione business case\n- Contatto fornitori\n\n🗓️ **Settimana 3-4 (29 Apr - 10 Mag)**\n- Negoziazioni attive\n- Revisione proposte\n- Approvazione contratti\n\n🗓️ **Entro 15 Maggio**\n- Firma nuovi contratti\n- Implementazione cambiamenti\n\n**SAVINGS ATTIVI DA:** 1 Giugno 2026\n**IMPACT SU Q2:** Parziale (-€2.200)\n**IMPACT SU Q3-Q4:** Completo (-€6.850/trim)",
+        timestamp: new Date('2026-04-10T09:15:30'),
+      },
+      {
+        id: 'm16',
+        type: 'user',
+        content: "Ottimo lavoro. Una domanda: l'efficienza operativa all'87% è buona rispetto ai nostri competitor?",
+        timestamp: new Date('2026-04-10T09:17:00'),
+      },
+      {
+        id: 'm17',
+        type: 'agent',
+        agentType: 'finance',
+        content:
+          "📊 **BENCHMARK EFFICIENZA OPERATIVA**\n\n**LA VOSTRA POSIZIONE: 87%**\n\n🏆 **CONFRONTO SETTORE (SaaS B2B)**\n• Top performer (90-95%): ⬆️ +3-8 punti sopra\n• Average di settore (82-88%): ✅ In linea/leggermente sopra\n• Under performer (<80%): ⬆️ +7 punti sopra\n\n**ANALISI:**\n✅ **PUNTI DI FORZA**\n• Costi IT ben ottimizzati\n• Revenue per employee: €145K (media settore: €130K)\n• Gross margin: 76% (media: 72%)\n\n⚠️ **AREE DI MIGLIORAMENTO**\n• CAC (Customer Acquisition Cost): 15% sopra media\n• Time-to-market: 10% più lento dei top performer\n• Operational overhead: 8% personale in ruoli non-product\n\n**OPPORTUNITÀ:**\nCon le ottimizzazioni pianificate, potremmo raggiungere il **90% entro Q4 2026**",
+        timestamp: new Date('2026-04-10T09:18:15'),
+      },
+      {
+        id: 'm18',
+        type: 'user',
+        content: 'Interessante. Puoi creare un dashboard che mi mostri questi KPI in tempo reale? Quali metriche dovremmo tracciare?',
+        timestamp: new Date('2026-04-10T09:20:00'),
+      },
+      {
+        id: 'm19',
+        type: 'agent',
+        agentType: 'finance',
+        content:
+          "📊 **DASHBOARD KPI CONSIGLIATO**\n\n**SEZIONE 1: FINANCIAL HEALTH**\n• Costi operativi totali (mensile/trimestrale)\n• Budget vs Actual (% scostamento)\n• Burn rate\n• Runway (mesi)\n• Cash flow operativo\n\n**SEZIONE 2: OPERATIONAL EFFICIENCY**\n• Efficienza operativa (%)\n• Revenue per employee\n• Costo per customer servito\n• Gross margin %\n\n**SEZIONE 3: GROWTH METRICS**\n• MRR/ARR growth rate\n• CAC (Customer Acquisition Cost)\n• LTV:CAC ratio\n• Churn rate\n\n**SEZIONE 4: COST BREAKDOWN**\n• Personale (headcount + costo)\n• IT Infrastructure\n• Marketing spend\n• Altre categorie\n\n**AGGIORNAMENTO:** Real-time per dati operativi, daily per dati finanziari\n**FORMATO:** Power BI dashboard con accesso mobile\n\nVuoi che proceda con l'implementazione?",
+        timestamp: new Date('2026-04-10T09:21:00'),
+      },
+      {
+        id: 'm20',
+        type: 'user',
+        content: 'Sì perfetto, procedi pure. Nel frattempo, puoi mandarmi via email il report executive che hai preparato?',
+        timestamp: new Date('2026-04-10T09:22:30'),
+      },
+      {
+        id: 'm21',
+        type: 'agent',
+        agentType: 'finance',
+        content:
+          "✅ Perfetto! Ho completato entrambe le azioni:\n\n📧 **EMAIL INVIATA**\n- Destinatario: marco@company.com\n- Oggetto: \"Executive Summary - Costi Operativi Q1 2026\"\n- Allegati: \n  • Report_Q1_2026_Executive.pdf (1 pagina)\n  • Analisi_Dettagliata_Q1.xlsx (dati completi)\n  • Piano_Saving_Q2.pdf (action plan)\n\n📊 **DASHBOARD IN SVILUPPO**\n- Piattaforma: Power BI\n- Timeline: 5 giorni lavorativi\n- Preview disponibile: 17 Aprile\n- Go-live: 22 Aprile\n\nRiceverai una notifica quando il dashboard sarà pronto per il test.\n\nC'è altro su cui posso assisterti per questa analisi?",
+        timestamp: new Date('2026-04-10T09:23:00'),
       },
       {
         id: 'm22',
