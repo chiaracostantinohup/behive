@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { Card } from '../components/ui/card';
 import { Switch } from '../components/ui/switch';
 import { Checkbox } from '../components/ui/checkbox';
-import { Label } from '../components/ui/label';
 import { Mail, MessageSquare, Activity, TrendingUp, Users, BookOpen } from 'lucide-react';
 import Topbar from '../components/Topbar';
 
