@@ -9,6 +9,8 @@ import ChatHistory from './pages/ChatHistory';
 import Agents from './pages/Agents';
 import AgentDetail from './pages/AgentDetail';
 import Projects from './pages/Projects';
+import ProjectDashboard from './pages/ProjectDashboard';
+import ProjectConversation from './pages/ProjectConversation';
 import Integrations from './pages/Integrations';
 import UsersRoles from './pages/UsersRoles';
 import Alerts from './pages/Alerts';
@@ -57,6 +59,8 @@ function App() {
             <Route path="agents/:agentId/activity" element={<AgentDetail />} />
             <Route path="agents/:agentId/settings" element={<AgentDetail />} />
             <Route path="projects" element={<Projects />} />
+            <Route path="projects/:projectId" element={<ProjectDashboard />} />
+            <Route path="projects/:projectId/chat/:chatId" element={<ProjectConversation />} />
             <Route path="integrations" element={<Integrations />} />
             <Route path="users" element={<UsersRoles />} />
             <Route path="alerts" element={<Alerts />} />
