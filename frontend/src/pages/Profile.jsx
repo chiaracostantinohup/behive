@@ -24,10 +24,24 @@ export const Profile = () => {
   const handleAvatarChange = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error('File troppo grande (max 2 MB)');
+      e.target.value = '';
+      return;
+    }
+    if (!['image/jpeg', 'image/png', 'image/gif', 'image/webp'].includes(file.type)) {
+      toast.error('Formato non supportato. Usa JPG, PNG, GIF o WebP.');
+      e.target.value = '';
+      return;
+    }
     const reader = new FileReader();
     reader.onload = (event) => {
       setAvatarUrl(event.target.result);
       toast.success('Avatar aggiornato');
+      e.target.value = '';
+    };
+    reader.onerror = () => {
+      toast.error("Errore nel caricamento dell'immagine");
     };
     reader.readAsDataURL(file);
   };
