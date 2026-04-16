@@ -20,7 +20,11 @@ import ServiceStatus from './pages/ServiceStatus';
 import Payments from './pages/Payments';
 import Help from './pages/Help';
 import Profile from './pages/Profile';
-import Onboarding from './pages/Onboarding';
+import OnboardingHome from './pages/OnboardingHome';
+import SetupWizard from './pages/SetupWizard';
+import CaptureSession from './pages/CaptureSession';
+import SessionList from './pages/SessionList';
+import OnboardingReview from './pages/OnboardingReview';
 import Marketplace from './pages/Marketplace';
 import './App.css';
 
@@ -74,7 +78,13 @@ function App() {
             <Route path="payments" element={<Payments />} />
             <Route path="help" element={<Help />} />
             <Route path="profile" element={<Profile />} />
-            <Route path="onboarding" element={<Onboarding />} />
+            <Route path="onboarding" element={<OnboardingHome />} />
+            <Route path="onboarding/setup" element={<SetupWizard />} />
+            <Route path="onboarding/sessions" element={<SessionList />} />
+            <Route path="onboarding/session/:sessionId" element={<CaptureSession />} />
+            <Route path="onboarding/review" element={<OnboardingReview />} />
+            <Route path="onboarding/review/glossary" element={<OnboardingReview />} />
+            <Route path="onboarding/review/catalog" element={<OnboardingReview />} />
             <Route path="marketplace" element={<Marketplace />} />
           </Route>
           
