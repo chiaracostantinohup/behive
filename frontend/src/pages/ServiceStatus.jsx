@@ -74,7 +74,9 @@ export const ServiceStatus = () => {
               </div>
               <div className="text-right">
                 <div className={`text-3xl font-bold ${isAllOperational ? 'text-success' : 'text-warning'}`}>
-                  {Math.round((healthyCount / connectedIntegrations.length) * 100)}%
+                  {connectedIntegrations.length > 0
+                    ? `${Math.round((healthyCount / connectedIntegrations.length) * 100)}%`
+                    : '—'}
                 </div>
                 <p className="text-xs text-foreground-muted">Salute Generale</p>
               </div>
@@ -131,12 +133,12 @@ export const ServiceStatus = () => {
                           <p className="text-xs text-foreground-subtle mb-0.5">Observer</p>
                           <Badge
                             variant="outline"
-                            className={OBSERVER_STATUS[integration.id] === 'active'
+                            className={(OBSERVER_STATUS[integration.id] ?? 'paused') === 'active'
                               ? 'text-success border-success text-xs'
                               : 'text-foreground-muted border-border text-xs'
                             }
                           >
-                            {OBSERVER_STATUS[integration.id] === 'active' ? 'Attivo' : 'In pausa'}
+                            {(OBSERVER_STATUS[integration.id] ?? 'paused') === 'active' ? 'Attivo' : 'In pausa'}
                           </Badge>
                         </div>
                       </div>
