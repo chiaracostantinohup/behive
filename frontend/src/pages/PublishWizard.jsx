@@ -52,7 +52,7 @@ const StepIndicator = ({ current }) => (
 );
 
 // ── Step 1 ─────────────────────────────────────────────────────────────────
-const Step1 = ({ selected, setSelected, onNext }) => {
+const Step1 = ({ selected, setSelected }) => {
   const [collapsed, setCollapsed] = useState({ workflows: false, glossary: false, catalog: false });
 
   const toggleItem = (key) =>
@@ -300,7 +300,7 @@ const Step3 = ({ meta, setMeta }) => {
 };
 
 // ── Step 4 ─────────────────────────────────────────────────────────────────
-const Step4 = ({ meta, statuses, selectedArtifacts }) => {
+const Step4 = ({ meta, statuses }) => {
   const approvedArtifacts = mockAnonymizationPreviews.filter(p => statuses[p.id] === 'approved');
 
   return (
@@ -398,7 +398,6 @@ export const PublishWizard = () => {
               <Step1
                 selected={selectedArtifacts}
                 setSelected={setSelectedArtifacts}
-                onNext={() => setStep(1)}
               />
             )}
             {step === 1 && (
@@ -409,7 +408,6 @@ export const PublishWizard = () => {
               <Step4
                 meta={meta}
                 statuses={anonStatuses}
-                selectedArtifacts={selectedArtifacts}
               />
             )}
           </motion.div>
