@@ -25,7 +25,11 @@ import SetupWizard from './pages/SetupWizard';
 import CaptureSession from './pages/CaptureSession';
 import SessionList from './pages/SessionList';
 import OnboardingReview from './pages/OnboardingReview';
-import Marketplace from './pages/Marketplace';
+import MarketplaceBrowse from './pages/MarketplaceBrowse';
+import TemplatePreview from './pages/TemplatePreview';
+import MyPublications from './pages/MyPublications';
+import PublishWizard from './pages/PublishWizard';
+import AcquiredTemplates from './pages/AcquiredTemplates';
 import './App.css';
 
 function App() {
@@ -85,7 +89,11 @@ function App() {
             <Route path="onboarding/review" element={<OnboardingReview />} />
             <Route path="onboarding/review/glossary" element={<OnboardingReview />} />
             <Route path="onboarding/review/catalog" element={<OnboardingReview />} />
-            <Route path="marketplace" element={<Marketplace />} />
+            <Route path="marketplace" element={<MarketplaceBrowse />} />
+            <Route path="marketplace/publications" element={<MyPublications />} />
+            <Route path="marketplace/publish" element={<PublishWizard />} />
+            <Route path="marketplace/acquired" element={<AcquiredTemplates />} />
+            <Route path="marketplace/:templateId" element={<TemplatePreview />} />
           </Route>
           
           <Route path="*" element={<Navigate to={isAuthenticated ? "/chat" : "/login"} replace />} />
