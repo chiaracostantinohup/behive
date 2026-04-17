@@ -33,7 +33,7 @@ export const MarketplaceBrowse = () => {
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState('relevance');
 
-  const toggleArr = (arr, setArr, val) =>
+  const toggleArr = (setArr, val) =>
     setArr(prev => prev.includes(val) ? prev.filter(x => x !== val) : [...prev, val]);
 
   const resetFilters = () => {
@@ -124,7 +124,7 @@ export const MarketplaceBrowse = () => {
                     <input
                       type="checkbox"
                       checked={industries.includes(ind)}
-                      onChange={() => toggleArr(industries, setIndustries, ind)}
+                      onChange={() => toggleArr(setIndustries, ind)}
                       className="accent-primary"
                     />
                     {ind}
@@ -140,7 +140,7 @@ export const MarketplaceBrowse = () => {
                     <input
                       type="checkbox"
                       checked={domains.includes(d)}
-                      onChange={() => toggleArr(domains, setDomains, d)}
+                      onChange={() => toggleArr(setDomains, d)}
                       className="accent-primary"
                     />
                     {d}
@@ -156,7 +156,7 @@ export const MarketplaceBrowse = () => {
                     <input
                       type="checkbox"
                       checked={types.includes(tp)}
-                      onChange={() => toggleArr(types, setTypes, tp)}
+                      onChange={() => toggleArr(setTypes, tp)}
                       className="accent-primary"
                     />
                     {TYPE_LABELS[tp]}
