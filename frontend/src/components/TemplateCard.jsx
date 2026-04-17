@@ -1,7 +1,6 @@
 // frontend/src/components/TemplateCard.jsx
 import React from 'react';
 import { Card } from './ui/card';
-import { Badge } from './ui/badge';
 import { cn } from '../lib/utils';
 
 const TYPE_STYLES = {
