@@ -33,7 +33,7 @@ function buildSegments(originalText, replacements) {
 function buildAnonymizedText(originalText, replacements) {
   let result = originalText;
   for (const { original, replacement } of replacements) {
-    result = result.replace(original, replacement);
+    result = result.split(original).join(replacement);
   }
   return result;
 }
@@ -118,7 +118,10 @@ export const AnonymizationDiff = ({ originalText, replacements, status, onStatus
             >
               Salva
             </Button>
-            <Button size="sm" variant="outline" onClick={() => setEditMode(false)}>
+            <Button size="sm" variant="outline" onClick={() => {
+              setEditMode(false);
+              setEditValue(buildAnonymizedText(originalText, replacements));
+            }}>
               Annulla
             </Button>
           </>
