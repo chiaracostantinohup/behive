@@ -165,7 +165,7 @@ export const mockTemplates = [
     description: 'Definizioni operative per team Finance su chiusure mensili e reporting direzionale.',
     type: 'glossary',
     industry: 'Finance',
-    domain: 'HR',
+    domain: 'Finance',
     artifacts: { workflows: 0, terms: 38, entities: 0 },
     rating: 4.3,
     reviews: 9,
