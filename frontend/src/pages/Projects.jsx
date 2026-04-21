@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Card } from '../components/ui/card';
@@ -7,7 +7,14 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Textarea } from '../components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../components/ui/dialog';
-import { FolderKanban, MessageSquare, FileText, Clock, Plus, Settings, X } from 'lucide-react';
+import { FolderKanban, MessageSquare, FileText, Clock, Plus, Settings, X, MoreHorizontal } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '../components/ui/dropdown-menu';
+import { ShareContext } from '../context/ShareContext';
 import Topbar from '../components/Topbar';
 
 export const Projects = () => {
@@ -17,6 +24,8 @@ export const Projects = () => {
   const [projectName, setProjectName] = useState('');
   const [projectInstructions, setProjectInstructions] = useState('');
   const [attachedFiles, setAttachedFiles] = useState([]);
+
+  const { openShare } = useContext(ShareContext);
 
   const projects = [
   {
@@ -103,14 +112,38 @@ export const Projects = () => {
                       <h3 className="font-semibold text-foreground">{project.name}</h3>
                     </div>
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="opacity-0 group-hover:opacity-100 transition-smooth"
-                    onClick={() => handleOpenSettings(project)}>
-
-                    <Settings className="h-4 w-4" />
-                  </Button>
+                  <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-smooth">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={(e) => { e.preventDefault(); handleOpenSettings(project); }}
+                    >
+                      <Settings className="h-4 w-4" />
+                    </Button>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={(e) => e.preventDefault()}
+                        >
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem
+                          onClick={(e) => { e.preventDefault(); openShare(project.id, 'project', 'link'); }}
+                        >
+                          Condividi link
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={(e) => { e.preventDefault(); openShare(project.id, 'project', 'group'); }}
+                        >
+                          Crea gruppo
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
                 </div>
                 
                 <p className="text-sm text-foreground-muted mb-4">{project.description}</p>
