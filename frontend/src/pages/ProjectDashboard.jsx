@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { mockProjects } from '../data/mockData';
 import { PinnedInsightCard } from '../components/PinnedInsightCard';
@@ -9,10 +9,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { Textarea } from '../components/ui/textarea';
 import { Label } from '../components/ui/label';
 import { motion } from 'framer-motion';
-import { Settings, FileText, Plus, Edit2, MessageSquare, X } from 'lucide-react';
+import { Settings, FileText, Plus, Edit2, MessageSquare, X, Share2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '../lib/utils';
 import Topbar from '../components/Topbar';
+import { ShareContext } from '../context/ShareContext';
 
 const agentTypeColors = {
   finance: '#00E5A0',
@@ -31,8 +32,9 @@ function formatTimestamp(ts) {
   }
 }
 
-export const ProjectDashboard = () => {
-  const { projectId } = useParams();
+export const ProjectDashboard = ({ readOnly = false, projectId: propId }) => {
+  const params = useParams();
+  const projectId = propId ?? params.projectId;
   const navigate = useNavigate();
 
   const project = mockProjects.find((p) => p.id === projectId);
@@ -54,6 +56,8 @@ export const ProjectDashboard = () => {
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [settingsInstructions, setSettingsInstructions] = useState(project?.instructions || '');
   const [settingsFiles, setSettingsFiles] = useState(project?.contextFiles || []);
+
+  const { openShare } = useContext(ShareContext);
 
   if (!project) {
     return (
@@ -122,26 +126,30 @@ export const ProjectDashboard = () => {
                 ) : (
                   <>
                     <h1 className="text-3xl font-semibold text-foreground">{projectName}</h1>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8"
-                      onClick={() => { setEditNameDraft(projectName); setIsEditingName(true); }}
-                    >
-                      <Edit2 className="h-4 w-4 text-foreground-muted" />
-                    </Button>
+                    {!readOnly && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={() => { setEditNameDraft(projectName); setIsEditingName(true); }}
+                      >
+                        <Edit2 className="h-4 w-4 text-foreground-muted" />
+                      </Button>
+                    )}
                   </>
                 )}
               </div>
 
               {/* Collapsible instructions */}
               <div>
+                {!readOnly && (
                 <button
                   className="text-sm text-primary hover:underline"
                   onClick={() => setShowInstructions((v) => !v)}
                 >
                   Modifica istruzioni
                 </button>
+                )}
                 {showInstructions && (
                   <div className="mt-2 space-y-2">
                     <Textarea
@@ -165,20 +173,35 @@ export const ProjectDashboard = () => {
 
             {/* Header actions */}
             <div className="flex items-center gap-2 shrink-0">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setShowSettingsModal(true)}
-              >
-                <Settings className="h-5 w-5" />
-              </Button>
-              <Button
-                variant="premium"
-                onClick={() => navigate(`/projects/${projectId}/chat/new`)}
-              >
-                <MessageSquare className="h-4 w-4 mr-2" />
-                Nuova Chat
-              </Button>
+              {!readOnly && (
+                <>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setShowSettingsModal(true)}
+                  >
+                    <Settings className="h-5 w-5" />
+                  </Button>
+                  <Button
+                    variant="premium"
+                    onClick={() => navigate(`/projects/${projectId}/chat/new`)}
+                  >
+                    <MessageSquare className="h-4 w-4 mr-2" />
+                    Nuova Chat
+                  </Button>
+                </>
+              )}
+              {!readOnly && (
+                <Button variant="outline" size="sm" onClick={() => openShare(projectId, 'project')}>
+                  <Share2 className="h-4 w-4 mr-2" />
+                  Condividi
+                </Button>
+              )}
+              {readOnly && (
+                <div className="px-3 py-1.5 rounded border border-border bg-surface-elevated text-xs text-foreground-muted">
+                  Sola lettura
+                </div>
+              )}
             </div>
           </div>
 
