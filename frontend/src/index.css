@@ -67,6 +67,54 @@
 }
 
 @layer base {
+  .light {
+    --background: 0 0% 97%;
+    --surface: 0 0% 100%;
+    --surface-elevated: 0 0% 95%;
+    --foreground: 0 0% 9%;
+    --foreground-muted: 0 0% 40%;
+    --foreground-subtle: 0 0% 55%;
+
+    --primary: 232 100% 53%;
+    --primary-hover: 232 100% 48%;
+    --primary-foreground: 0 0% 100%;
+
+    --agent-finance: 259 30% 78%;
+    --agent-marketing: 262 28% 80%;
+    --agent-sales: 280 30% 78%;
+    --agent-support: 200 30% 78%;
+
+    --secondary: 0 0% 92%;
+    --secondary-foreground: 0 0% 9%;
+    --muted: 0 0% 94%;
+    --muted-foreground: 0 0% 40%;
+    --accent: 218 88% 50%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 72% 46%;
+    --destructive-foreground: 0 0% 100%;
+    --success: 142 71% 35%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 42%;
+    --warning-foreground: 0 0% 100%;
+
+    --border: 0 0% 87%;
+    --border-subtle: 0 0% 92%;
+    --input: 0 0% 90%;
+    --ring: 218 88% 50%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 9%;
+
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.08);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.12);
+    --shadow-glow: 0 0 20px rgb(15 38 255 / 0.12);
+  }
+}
+
+@layer base {
   * {
     @apply border-border;
   }
@@ -78,7 +126,11 @@
   html.dark {
     color-scheme: dark;
   }
-  
+
+  html.light {
+    color-scheme: light;
+  }
+
   body {
     @apply bg-background text-foreground;
     font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
