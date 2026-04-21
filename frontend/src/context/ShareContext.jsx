@@ -33,6 +33,14 @@ export function ShareProvider({ children }) {
     setTokenRegistry((prev) => ({ ...prev, [token]: { resourceId, resourceType } }));
   }, []);
 
+  const unregisterToken = useCallback((token) => {
+    setTokenRegistry((prev) => {
+      const next = { ...prev };
+      delete next[token];
+      return next;
+    });
+  }, []);
+
   const resolveToken = useCallback(
     (token) => tokenRegistry[token] ?? null,
     [tokenRegistry]
@@ -70,7 +78,7 @@ export function ShareProvider({ children }) {
       value={{
         modal, openShare, closeShare,
         getSharing, setSharing,
-        registerToken, resolveToken,
+        registerToken, unregisterToken, resolveToken,
         addGroupResource, updateGroupMembers, getGroupInfo,
       }}
     >

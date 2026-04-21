@@ -14,7 +14,9 @@ export function useShare(resourceId, resourceType) {
   };
 
   const revokeLink = () => {
+    const currentToken = sharing.readLink;
     ctx.setSharing(resourceId, (s) => ({ ...s, readLink: null }));
+    if (currentToken) ctx.unregisterToken(currentToken);
   };
 
   const createGroup = (memberIds) => {
