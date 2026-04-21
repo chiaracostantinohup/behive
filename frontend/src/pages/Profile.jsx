@@ -6,7 +6,8 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Switch } from '../components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
-import { User, Building2, FileText, Mail, Phone, MapPin, Calendar, Bell, Camera } from 'lucide-react';
+import { User, Building2, FileText, Mail, Phone, MapPin, Calendar, Bell, Camera, Palette } from 'lucide-react';
+import ThemeToggle from '../components/ThemeToggle';
 import { toast } from 'sonner';
 import Topbar from '../components/Topbar';
 
@@ -264,6 +265,26 @@ export const Profile = () => {
                   Salva Modifiche
                 </Button>
               </div>
+            </Card>
+          </motion.div>
+
+          {/* Aspetto */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.35 }}
+          >
+            <Card className="p-6">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-2 rounded bg-surface-elevated">
+                  <Palette className="h-5 w-5 text-foreground-muted" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-semibold text-foreground">Aspetto</h2>
+                  <p className="text-sm text-foreground-muted mt-0.5">Scegli il tema dell'interfaccia</p>
+                </div>
+              </div>
+              <ThemeToggle />
             </Card>
           </motion.div>
 
