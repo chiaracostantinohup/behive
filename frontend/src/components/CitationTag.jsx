@@ -22,6 +22,9 @@ export const CitationTag = ({ source, accessMethod, timestamp, queryMetadata }) 
 
   const label = ACCESS_METHOD_LABELS[accessMethod] ?? accessMethod;
   const Icon = getIcon(accessMethod);
+  const timestampStr = timestamp instanceof Date
+    ? timestamp.toLocaleString()
+    : String(timestamp ?? '');
 
   return (
     <span className="inline-block">
@@ -37,14 +40,14 @@ export const CitationTag = ({ source, accessMethod, timestamp, queryMetadata }) 
         aria-expanded={expanded}
       >
         <Icon style={{ width: 10, height: 10 }} className="flex-shrink-0" />
-        <span>{source} · {label} · {timestamp}</span>
+        <span>{source} · {label} · {timestampStr}</span>
       </span>
 
       {expanded && (
         <div className="mt-1 bg-surface border border-border rounded-md p-2 text-xs text-foreground-muted space-y-0.5">
           <div><span className="font-medium text-foreground">Fonte:</span> {source}</div>
           <div><span className="font-medium text-foreground">Metodo:</span> {label}</div>
-          <div><span className="font-medium text-foreground">Timestamp:</span> {timestamp}</div>
+          <div><span className="font-medium text-foreground">Timestamp:</span> {timestampStr}</div>
           {queryMetadata && (
             <div><span className="font-medium text-foreground">Dettaglio:</span> {queryMetadata}</div>
           )}
