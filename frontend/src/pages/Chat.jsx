@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Button } from '../components/ui/button';
 import { Textarea } from '../components/ui/textarea';
-import { Paperclip, Send, Loader2 } from 'lucide-react';
+import { Paperclip, Send, Loader2, Share2 } from 'lucide-react';
 import { cn } from '../lib/utils';
 import Topbar from '../components/Topbar';
 import { useChatMessages } from '../hooks/useChatMessages';
@@ -12,6 +12,7 @@ import { ReasoningTrail } from '../components/ReasoningTrail';
 import { ToolResult } from '../components/ToolResult';
 import { CitationTag } from '../components/CitationTag';
 import { SuggestedAction } from '../components/SuggestedAction';
+import { ShareContext } from '../context/ShareContext';
 
 // Agent configuration with colors
 const agentStyles = {
@@ -35,25 +36,47 @@ const agentStyles = {
   }
 };
 
-export const Chat = () => {
-  const { id } = useParams();
+export const Chat = ({ readOnly = false, conversationId: propId }) => {
+  const params = useParams();
+  const id = propId ?? params.id;
   const location = useLocation();
   const [message, setMessage] = useState('');
-  const { messages, isLoading, sendMessage } = useChatMessages({
+  const { messages, isLoading, sendMessage, sendHumanMessage } = useChatMessages({
     conversationId: id,
     initialMessage: location.state?.initialMessage,
     selectedAgentId: location.state?.selectedAgentId,
   });
+  const { openShare } = useContext(ShareContext);
+  const isGroupChat = id?.startsWith('group-');
 
   const handleSend = () => {
     if (!message.trim()) return;
-    sendMessage(message);
+    if (isGroupChat) {
+      const isBehiveQuery = message.trim().toLowerCase().startsWith('@behive');
+      if (isBehiveQuery) {
+        sendMessage(message.trim().replace(/^@behive\s*/i, ''));
+      } else {
+        sendHumanMessage(message.trim());
+      }
+    } else {
+      sendMessage(message);
+    }
     setMessage('');
   };
   
   return (
     <div className="h-full flex flex-col">
-      <Topbar />
+      <div className="flex items-center justify-between pr-4">
+        <div className="flex-1">
+          <Topbar />
+        </div>
+        {!readOnly && (
+          <Button variant="outline" size="sm" onClick={() => openShare(id, 'chat')}>
+            <Share2 className="h-4 w-4 mr-2" />
+            Condividi
+          </Button>
+        )}
+      </div>
       
       {/* Chat Container - Centered */}
       <div className="flex-1 overflow-y-auto custom-scrollbar p-8">
@@ -175,41 +198,47 @@ export const Chat = () => {
         </div>
       </div>
       
-      {/* Input Area - Centered */}
-      <div className="border-t border-border p-6">
-        <div className="max-w-3xl mx-auto">
-          <div className="relative">
-            <Textarea
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              placeholder="Chiedi qualcosa a Behive..."
-              className="min-h-[80px] pr-24 bg-surface border-border resize-none"
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                  e.preventDefault();
-                  handleSend();
-                }
-              }}
-            />
-            <div className="absolute bottom-3 right-3 flex items-center gap-2">
-              <Button variant="ghost" size="icon" className="h-8 w-8">
-                <Paperclip className="h-4 w-4" />
-              </Button>
-              <Button
-                onClick={handleSend}
-                disabled={!message.trim() || isLoading}
-                size="sm"
-                variant="premium"
-              >
-                <Send className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-          <p className="text-xs text-foreground-subtle text-center mt-3">
-            Behive può commettere errori. Verifica le informazioni importanti.
-          </p>
+      {/* Input Area */}
+      {readOnly ? (
+        <div className="border-t border-border p-4 flex items-center justify-center bg-surface-elevated">
+          <p className="text-sm text-foreground-muted">Stai visualizzando in sola lettura</p>
         </div>
-      </div>
+      ) : (
+        <div className="border-t border-border p-6">
+          <div className="max-w-3xl mx-auto">
+            <div className="relative">
+              <Textarea
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder={isGroupChat ? 'Invia un messaggio o chiedi qualcosa a @Behive' : 'Chiedi qualcosa a Behive...'}
+                className="min-h-[80px] pr-24 bg-surface border-border resize-none"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSend();
+                  }
+                }}
+              />
+              <div className="absolute bottom-3 right-3 flex items-center gap-2">
+                <Button variant="ghost" size="icon" className="h-8 w-8">
+                  <Paperclip className="h-4 w-4" />
+                </Button>
+                <Button
+                  onClick={handleSend}
+                  disabled={!message.trim() || isLoading}
+                  size="sm"
+                  variant="premium"
+                >
+                  <Send className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+            <p className="text-xs text-foreground-subtle text-center mt-3">
+              Behive può commettere errori. Verifica le informazioni importanti.
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
