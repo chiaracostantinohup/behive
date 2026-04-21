@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { useOutletContext } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Card } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -6,12 +7,13 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Switch } from '../components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
-import { User, Building2, FileText, Mail, Phone, MapPin, Calendar, Bell, Camera, Palette } from 'lucide-react';
+import { User, Building2, FileText, Mail, Phone, MapPin, Calendar, Bell, Camera, Palette, LogOut } from 'lucide-react';
 import ThemeToggle from '../components/ThemeToggle';
 import { toast } from 'sonner';
 import Topbar from '../components/Topbar';
 
 export const Profile = () => {
+  const { onLogout } = useOutletContext();
   const [avatarUrl, setAvatarUrl] = useState(null);
   const [language, setLanguage] = useState('it');
   const avatarInputRef = useRef(null);
@@ -369,6 +371,30 @@ export const Profile = () => {
               </div>
             </Card>
           </motion.div>
+          {/* Logout */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.45 }}
+          >
+            <Card className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded bg-surface-elevated">
+                    <LogOut className="h-5 w-5 text-foreground-muted" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-semibold text-foreground">Esci</h2>
+                    <p className="text-sm text-foreground-muted mt-0.5">Termina la sessione corrente</p>
+                  </div>
+                </div>
+                <Button variant="destructive" onClick={onLogout}>
+                  Logout
+                </Button>
+              </div>
+            </Card>
+          </motion.div>
+
         </div>
       </div>
     </div>
