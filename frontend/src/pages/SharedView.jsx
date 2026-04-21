@@ -12,7 +12,7 @@ export function SharedView() {
   if (!resolved) {
     return (
       <div className="h-screen flex items-center justify-center bg-background">
-        <div className="text-center space-y-2">
+        <div className="text-center space-y-2" role="alert">
           <h1 className="text-2xl font-bold text-foreground">Link non valido o scaduto</h1>
           <p className="text-foreground-muted">Il link che stai cercando non esiste.</p>
         </div>
