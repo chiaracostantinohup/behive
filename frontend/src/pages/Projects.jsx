@@ -16,6 +16,7 @@ import {
 } from '../components/ui/dropdown-menu';
 import { ShareContext } from '../context/ShareContext';
 import Topbar from '../components/Topbar';
+import { mockProjects } from '../data/mockData';
 
 export const Projects = () => {
   const [showNewProjectModal, setShowNewProjectModal] = useState(false);
@@ -27,31 +28,7 @@ export const Projects = () => {
 
   const { openShare } = useContext(ShareContext);
 
-  const projects = [
-  {
-    id: '1',
-    name: 'Analisi Finanziaria Q1',
-    description: 'Report trimestrale con analisi costi e previsioni',
-    chats: 12,
-    files: 4,
-    lastUpdate: '2 ore fa'
-  },
-  {
-    id: '2',
-    name: 'Campagna Marketing S...',
-    description: 'Strategia e performance campagna social',
-    chats: 8,
-    files: 6,
-    lastUpdate: 'ieri'
-  },
-  {
-    id: '3',
-    name: 'Sales Pipeline Q2',
-    description: 'Analisi opportunità e forecast vendite',
-    chats: 15,
-    files: 3,
-    lastUpdate: '3 giorni fa'
-  }];
+  const projects = mockProjects;
 
 
   const mockFiles = [
@@ -159,7 +136,7 @@ export const Projects = () => {
                   </div>
                   <div className="flex items-center gap-1 ml-auto">
                     <Clock className="h-3 w-3" />
-                    <span>{project.lastUpdate}</span>
+                    <span>{project.lastUpdate instanceof Date ? project.lastUpdate.toLocaleDateString('it-IT') : project.lastUpdate}</span>
                   </div>
                 </div>
               </Card>
