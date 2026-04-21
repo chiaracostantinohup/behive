@@ -115,3 +115,6 @@ credentials.json
 *.pem
 *.key
 .credentials
+
+.superpowers
+.claude
