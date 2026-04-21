@@ -192,9 +192,8 @@ export const ProjectDashboard = ({ readOnly = false, projectId: propId }) => {
                 </>
               )}
               {!readOnly && (
-                <Button variant="outline" size="sm" onClick={() => openShare(projectId, 'project')}>
-                  <Share2 className="h-4 w-4 mr-2" />
-                  Condividi
+                <Button variant="ghost" size="icon" onClick={() => openShare(projectId, 'project')} title="Condividi">
+                  <Share2 className="h-4 w-4" />
                 </Button>
               )}
               {readOnly && (

@@ -71,9 +71,8 @@ export const Chat = ({ readOnly = false, conversationId: propId }) => {
           <Topbar />
         </div>
         {!readOnly && (
-          <Button variant="outline" size="sm" onClick={() => openShare(id, 'chat')}>
-            <Share2 className="h-4 w-4 mr-2" />
-            Condividi
+          <Button variant="ghost" size="icon" onClick={() => openShare(id, 'chat')} title="Condividi">
+            <Share2 className="h-4 w-4" />
           </Button>
         )}
       </div>
