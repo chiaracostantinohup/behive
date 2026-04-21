@@ -28,12 +28,15 @@ export function useChatMessages({ conversationId, initialMessage, selectedAgentI
       return;
     }
     // Handle initialMessage (from navigation state)
+    let timeoutId;
     if (initialMessage && messages.length === 0) {
       const agentType = selectedAgentId || detectAgent(initialMessage);
-      setMessages([{ id: '1', type: 'user', content: initialMessage, timestamp: new Date() }]);
-      setTimeout(() => {
+      const userMsgId = Date.now().toString();
+      const agentMsgId = (Date.now() + 1).toString();
+      setMessages([{ id: userMsgId, type: 'user', content: initialMessage, timestamp: new Date() }]);
+      timeoutId = setTimeout(() => {
         setMessages(prev => [...prev, {
-          id: '2', type: 'agent', agentType,
+          id: agentMsgId, type: 'agent', agentType,
           routingType: 'auto',
           routingReason: 'rilevata query automaticamente',
           reasoningSteps: [
@@ -54,6 +57,7 @@ export function useChatMessages({ conversationId, initialMessage, selectedAgentI
       }, 1200);
       setIsLoading(true);
     }
+    return () => clearTimeout(timeoutId);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [conversationId, initialMessage, selectedAgentId]);
 
