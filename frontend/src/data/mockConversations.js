@@ -3,6 +3,7 @@ export const mockConversations = {
   '1': {
     title: 'Analisi costi operativi Q1',
     agent: 'finance',
+    sharing: { readLink: null, group: null },
     messages: [
       {
         id: 'm1',
@@ -161,6 +162,7 @@ export const mockConversations = {
   '5': {
     title: 'Strategia Q2 2026 - Collaborazione Multi-Agente',
     multiAgent: true,
+    sharing: { readLink: null, group: null },
     messages: [
       {
         id: 'ma1',
