@@ -102,7 +102,7 @@ export const OnboardingHome = () => {
                 transition={{ duration: 0.3, delay: 0.1 }}
                 className="flex justify-center"
               >
-                <KnowledgeHealthRing percentage={overallPct} domains={ringDomains} />
+                <KnowledgeHealthRing percentage={overallPct} />
               </motion.div>
 
               {/* Domain breakdown */}
