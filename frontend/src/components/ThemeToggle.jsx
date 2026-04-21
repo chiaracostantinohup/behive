@@ -15,6 +15,7 @@ export function ThemeToggle() {
       {OPTIONS.map(({ value, label, Icon }) => (
         <button
           key={value}
+          type="button"
           onClick={() => setTheme(value)}
           className={[
             'inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium transition-fast',
