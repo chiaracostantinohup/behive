@@ -11,6 +11,7 @@ export function useShare(resourceId, resourceType) {
     const token = Math.random().toString(36).slice(2, 10);
     ctx.setSharing(resourceId, (s) => ({ ...s, readLink: token }));
     ctx.registerToken(token, resourceId, resourceType);
+    return token;
   };
 
   const revokeLink = () => {

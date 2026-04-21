@@ -38,8 +38,10 @@ function LinkTab({ resourceId, resourceType }) {
   };
 
   const handleGenerate = () => {
-    generateLink();
-    toast.success('Link generato');
+    const token = generateLink();
+    const url = `${window.location.origin}/shared/${token}`;
+    navigator.clipboard.writeText(url);
+    toast.success('Link generato e copiato');
   };
 
   return (
