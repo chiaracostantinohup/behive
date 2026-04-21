@@ -34,7 +34,9 @@ export const PinnedInsightCard = ({
         </Link>
 
         {/* Date */}
-        <span className="text-xs text-foreground-muted">{pinDate}</span>
+        <span className="text-xs text-foreground-muted">
+          {pinDate instanceof Date ? pinDate.toLocaleDateString('it-IT') : String(pinDate ?? '')}
+        </span>
 
         {/* Agent badge */}
         <span className="bg-surface border border-border text-xs px-2 py-0.5 rounded">
