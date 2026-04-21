@@ -83,7 +83,15 @@ export function useChatMessages({ conversationId, initialMessage, selectedAgentI
     }, 1500);
   };
 
-  return { messages, isLoading, sendMessage };
+  const sendHumanMessage = (text) => {
+    if (!text.trim()) return;
+    setMessages((prev) => [
+      ...prev,
+      { id: Date.now().toString(), type: 'user', content: text, timestamp: new Date() },
+    ]);
+  };
+
+  return { messages, isLoading, sendMessage, sendHumanMessage };
 }
 
 export default useChatMessages;
