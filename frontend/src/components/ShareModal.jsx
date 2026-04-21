@@ -57,7 +57,7 @@ function LinkTab({ resourceId, resourceType }) {
         <div className="space-y-3">
           <div className="flex gap-2">
             <Input readOnly value={fullLink} className="bg-background border-border text-sm" />
-            <Button type="button" variant="outline" size="icon" onClick={handleCopy}>
+            <Button type="button" variant="outline" size="icon" onClick={handleCopy} aria-label="Copia link">
               {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
             </Button>
           </div>
@@ -143,6 +143,7 @@ function GroupTab({ resourceId, resourceType }) {
                 <button
                   type="button"
                   onClick={() => setSelectedIds((prev) => prev.filter((i) => i !== id))}
+                  aria-label={`Rimuovi ${getUserById(id)?.name}`}
                 >
                   <X className="h-3 w-3" />
                 </button>
@@ -182,7 +183,7 @@ function GroupTab({ resourceId, resourceType }) {
                 <p className="text-sm text-foreground">{user?.name}</p>
                 <p className="text-xs text-foreground-muted">{user?.email}</p>
               </div>
-              <button type="button" onClick={() => removeMember(id)}>
+              <button type="button" onClick={() => removeMember(id)} aria-label={`Rimuovi ${user?.name}`}>
                 <X className="h-4 w-4 text-foreground-muted hover:text-foreground" />
               </button>
             </div>
