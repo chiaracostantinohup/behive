@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { HelpCircle, Bell, CheckCircle, AlertCircle, UserPlus, Database, X, Search } from 'lucide-react';
+import { HelpCircle, Bell, CheckCircle, AlertCircle, UserPlus, Database, X, Search, Share2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
@@ -7,7 +7,7 @@ import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import { ScrollArea } from './ui/scroll-area';
 import { cn } from '../lib/utils';
 
-export const Topbar = ({ title }) => {
+export const Topbar = ({ title, onShare }) => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [notifications, setNotifications] = useState([
@@ -102,6 +102,17 @@ export const Topbar = ({ title }) => {
 
       {/* Right side - Icons */}
       <div className="flex items-center gap-2 flex-shrink-0">
+        {onShare && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-9 w-9 relative !rounded-md"
+            title="Condividi"
+            onClick={onShare}
+          >
+            <Share2 className="h-5 w-5" />
+          </Button>
+        )}
         <Button
           variant="ghost"
           size="icon"

@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { Textarea } from '../components/ui/textarea';
 import { Label } from '../components/ui/label';
 import { motion } from 'framer-motion';
-import { Settings, FileText, Plus, Edit2, MessageSquare, X, Share2 } from 'lucide-react';
+import { Settings, FileText, Plus, Edit2, MessageSquare, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '../lib/utils';
 import Topbar from '../components/Topbar';
@@ -98,7 +98,7 @@ export const ProjectDashboard = ({ readOnly = false, projectId: propId }) => {
 
   return (
     <div className="h-full flex flex-col overflow-hidden">
-      <Topbar />
+      <Topbar onShare={!readOnly ? () => openShare(projectId, 'project') : undefined} />
 
       <div className="flex-1 overflow-y-auto custom-scrollbar p-8">
         <div className="max-w-6xl mx-auto space-y-6">
@@ -190,11 +190,6 @@ export const ProjectDashboard = ({ readOnly = false, projectId: propId }) => {
                     Nuova Chat
                   </Button>
                 </>
-              )}
-              {!readOnly && (
-                <Button variant="ghost" size="icon" onClick={() => openShare(projectId, 'project')} title="Condividi">
-                  <Share2 className="h-4 w-4" />
-                </Button>
               )}
               {readOnly && (
                 <div className="px-3 py-1.5 rounded border border-border bg-surface-elevated text-xs text-foreground-muted">

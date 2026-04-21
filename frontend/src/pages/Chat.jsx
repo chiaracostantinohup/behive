@@ -3,7 +3,7 @@ import { useParams, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Button } from '../components/ui/button';
 import { Textarea } from '../components/ui/textarea';
-import { Paperclip, Send, Loader2, Share2 } from 'lucide-react';
+import { Paperclip, Send, Loader2 } from 'lucide-react';
 import { cn } from '../lib/utils';
 import Topbar from '../components/Topbar';
 import { useChatMessages } from '../hooks/useChatMessages';
@@ -66,16 +66,7 @@ export const Chat = ({ readOnly = false, conversationId: propId }) => {
   
   return (
     <div className="h-full flex flex-col">
-      <div className="flex items-center justify-between pr-4">
-        <div className="flex-1">
-          <Topbar />
-        </div>
-        {!readOnly && (
-          <Button variant="ghost" size="icon" onClick={() => openShare(id, 'chat')} title="Condividi">
-            <Share2 className="h-4 w-4" />
-          </Button>
-        )}
-      </div>
+      <Topbar onShare={!readOnly ? () => openShare(id, 'chat') : undefined} />
       
       {/* Chat Container - Centered */}
       <div className="flex-1 overflow-y-auto custom-scrollbar p-8">
