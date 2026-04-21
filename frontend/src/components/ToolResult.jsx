@@ -203,9 +203,10 @@ const WorkflowFragment = ({ data }) => {
           {steps.map((step, idx) => {
             const isActive = step.isActive;
             const isDecision = step.type === 'decision';
+            const label = step.name ?? step.label;
 
             return (
-              <React.Fragment key={step.id}>
+              <React.Fragment key={step.id ?? step.label ?? idx}>
                 <div className="flex flex-col items-center gap-0.5">
                   <button
                     onClick={() => handleStepClick(step)}
@@ -218,7 +219,7 @@ const WorkflowFragment = ({ data }) => {
                     )}
                   >
                     {isDecision && <span className="mr-0.5 text-foreground-muted">◆</span>}
-                    {step.name}
+                    {label}
                   </button>
                   {step.actor && (
                     <span className="text-foreground-subtle text-[10px] max-w-[80px] truncate">
