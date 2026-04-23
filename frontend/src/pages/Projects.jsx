@@ -6,16 +6,22 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Textarea } from '../components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../components/ui/dialog';
-import { FolderKanban, MessageSquare, FileText, Clock, Plus, Settings, X } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
+import { ScrollArea } from '../components/ui/scroll-area';
+import { Badge } from '../components/ui/badge';
+import { FolderKanban, MessageSquare, FileText, Clock, Plus, Settings, X, Share2, UserPlus, Eye, Edit3 } from 'lucide-react';
 import Topbar from '../components/Topbar';
 
 export const Projects = () => {
   const [showNewProjectModal, setShowNewProjectModal] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
   const [projectName, setProjectName] = useState('');
   const [projectInstructions, setProjectInstructions] = useState('');
   const [attachedFiles, setAttachedFiles] = useState([]);
+  const [shareEmail, setShareEmail] = useState('');
+  const [hoveredProject, setHoveredProject] = useState(null);
 
   const projects = [
   {
@@ -24,7 +30,11 @@ export const Projects = () => {
     description: 'Report trimestrale con analisi costi e previsioni',
     chats: 12,
     files: 4,
-    lastUpdate: '2 ore fa'
+    lastUpdate: '2 ore fa',
+    sharedWith: [
+      { email: 'laura@company.com', name: 'Laura Bianchi', permission: 'view' },
+      { email: 'giuseppe@company.com', name: 'Giuseppe Verdi', permission: 'edit' }
+    ]
   },
   {
     id: '2',
@@ -32,7 +42,8 @@ export const Projects = () => {
     description: 'Strategia e performance campagna social',
     chats: 8,
     files: 6,
-    lastUpdate: 'ieri'
+    lastUpdate: 'ieri',
+    sharedWith: []
   },
   {
     id: '3',
@@ -40,8 +51,41 @@ export const Projects = () => {
     description: 'Analisi opportunità e forecast vendite',
     chats: 15,
     files: 3,
-    lastUpdate: '3 giorni fa'
+    lastUpdate: '3 giorni fa',
+    sharedWith: [
+      { email: 'laura@company.com', name: 'Laura Bianchi', permission: 'edit' }
+    ]
   }];
+
+  const handleShareProject = (project) => {
+    setSelectedProject(project);
+    setShowShareModal(true);
+  };
+
+  const handleAddShare = () => {
+    if (shareEmail && selectedProject) {
+      // Mock: add user to shared list
+      const newUser = {
+        email: shareEmail,
+        name: shareEmail.split('@')[0],
+        permission: 'view'
+      };
+      
+      const updatedProjects = projects.map(p => 
+        p.id === selectedProject.id 
+          ? { ...p, sharedWith: [...p.sharedWith, newUser] }
+          : p
+      );
+      
+      setShareEmail('');
+      alert(`Progetto condiviso con ${shareEmail}`);
+    }
+  };
+
+  const handleChangePermission = (userEmail, newPermission) => {
+    // Mock: change user permission
+    alert(`Permission changed to ${newPermission} for ${userEmail}`);
+  };
 
 
   const mockFiles = [
@@ -89,7 +133,9 @@ export const Projects = () => {
               key={project.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}>
+              transition={{ delay: index * 0.1 }}
+              onMouseEnter={() => setHoveredProject(project.id)}
+              onMouseLeave={() => setHoveredProject(null)}>
 
               <Card className="border hover:border-primary/50 transition-smooth group cursor-pointer !py-[40px] !px-[40px] rounded-xl shadow text-card-foreground bg-card">
                 <div className="flex items-start justify-between mb-3">
@@ -101,14 +147,24 @@ export const Projects = () => {
                       <h3 className="font-semibold text-foreground">{project.name}</h3>
                     </div>
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="opacity-0 group-hover:opacity-100 transition-smooth"
-                    onClick={() => handleOpenSettings(project)}>
+                  <div className="flex flex-col gap-2">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="opacity-0 group-hover:opacity-100 transition-smooth !rounded-md"
+                      onClick={() => handleOpenSettings(project)}>
 
-                    <Settings className="h-4 w-4" />
-                  </Button>
+                      <Settings className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className={`transition-smooth !rounded-md ${hoveredProject === project.id ? 'opacity-100' : 'opacity-0'}`}
+                      onClick={() => handleShareProject(project)}>
+
+                      <Share2 className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
                 
                 <p className="text-sm text-foreground-muted mb-4">{project.description}</p>
@@ -268,6 +324,109 @@ export const Projects = () => {
             </Button>
             <Button variant="premium" className="inline-flex items-center justify-center whitespace-nowrap transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-primary-hover h-9 font-medium text-sm gap-2 px-4 py-2 !rounded-md shadow-glow text-primary-foreground bg-primary">
               Salva modifiche
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Share Project Modal */}
+      <Dialog open={showShareModal} onOpenChange={setShowShareModal}>
+        <DialogContent className="bg-surface border-border max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="text-foreground">Condividi Progetto</DialogTitle>
+            <DialogDescription className="text-foreground-muted">
+              {selectedProject?.name}
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-6 py-4">
+            {/* Add User */}
+            <div className="space-y-3">
+              <Label htmlFor="share-email">Invita utente</Label>
+              <div className="flex gap-2">
+                <Input
+                  id="share-email"
+                  type="email"
+                  placeholder="email@example.com"
+                  value={shareEmail}
+                  onChange={(e) => setShareEmail(e.target.value)}
+                  className="bg-background border-border flex-1"
+                />
+                <Button 
+                  onClick={handleAddShare}
+                  disabled={!shareEmail}
+                  className="!rounded-md"
+                >
+                  <UserPlus className="h-4 w-4 mr-2" />
+                  Aggiungi
+                </Button>
+              </div>
+            </div>
+
+            {/* Shared Users List */}
+            <div className="space-y-3">
+              <Label>Utenti con accesso ({selectedProject?.sharedWith?.length || 0})</Label>
+              {selectedProject?.sharedWith?.length > 0 ? (
+                <ScrollArea className="h-[200px] rounded-lg border border-border">
+                  <div className="p-4 space-y-3">
+                    {selectedProject.sharedWith.map((user, index) => (
+                      <div key={index} className="flex items-center justify-between p-3 bg-surface-elevated rounded-lg">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-medium text-sm">
+                            {user.name.charAt(0).toUpperCase()}
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-foreground">{user.name}</p>
+                            <p className="text-xs text-foreground-muted">{user.email}</p>
+                          </div>
+                        </div>
+                        
+                        <Select 
+                          value={user.permission} 
+                          onValueChange={(val) => handleChangePermission(user.email, val)}
+                        >
+                          <SelectTrigger className="w-[120px] h-8 bg-background border-border">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent className="bg-surface border-border">
+                            <SelectItem value="view">
+                              <div className="flex items-center gap-2">
+                                <Eye className="h-3 w-3" />
+                                <span>Solo Vista</span>
+                              </div>
+                            </SelectItem>
+                            <SelectItem value="edit">
+                              <div className="flex items-center gap-2">
+                                <Edit3 className="h-3 w-3" />
+                                <span>Modifica</span>
+                              </div>
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    ))}
+                  </div>
+                </ScrollArea>
+              ) : (
+                <div className="text-center py-8 text-foreground-muted">
+                  <Share2 className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                  <p className="text-sm">Nessun utente ha accesso a questo progetto</p>
+                  <p className="text-xs mt-1">Aggiungi collaboratori usando il campo sopra</p>
+                </div>
+              )}
+            </div>
+          </div>
+          
+          <DialogFooter>
+            <Button 
+              variant="outline" 
+              onClick={() => {
+                setShowShareModal(false);
+                setShareEmail('');
+              }}
+              className="!rounded-md"
+            >
+              Chiudi
             </Button>
           </DialogFooter>
         </DialogContent>

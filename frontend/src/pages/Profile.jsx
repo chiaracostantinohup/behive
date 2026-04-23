@@ -1,13 +1,42 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Card } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
-import { User, Building2, FileText, Mail, Phone, MapPin, Calendar } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
+import { User, Building2, FileText, Mail, Phone, MapPin, Calendar, Sun, Moon, Monitor } from 'lucide-react';
 import Topbar from '../components/Topbar';
 
 export const Profile = () => {
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem('theme') || 'auto';
+  });
+
+  useEffect(() => {
+    const root = document.documentElement;
+    
+    if (theme === 'auto') {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      root.classList.toggle('dark', prefersDark);
+      root.classList.toggle('light', !prefersDark);
+    } else if (theme === 'dark') {
+      root.classList.add('dark');
+      root.classList.remove('light');
+    } else {
+      root.classList.add('light');
+      root.classList.remove('dark');
+    }
+    
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const getThemeIcon = () => {
+    if (theme === 'light') return <Sun className="h-4 w-4" />;
+    if (theme === 'dark') return <Moon className="h-4 w-4" />;
+    return <Monitor className="h-4 w-4" />;
+  };
+
   return (
     <div className="h-full flex flex-col overflow-hidden">
       <Topbar />
@@ -163,11 +192,63 @@ export const Profile = () => {
             </Card>
           </motion.div>
           
-          {/* Active Contract */}
+          {/* Theme Settings */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: 0.3 }}>
+
+            <Card className="p-6">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-2 rounded bg-surface-elevated">
+                  {getThemeIcon()}
+                </div>
+                <h2 className="text-xl font-semibold text-foreground">Aspetto</h2>
+              </div>
+              
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="theme-select">Tema Interfaccia</Label>
+                  <Select value={theme} onValueChange={setTheme}>
+                    <SelectTrigger id="theme-select" className="bg-background border-border">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-surface border-border">
+                      <SelectItem value="auto">
+                        <div className="flex items-center gap-2">
+                          <Monitor className="h-4 w-4" />
+                          <span>Automatico (Sistema)</span>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="light">
+                        <div className="flex items-center gap-2">
+                          <Sun className="h-4 w-4" />
+                          <span>Chiaro</span>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="dark">
+                        <div className="flex items-center gap-2">
+                          <Moon className="h-4 w-4" />
+                          <span>Scuro</span>
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-foreground-muted">
+                    {theme === 'auto' && 'Il tema si adatta automaticamente alle preferenze del sistema'}
+                    {theme === 'light' && 'Tema chiaro sempre attivo'}
+                    {theme === 'dark' && 'Tema scuro sempre attivo'}
+                  </p>
+                </div>
+              </div>
+            </Card>
+          </motion.div>
+          
+          {/* Active Contract */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.4 }}>
 
             <Card className="p-6">
               <div className="flex items-center gap-3 mb-6">

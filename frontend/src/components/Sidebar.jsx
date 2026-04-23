@@ -180,20 +180,6 @@ export const Sidebar = ({ onLogout }) => {
       
       {/* Bottom Section */}
       <div className="p-3 border-t border-border space-y-2">
-        {/* Plan Info */}
-        {!isCollapsed &&
-        <div className="px-3 py-2 bg-surface-elevated rounded-md border-l-2 border-primary">
-            <div className="flex items-center justify-between mb-1">
-              <span className="text-xs font-medium text-foreground">Piano Pro</span>
-              <ChevronDown className="h-3 w-3 text-foreground-muted" />
-            </div>
-            <p className="text-xs text-foreground-muted mb-2">
-              Hai usato <span className="text-foreground font-medium">1.420</span> di <span className="text-foreground font-medium">2.000</span> richieste
-            </p>
-            <button className="hover:underline text-xs text-[#3B82F6]">Vedi piani →</button>
-          </div>
-        }
-        
         {/* User Profile - Clickable */}
         <button
           onClick={() => navigate('/profile')}
