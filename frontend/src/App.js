@@ -21,6 +21,19 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   
   useEffect(() => {
+    // Initialize theme on app startup
+    const savedTheme = localStorage.getItem('theme') || 'auto';
+    const root = document.documentElement;
+    
+    if (savedTheme === 'auto') {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      root.classList.toggle('dark', prefersDark);
+      root.classList.toggle('light', !prefersDark);
+    } else {
+      root.classList.add(savedTheme);
+      root.classList.remove(savedTheme === 'dark' ? 'light' : 'dark');
+    }
+    
     // Check if user is authenticated (mock)
     const authStatus = localStorage.getItem('behive_authenticated');
     setIsAuthenticated(authStatus === 'true');
