@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams, useLocation, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Button } from '../components/ui/button';
 import { Textarea } from '../components/ui/textarea';
-import { Paperclip, Send, Loader2 } from 'lucide-react';
+import { Paperclip, Send, Loader2, ChevronRight } from 'lucide-react';
 import { cn } from '../lib/utils';
 import Topbar from '../components/Topbar';
 import { mockConversations } from '../data/mockConversations';
@@ -36,6 +36,10 @@ export const Chat = () => {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  
+  // Mock project data (in real app, fetch from API/state)
+  const chatProject = id === '1' || id === '5' ? { id: '1', name: 'Analisi Finanziaria Q1' } : null;
+  const chatTitle = mockConversations[id]?.title || 'Chat';
   
   // Auto-detect agent based on message content (mock logic)
   const detectAgent = (text) => {
@@ -129,6 +133,22 @@ export const Chat = () => {
   return (
     <div className="h-full flex flex-col">
       <Topbar />
+      
+      {/* Breadcrumb */}
+      {chatProject && (
+        <div className="px-6 py-3 border-b border-border bg-surface">
+          <div className="flex items-center gap-2 text-sm text-foreground-muted">
+            <Link 
+              to={`/projects/${chatProject.id}`} 
+              className="hover:text-primary transition-smooth"
+            >
+              {chatProject.name}
+            </Link>
+            <ChevronRight className="h-4 w-4" />
+            <span className="text-foreground">{chatTitle}</span>
+          </div>
+        </div>
+      )}
       
       {/* Chat Container - Centered */}
       <div className="flex-1 overflow-y-auto custom-scrollbar p-8">

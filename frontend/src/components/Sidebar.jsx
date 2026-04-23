@@ -1,15 +1,38 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { MessageSquare, Users, FolderKanban, Boxes, Plug, Bell, Activity, CreditCard, Plus, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
+import { MessageSquare, Users, FolderKanban, Boxes, Plug, Bell, Activity, CreditCard, Plus, ChevronDown, ChevronLeft, ChevronRight, MoreVertical, Edit2, FolderInput, Trash2, Share2, Pin } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { Button } from './ui/button';
 import { Separator } from './ui/separator';
 import { ScrollArea } from './ui/scroll-area';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from './ui/dropdown-menu';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from './ui/dialog';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 
 export const Sidebar = ({ onLogout }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [showRenameDialog, setShowRenameDialog] = useState(false);
+  const [showMoveDialog, setShowMoveDialog] = useState(false);
+  const [selectedChat, setSelectedChat] = useState(null);
+  const [newChatName, setNewChatName] = useState('');
+  const [selectedProject, setSelectedProject] = useState('');
+  const [pinnedChats, setPinnedChats] = useState([]);
+  const [chats, setChats] = useState([
+    { id: '5', title: 'Strategia Q2 - Multi Agente', time: 'OGGI', projectId: null, isPinned: false },
+    { id: '1', title: 'Analisi costi operativi Q1', time: 'OGGI', projectId: null, isPinned: false },
+    { id: '2', title: 'Budget forecast H2 2026', time: 'IERI', projectId: null, isPinned: false },
+    { id: '3', title: 'Report performance team', time: 'IERI', projectId: null, isPinned: false }
+  ]);
+
+  const projects = [
+    { id: '1', name: 'Analisi Finanziaria Q1' },
+    { id: '2', name: 'Campagna Marketing' },
+    { id: '3', name: 'Sales Pipeline Q2' }
+  ];
 
   const isActive = (path) => location.pathname.startsWith(path);
 
@@ -26,13 +49,43 @@ export const Sidebar = ({ onLogout }) => {
   { icon: Activity, label: 'Service Status', path: '/service-status' },
   { icon: CreditCard, label: 'Payments', path: '/payments' }];
 
+  const handleRenameChat = (chat) => {
+    setSelectedChat(chat);
+    setNewChatName(chat.title);
+    setShowRenameDialog(true);
+  };
 
-  const recentChats = [
-  { id: '5', title: 'Strategia Q2 - Multi Agente', time: 'OGGI' },
-  { id: '1', title: 'Analisi costi operativi Q1', time: 'OGGI' },
-  { id: '2', title: 'Budget forecast H2 2026', time: 'IERI' },
-  { id: '3', title: 'Report performance team', time: 'IERI' }];
+  const handleSaveRename = () => {
+    setChats(chats.map(c => c.id === selectedChat.id ? { ...c, title: newChatName } : c));
+    setShowRenameDialog(false);
+    setSelectedChat(null);
+  };
 
+  const handleMoveToProject = (chat) => {
+    setSelectedChat(chat);
+    setSelectedProject(chat.projectId || '');
+    setShowMoveDialog(true);
+  };
+
+  const handleSaveMove = () => {
+    setChats(chats.map(c => c.id === selectedChat.id ? { ...c, projectId: selectedProject || null } : c));
+    setShowMoveDialog(false);
+    setSelectedChat(null);
+  };
+
+  const handleDeleteChat = (chatId) => {
+    if (confirm('Sei sicuro di voler eliminare questa chat?')) {
+      setChats(chats.filter(c => c.id !== chatId));
+      setPinnedChats(pinnedChats.filter(id => id !== chatId));
+    }
+  };
+
+  const handlePinChat = (chatId) => {
+    setChats(chats.map(c => c.id === chatId ? { ...c, isPinned: !c.isPinned } : c));
+  };
+
+  const pinnedChatsList = chats.filter(c => c.isPinned);
+  const regularChats = chats.filter(c => !c.isPinned);
   
   return (
     <aside
@@ -121,34 +174,162 @@ export const Sidebar = ({ onLogout }) => {
             
             <Separator className="my-4 bg-border" />
             
+            {/* Pinned Chats */}
+            {pinnedChatsList.length > 0 && (
+              <div className="mb-6">
+                <h3 className="px-3 mb-2 text-xs font-semibold text-foreground-subtle uppercase tracking-wider flex items-center gap-2">
+                  <Pin className="h-3 w-3" />
+                  CHAT FISSATE
+                </h3>
+                <nav className="space-y-1">
+                  {pinnedChatsList.map((chat) => (
+                    <div key={chat.id} className="group relative flex items-center">
+                      <Link to={`/chat/${chat.id}`} className="flex-1 min-w-0">
+                        <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-foreground-muted hover:bg-surface-elevated hover:text-foreground rounded-md transition-smooth">
+                          <MessageSquare className="h-3 w-3 flex-shrink-0" />
+                          <span className="truncate">{chat.title}</span>
+                        </button>
+                      </Link>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-6 w-6 opacity-0 group-hover:opacity-100 absolute right-2 !rounded-md"
+                          >
+                            <MoreVertical className="h-3 w-3" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="bg-surface border-border">
+                          <DropdownMenuItem onClick={() => handleRenameChat(chat)}>
+                            <Edit2 className="h-4 w-4 mr-2" />
+                            Rinomina
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleMoveToProject(chat)}>
+                            <FolderInput className="h-4 w-4 mr-2" />
+                            Sposta in progetto
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => navigate('/chat/new')}>
+                            <Share2 className="h-4 w-4 mr-2" />
+                            Condividi
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handlePinChat(chat.id)}>
+                            <Pin className="h-4 w-4 mr-2" />
+                            Rimuovi pin
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem onClick={() => handleDeleteChat(chat.id)} className="text-destructive">
+                            <Trash2 className="h-4 w-4 mr-2" />
+                            Elimina
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
+                  ))}
+                </nav>
+              </div>
+            )}
+            
             {/* Recent Chats */}
             <div className="mb-6">
               <h3 className="px-3 mb-2 text-xs font-semibold text-foreground-subtle uppercase tracking-wider">
                 OGGI
               </h3>
               <nav className="space-y-1 mb-4">
-                {recentChats.filter((c) => c.time === 'OGGI').map((chat) =>
-              <Link key={chat.id} to={`/chat/${chat.id}`}>
-                    <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-foreground-muted hover:bg-surface-elevated hover:text-foreground rounded-md transition-smooth truncate">
-                      <MessageSquare className="h-3 w-3 flex-shrink-0" />
-                      <span className="truncate">{chat.title}</span>
-                    </button>
-                  </Link>
-              )}
+                {regularChats.filter((c) => c.time === 'OGGI').map((chat) => (
+                  <div key={chat.id} className="group relative flex items-center">
+                    <Link to={`/chat/${chat.id}`} className="flex-1 min-w-0">
+                      <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-foreground-muted hover:bg-surface-elevated hover:text-foreground rounded-md transition-smooth">
+                        <MessageSquare className="h-3 w-3 flex-shrink-0" />
+                        <span className="truncate">{chat.title}</span>
+                      </button>
+                    </Link>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-6 w-6 opacity-0 group-hover:opacity-100 absolute right-2 !rounded-md"
+                        >
+                          <MoreVertical className="h-3 w-3" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="bg-surface border-border">
+                        <DropdownMenuItem onClick={() => handleRenameChat(chat)}>
+                          <Edit2 className="h-4 w-4 mr-2" />
+                          Rinomina
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleMoveToProject(chat)}>
+                          <FolderInput className="h-4 w-4 mr-2" />
+                          Sposta in progetto
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => navigate('/chat/new')}>
+                          <Share2 className="h-4 w-4 mr-2" />
+                          Condividi
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handlePinChat(chat.id)}>
+                          <Pin className="h-4 w-4 mr-2" />
+                          Fissa in alto
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={() => handleDeleteChat(chat.id)} className="text-destructive">
+                          <Trash2 className="h-4 w-4 mr-2" />
+                          Elimina
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                ))}
               </nav>
               
               <h3 className="px-3 mb-2 text-xs font-semibold text-foreground-subtle uppercase tracking-wider">
                 IERI
               </h3>
               <nav className="space-y-1">
-                {recentChats.filter((c) => c.time === 'IERI').map((chat) =>
-              <Link key={chat.id} to={`/chat/${chat.id}`}>
-                    <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-foreground-muted hover:bg-surface-elevated hover:text-foreground rounded-md transition-smooth truncate">
-                      <MessageSquare className="h-3 w-3 flex-shrink-0" />
-                      <span className="truncate">{chat.title}</span>
-                    </button>
-                  </Link>
-              )}
+                {regularChats.filter((c) => c.time === 'IERI').map((chat) => (
+                  <div key={chat.id} className="group relative flex items-center">
+                    <Link to={`/chat/${chat.id}`} className="flex-1 min-w-0">
+                      <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-foreground-muted hover:bg-surface-elevated hover:text-foreground rounded-md transition-smooth">
+                        <MessageSquare className="h-3 w-3 flex-shrink-0" />
+                        <span className="truncate">{chat.title}</span>
+                      </button>
+                    </Link>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-6 w-6 opacity-0 group-hover:opacity-100 absolute right-2 !rounded-md"
+                        >
+                          <MoreVertical className="h-3 w-3" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="bg-surface border-border">
+                        <DropdownMenuItem onClick={() => handleRenameChat(chat)}>
+                          <Edit2 className="h-4 w-4 mr-2" />
+                          Rinomina
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleMoveToProject(chat)}>
+                          <FolderInput className="h-4 w-4 mr-2" />
+                          Sposta in progetto
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => navigate('/chat/new')}>
+                          <Share2 className="h-4 w-4 mr-2" />
+                          Condividi
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handlePinChat(chat.id)}>
+                          <Pin className="h-4 w-4 mr-2" />
+                          Fissa in alto
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={() => handleDeleteChat(chat.id)} className="text-destructive">
+                          <Trash2 className="h-4 w-4 mr-2" />
+                          Elimina
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                ))}
               </nav>
             </div>
           </>
@@ -200,6 +381,65 @@ export const Sidebar = ({ onLogout }) => {
           }
         </button>
       </div>
+
+      {/* Rename Dialog */}
+      <Dialog open={showRenameDialog} onOpenChange={setShowRenameDialog}>
+        <DialogContent className="bg-surface border-border">
+          <DialogHeader>
+            <DialogTitle className="text-foreground">Rinomina Chat</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <Label htmlFor="chat-name">Nome Chat</Label>
+            <Input
+              id="chat-name"
+              value={newChatName}
+              onChange={(e) => setNewChatName(e.target.value)}
+              className="mt-2 bg-background border-border"
+            />
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowRenameDialog(false)} className="!rounded-md">
+              Annulla
+            </Button>
+            <Button onClick={handleSaveRename} className="!rounded-md">
+              Salva
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Move to Project Dialog */}
+      <Dialog open={showMoveDialog} onOpenChange={setShowMoveDialog}>
+        <DialogContent className="bg-surface border-border">
+          <DialogHeader>
+            <DialogTitle className="text-foreground">Sposta in Progetto</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <Label htmlFor="project-select">Seleziona Progetto</Label>
+            <Select value={selectedProject} onValueChange={setSelectedProject}>
+              <SelectTrigger id="project-select" className="mt-2 bg-background border-border">
+                <SelectValue placeholder="Nessun progetto" />
+              </SelectTrigger>
+              <SelectContent className="bg-surface border-border">
+                <SelectItem value="">Nessun progetto</SelectItem>
+                {projects.map((project) => (
+                  <SelectItem key={project.id} value={project.id}>
+                    {project.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowMoveDialog(false)} className="!rounded-md">
+              Annulla
+            </Button>
+            <Button onClick={handleSaveMove} className="!rounded-md">
+              Sposta
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </aside>);
 
 };
