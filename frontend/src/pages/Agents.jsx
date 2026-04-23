@@ -104,15 +104,12 @@ export const Agents = () => {
                     transition={{ delay: index * 0.1 }}>
 
                   <Card
-                      className="border cursor-pointer transition-smooth hover:border-primary/50 p-6 rounded-xl shadow text-card-foreground !bg-[#16161A]"
-
-
-
+                      className="border cursor-pointer transition-smooth hover:border-primary/50 p-6 rounded-xl shadow text-card-foreground bg-card"
                       onClick={() => handleAgentClick(agent)}>
 
                     <div className="flex items-start gap-4">
-                      <div className="p-3 rounded !bg-[rgba(15,38,255,0.15)]">
-                        <agent.icon className="h-6 w-6 text-foreground" />
+                      <div className="p-3 rounded bg-primary/10">
+                        <agent.icon className="h-6 w-6 text-primary" />
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center justify-between mb-1">
