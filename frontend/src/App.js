@@ -8,6 +8,7 @@ import Chat from './pages/Chat';
 import ChatHistory from './pages/ChatHistory';
 import Agents from './pages/Agents';
 import Projects from './pages/Projects';
+import ProjectChats from './pages/ProjectChats';
 import Integrations from './pages/Integrations';
 import UsersRoles from './pages/UsersRoles';
 import Alerts from './pages/Alerts';
@@ -66,6 +67,7 @@ function App() {
             <Route path="chat/:id" element={<Chat />} />
             <Route path="agents" element={<Agents />} />
             <Route path="projects" element={<Projects />} />
+            <Route path="projects/:projectId" element={<ProjectChats />} />
             <Route path="integrations" element={<Integrations />} />
             <Route path="users" element={<UsersRoles />} />
             <Route path="alerts" element={<Alerts />} />

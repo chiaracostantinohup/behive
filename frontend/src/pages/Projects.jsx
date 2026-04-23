@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { Card } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -13,6 +14,7 @@ import { FolderKanban, MessageSquare, FileText, Clock, Plus, Settings, X, Share2
 import Topbar from '../components/Topbar';
 
 export const Projects = () => {
+  const navigate = useNavigate();
   const [showNewProjectModal, setShowNewProjectModal] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
@@ -137,7 +139,10 @@ export const Projects = () => {
               onMouseEnter={() => setHoveredProject(project.id)}
               onMouseLeave={() => setHoveredProject(null)}>
 
-              <Card className="border hover:border-primary/50 transition-smooth group cursor-pointer !py-[40px] !px-[40px] rounded-xl shadow text-card-foreground bg-card">
+              <Card 
+                className="border hover:border-primary/50 transition-smooth group cursor-pointer !py-[40px] !px-[40px] rounded-xl shadow text-card-foreground bg-card"
+                onClick={() => navigate(`/projects/${project.id}`)}
+              >
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-3">
                     <div className="p-2 rounded bg-surface-elevated">
@@ -152,7 +157,10 @@ export const Projects = () => {
                       variant="ghost"
                       size="icon"
                       className="opacity-0 group-hover:opacity-100 transition-smooth !rounded-md"
-                      onClick={() => handleOpenSettings(project)}>
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleOpenSettings(project);
+                      }}>
 
                       <Settings className="h-4 w-4" />
                     </Button>
@@ -160,7 +168,10 @@ export const Projects = () => {
                       variant="ghost"
                       size="icon"
                       className={`transition-smooth !rounded-md ${hoveredProject === project.id ? 'opacity-100' : 'opacity-0'}`}
-                      onClick={() => handleShareProject(project)}>
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleShareProject(project);
+                      }}>
 
                       <Share2 className="h-4 w-4" />
                     </Button>
