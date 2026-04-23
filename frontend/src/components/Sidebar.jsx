@@ -63,12 +63,13 @@ export const Sidebar = ({ onLogout }) => {
 
   const handleMoveToProject = (chat) => {
     setSelectedChat(chat);
-    setSelectedProject(chat.projectId || '');
+    setSelectedProject(chat.projectId || 'none');
     setShowMoveDialog(true);
   };
 
   const handleSaveMove = () => {
-    setChats(chats.map(c => c.id === selectedChat.id ? { ...c, projectId: selectedProject || null } : c));
+    const projectId = selectedProject === 'none' ? null : selectedProject;
+    setChats(chats.map(c => c.id === selectedChat.id ? { ...c, projectId } : c));
     setShowMoveDialog(false);
     setSelectedChat(null);
   };
@@ -421,7 +422,7 @@ export const Sidebar = ({ onLogout }) => {
                 <SelectValue placeholder="Nessun progetto" />
               </SelectTrigger>
               <SelectContent className="bg-surface border-border">
-                <SelectItem value="">Nessun progetto</SelectItem>
+                <SelectItem value="none">Nessun progetto</SelectItem>
                 {projects.map((project) => (
                   <SelectItem key={project.id} value={project.id}>
                     {project.name}
