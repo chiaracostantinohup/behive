@@ -4,6 +4,7 @@ import { Toaster } from './components/ui/sonner';
 import Layout from './components/Layout';
 import Login from './pages/Login';
 import Onboarding from './pages/Onboarding';
+import OnboardingSession from './pages/OnboardingSession';
 import NewChat from './pages/NewChat';
 import Chat from './pages/Chat';
 import ChatHistory from './pages/ChatHistory';
@@ -61,6 +62,10 @@ function App() {
           
           <Route path="/onboarding" element={
             isAuthenticated ? <Onboarding /> : <Navigate to="/login" replace />
+          } />
+          
+          <Route path="/onboarding/session" element={
+            isAuthenticated ? <OnboardingSession /> : <Navigate to="/login" replace />
           } />
           
           <Route path="/" element={

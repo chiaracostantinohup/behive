@@ -660,6 +660,9 @@ const Step3Knowledge = ({ onNext, onBack }) => {
 
 // ----- STEP 4: Acquisition method -----
 const Step4Acquisition = ({ selectedMethod, setSelectedMethod, onFinish, onBack }) => {
+  const showRecordingWarning =
+    selectedMethod === 'screen' || selectedMethod === 'both';
+
   return (
     <motion.div
       key="step-4"
@@ -746,29 +749,27 @@ const Step4Acquisition = ({ selectedMethod, setSelectedMethod, onFinish, onBack 
           </Button>
         </div>
 
-        {/* Warning toast — impossible to miss */}
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          role="alert"
-          data-testid="onboarding-recording-warning"
-          className="flex items-start gap-3 p-4 rounded-lg border-2 border-warning bg-warning/10"
-        >
-          <div className="h-9 w-9 rounded-md bg-warning flex items-center justify-center shrink-0">
-            <AlertTriangle className="h-5 w-5 text-warning-foreground" />
-          </div>
-          <div className="flex-1">
-            <p className="text-sm font-semibold text-foreground mb-0.5">
-              Avviso: registrazione in corso
-            </p>
-            <p className="text-sm text-foreground-muted leading-relaxed">
+        {/* Warning notice — only for screen/both, inline icon */}
+        {showRecordingWarning && (
+          <motion.div
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.2 }}
+            role="alert"
+            data-testid="onboarding-recording-warning"
+            className="flex items-start gap-2.5 px-3 py-2.5 rounded-md border border-warning/40 bg-warning/5"
+          >
+            <AlertTriangle className="h-3.5 w-3.5 text-warning mt-0.5 shrink-0" />
+            <p className="text-xs text-foreground-muted leading-relaxed">
+              <span className="font-medium text-foreground">
+                Avviso: registrazione in corso.
+              </span>{' '}
               Da questo momento in poi verrà avviata la registrazione dello
               schermo, tutto quello che verrà mostrato verrà memorizzato da
               Behive.
             </p>
-          </div>
-        </motion.div>
+          </motion.div>
+        )}
       </div>
     </motion.div>
   );
@@ -801,6 +802,11 @@ export const Onboarding = () => {
   const goNext = () => setCurrentStep((s) => Math.min(s + 1, STEPS.length));
   const goBack = () => setCurrentStep((s) => Math.max(s - 1, 1));
   const finishOnboarding = () => {
+    navigate('/onboarding/session', {
+      state: { method: selectedMethod },
+    });
+  };
+  const exitSetup = () => {
     navigate('/chat/new', { replace: true });
   };
 
@@ -817,7 +823,7 @@ export const Onboarding = () => {
           </span>
         </div>
         <button
-          onClick={finishOnboarding}
+          onClick={exitSetup}
           data-testid="onboarding-exit"
           className="text-sm text-foreground-subtle hover:text-foreground transition-smooth"
         >

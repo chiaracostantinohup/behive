@@ -22,19 +22,25 @@ all data mocked.
 - **Profile** (theme switcher Dark/Light) / **Help/FAQ**
 
 ## Changelog
-- **24 Apr 2026**
-  - Fixed excessive padding on `NewChat.jsx` textarea (`pl-20 pr-16` → `pb-14`).
-  - Added **Onboarding Wizard** (`/onboarding`) — 4 steps:
-    1. Company info (name, industry, employees, country, website, revenue, role).
-    2. Integrations (Google Drive, Slack, Notion, Gmail, HubSpot, Salesforce)
-       with mock OAuth popup + "Salta, lo farò dopo" defer option.
-    3. Knowledge intro — big `BookOpen` icon, headline "I tuoi agenti
-       devono conoscere la tua azienda", 3-panel grid (Workflow, Glossario,
-       Data Catalog), CTA "Iniziamo".
-    4. Acquisition method — 3 cards (Intervista vocale, Registrazione schermo,
-       Entrambi w/ "Migliori risultati" badge), CTA "Avvia sessione", prominent
-       warning toast about screen recording.
-  - Updated `App.js` routing: post-login lands on `/onboarding`, finish → `/chat/new`.
+- **24 Apr 2026 (pomeriggio)**
+  - Step 4 Onboarding: warning "registrazione in corso" ora mostrato **solo**
+    quando si seleziona `Registrazione schermo` o `Entrambi`. Icona piccola
+    inline con la label, non più blocco prominente.
+  - Nuova rotta `/onboarding/session` — `OnboardingSession.jsx`:
+    - Recording bar persistente in alto: REC con puntino rosso pulsante,
+      label metodo, timer live (MM:SS), bottoni `Pausa`/`Riprendi` e `Stop`.
+    - Stato empty con placeholder "Scrivi qui tutte le informazioni che ti
+      vengono in mente riguardo i processi della tua azienda."
+    - Dopo il primo input, conversazione simulata con agente di onboarding
+      che pone domande strutturate di approfondimento (processo, passaggi,
+      ruoli, terminologia, sistemi, colli di bottiglia, criteri di qualità).
+    - `Stop` termina la sessione e porta su `/chat/new`.
+  - Step 4 "Avvia sessione" ora porta a `/onboarding/session` invece di
+    `/chat/new`; `Esci dal setup` mantiene il bypass verso `/chat/new`.
+
+- **24 Apr 2026 (mattina)**
+  - Fix padding textarea `NewChat.jsx`.
+  - Onboarding Wizard 4 step (Azienda, Integrazioni, Knowledge, Acquisizione).
 
 - **Previous sessions**
   - Theme switcher (Dark/Light), CSS variables for semantic colors.
