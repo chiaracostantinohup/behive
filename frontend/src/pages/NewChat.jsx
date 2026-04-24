@@ -124,7 +124,7 @@ export const NewChat = () => {
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               placeholder="Chiedi qualcosa a Behive..."
-              className="min-h-[120px] pl-20 pr-16 bg-surface border-border resize-none"
+              className="min-h-[120px] pb-14 bg-surface border-border resize-none"
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
                   e.preventDefault();

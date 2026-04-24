@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { Toaster } from './components/ui/sonner';
 import Layout from './components/Layout';
 import Login from './pages/Login';
+import Onboarding from './pages/Onboarding';
 import NewChat from './pages/NewChat';
 import Chat from './pages/Chat';
 import ChatHistory from './pages/ChatHistory';
@@ -55,13 +56,17 @@ function App() {
       <div className="App">
         <Routes>
           <Route path="/login" element={
-            isAuthenticated ? <Navigate to="/chat/new" replace /> : <Login onLogin={handleLogin} />
+            isAuthenticated ? <Navigate to="/onboarding" replace /> : <Login onLogin={handleLogin} />
+          } />
+          
+          <Route path="/onboarding" element={
+            isAuthenticated ? <Onboarding /> : <Navigate to="/login" replace />
           } />
           
           <Route path="/" element={
             isAuthenticated ? <Layout onLogout={handleLogout} /> : <Navigate to="/login" replace />
           }>
-            <Route index element={<Navigate to="/chat/new" replace />} />
+            <Route index element={<Navigate to="/onboarding" replace />} />
             <Route path="chat" element={<ChatHistory />} />
             <Route path="chat/new" element={<NewChat />} />
             <Route path="chat/:id" element={<Chat />} />
