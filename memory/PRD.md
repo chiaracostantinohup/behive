@@ -22,9 +22,37 @@ all data mocked.
 - **Profile** (theme switcher Dark/Light) / **Help/FAQ**
 
 ## Changelog
-- **24 Apr 2026 (sera)** — Redesign completo `OnboardingSession.jsx` come
-  **workbench di knowledge ingestion** ispirato a NotebookLM, dark-first,
-  product-grade.
+- **24 Apr 2026 (notte)** — Refinement chat workbench:
+  - **Opening proattivo**: l'agente apre la conversazione appena la
+    schermata carica, senza empty state. Messaggio iniziale esatto sul
+    dominio Finance ("...come funziona il processo di approvazione
+    budget nella tua azienda?"). Niente più attesa che l'utente scriva
+    per primo.
+  - **INTERVIEW_TURNS riscritti** per il dominio Finance (autorità finale,
+    soglie, ERP/sistemi, eccezioni/fast-track, audit trail). Le KB entries
+    sono coerenti (Approvazione budget, Budget Owner, SAP Finance,
+    Fast-track, Escalation Path).
+  - **Reasoning row collapsible** (stile Claude thinking) su ogni
+    messaggio agente:
+    - Collapsed di default: singola riga "Ragionamento · Xs" con chevron.
+    - Durante processing: "Behive sta ragionando..." con puntino pulsante
+      `animate-ping` + testo con effetto shimmer (keyframes
+      `reasoning-shimmer` in index.css, gradient animato sul color).
+    - Espansa: pannello scrollabile, typography monospace `text-[11px]`,
+      step numerati (01, 02, ...), `bg-surface-elevated/70`, border subtle,
+      max-height 220px con custom scrollbar — chiaramente secondaria
+      rispetto al messaggio principale.
+  - Ogni messaggio agente ora porta `reasoning[]` + `durationMs`. Anche
+    l'opening message ha reasoning già disponibile.
+
+- **24 Apr 2026 (sera)** — Redesign workbench 3 colonne (Fonti / Chat / KB).
+
+- **24 Apr 2026 (pomeriggio)**
+  - Step 4 Onboarding: warning solo per screen/both.
+
+- **24 Apr 2026 (mattina)**
+  - Fix padding textarea `NewChat.jsx`.
+  - Onboarding Wizard 4 step.
   - Recording bar slim full-width: puntino rosso pulsante, label
     "Registrazione in corso" / "Registrazione in pausa", timer
     `HH:MM:SS`, controlli `Pausa`/`Riprendi` e `Interrompi`.

@@ -22,6 +22,7 @@ import {
   BookOpen,
   Database,
   Bot,
+  Sparkles,
   X,
 } from 'lucide-react';
 import { Button } from '../components/ui/button';
@@ -73,11 +74,20 @@ const formatDate = (d) => {
 const INTERVIEW_TURNS = [
   {
     reply:
-      "Hai menzionato il processo di onboarding clienti — chi è responsabile del primo contatto? Un singolo ruolo, o il processo è condiviso fra più persone?",
+      "Interessante. Chi ha l'autorità finale di approvazione su un budget che supera, ad esempio, i 50.000€? È una singola persona o un comitato?",
+    reasoning: [
+      "Analizzo la risposta dell'utente sul processo di approvazione budget.",
+      "Identifico entità menzionate: 'approvazione', 'budget'.",
+      "Pattern rilevato: processo multi-step con dipendenze gerarchiche probabili.",
+      "Controllo knowledge base: nessun workflow preesistente su approvazione budget.",
+      "Decisione: catalogare il processo come nuovo workflow (6 step placeholder).",
+      "Prossima domanda da porre: identificazione dei decision-maker senior.",
+      "Formulo follow-up sulla soglia di autorità finale.",
+    ],
     kbAdds: [
       {
         section: 'workflow',
-        title: 'Onboarding cliente Enterprise',
+        title: 'Approvazione budget',
         description: '6 step identificati',
         source: 'Chat',
       },
@@ -85,24 +95,51 @@ const INTERVIEW_TURNS = [
   },
   {
     reply:
-      "Quando dici 'qualificazione', intendi il framework BANT classico o avete una metodologia interna? Mi aiuta a mapparla correttamente nel glossario.",
+      "Chiaro. Esistono livelli di approvazione basati sull'importo? Se sì, quali sono le soglie che avete definito internamente?",
+    reasoning: [
+      "L'utente ha indicato un ruolo responsabile dell'approvazione finale.",
+      "Aggiungo il ruolo come termine di dominio al glossario (candidato: 'Budget Owner').",
+      "Verifica incrociata con frameworks noti (SOX, FinOps).",
+      "Inferisco presenza di matrice di autorità per importo → da confermare.",
+      "Salvo definizione preliminare nel glossario.",
+      "Preparo domanda sulle soglie di escalation.",
+    ],
     kbAdds: [
       {
         section: 'glossary',
-        title: 'Qualificazione',
+        title: 'Budget Owner',
         description:
-          'Processo interno di valutazione del potenziale cliente basato su budget, autorità, necessità e tempistiche.',
+          "Ruolo interno responsabile dell'approvazione finale di una richiesta di budget oltre una determinata soglia. Ha autorità di firma e risponde direttamente alla Direzione Finanziaria.",
         source: 'Chat',
       },
     ],
   },
   {
     reply:
-      "Questo processo cambia a seconda della dimensione del cliente? Tipicamente SMB vs Enterprise seguono cammini diversi — voglio capire dove si biforca.",
+      "Perfetto, sto mappando le soglie. Quali sistemi usate per tracciare e archiviare queste richieste di budget? Un ERP tipo SAP, un tool dedicato, o fogli condivisi?",
+    reasoning: [
+      "Rilevate soglie numeriche nel messaggio utente → le catalogo come parametri del workflow.",
+      "Aggiorno il workflow 'Approvazione budget' con i livelli di autorità.",
+      "Nessun sistema tecnico ancora menzionato: gap nel data catalog.",
+      "Preparo domanda mirata su ERP / tooling finanziario.",
+      "Obiettivo: collegare il processo ai sistemi per il data catalog.",
+    ],
+    kbAdds: [],
+  },
+  {
+    reply:
+      "Ottimo. E come gestite le eccezioni — richieste urgenti fuori dal ciclo standard? C'è un percorso accelerato o passa comunque dalla stessa catena?",
+    reasoning: [
+      "Identificato sistema: probabilmente SAP o tool ERP equivalente.",
+      "Aggiungo entità al data catalog come 'Sistema', fonte: Chat.",
+      "Collego mentalmente il sistema al workflow di approvazione budget.",
+      "Hp: il sistema contiene anche un audit trail delle approvazioni → da confermare.",
+      "Prossimo topic utile: gestione delle eccezioni (approvazioni urgenti).",
+    ],
     kbAdds: [
       {
         section: 'data',
-        title: 'HubSpot CRM',
+        title: 'SAP Finance',
         type: 'Sistema',
         source: 'Chat',
       },
@@ -110,38 +147,39 @@ const INTERVIEW_TURNS = [
   },
   {
     reply:
-      "Chiaro. E chi si occupa dell'approvazione formale delle offerte? Voglio mappare la catena di firma.",
+      "Perfetto. Un'ultima domanda su questo processo: una volta approvato il budget, come viene notificata la chiusura della pratica? C'è un audit trail, un report mensile, entrambi?",
+    reasoning: [
+      "Eccezioni / percorsi accelerati sono un punto critico per gli agenti operativi.",
+      "Salvo sotto-workflow 'Fast-track approvazione urgente'.",
+      "Aggiungo termine al glossario: 'Escalation Path'.",
+      "Verifico coerenza con il workflow principale: ok, è una variante.",
+      "Prossima area: chiusura pratica e audit.",
+    ],
     kbAdds: [
       {
         section: 'workflow',
-        title: 'Processo di approvazione offerte',
-        description: '3 responsabili mappati',
-        source: 'Chat',
-      },
-    ],
-  },
-  {
-    reply:
-      "Ottimo, registro anche questo ruolo. Un'ultima domanda per ora: quali sistemi tocca tipicamente un contratto firmato? Vendor di firma digitale, CRM, billing — tutto quello che ti viene in mente.",
-    kbAdds: [
-      {
-        section: 'data',
-        title: 'DocuSign',
-        type: 'Sistema',
+        title: 'Fast-track approvazione urgente',
+        description: 'Percorso accelerato per richieste fuori ciclo',
         source: 'Chat',
       },
       {
         section: 'glossary',
-        title: 'Kickoff call',
+        title: 'Escalation Path',
         description:
-          "Prima riunione formale post-firma dove vengono definiti scope, timeline e referenti operativi.",
+          'Sequenza di ruoli a cui inoltrare una richiesta di approvazione budget quando la normale catena non è disponibile o i tempi sono critici.',
         source: 'Chat',
       },
     ],
   },
   {
     reply:
-      "Perfetto. Sto consolidando tutto nel tuo knowledge base in tempo reale — lo vedi aggiornarsi a destra. Vuoi passare a un altro processo o approfondire questo con più dettagli?",
+      "Perfetto, ho una mappa solida del processo di approvazione budget. Lo trovi catalogato a destra. Vuoi passare a un altro processo del dominio Finance — per esempio il ciclo di fatturazione — o preferisci approfondire questo?",
+    reasoning: [
+      "Chiusura iterazione sul processo 'Approvazione budget'.",
+      "Knowledge base consolidata: 2 workflow, 2 termini di glossario, 1 sistema.",
+      "Gap residui: dettaglio ruoli intermedi, tempi SLA, integrazione con tesoreria.",
+      "Proposta: offrire scelta fra approfondimento o nuovo topic Finance.",
+    ],
     kbAdds: [],
   },
 ];
@@ -728,6 +766,93 @@ const renderMessageContent = (content) => {
 };
 
 /* ============================================================
+ * Reasoning Row — collapsed thinking indicator / log
+ * ============================================================ */
+
+const ReasoningRow = ({ thinking, steps, durationMs }) => {
+  const [expanded, setExpanded] = useState(false);
+  const durationSec =
+    typeof durationMs === 'number' ? (durationMs / 1000).toFixed(1) : null;
+  const hasLog = Array.isArray(steps) && steps.length > 0;
+
+  return (
+    <div
+      className="mb-1.5"
+      data-testid={thinking ? 'agent-reasoning-thinking' : 'agent-reasoning-row'}
+    >
+      <button
+        type="button"
+        onClick={() => hasLog && !thinking && setExpanded((v) => !v)}
+        disabled={thinking || !hasLog}
+        className={cn(
+          'group flex items-center gap-1.5 text-[11px] transition-fast',
+          thinking
+            ? 'text-foreground-muted cursor-default'
+            : hasLog
+              ? 'text-foreground-subtle hover:text-foreground-muted cursor-pointer'
+              : 'text-foreground-subtle cursor-default'
+        )}
+      >
+        {hasLog && !thinking ? (
+          <ChevronRight
+            className={cn(
+              'h-3 w-3 transition-transform shrink-0',
+              expanded && 'rotate-90'
+            )}
+          />
+        ) : (
+          <Sparkles
+            className={cn('h-3 w-3 shrink-0', thinking && 'text-primary')}
+          />
+        )}
+        {thinking ? (
+          <>
+            <span className="relative flex h-1.5 w-1.5 shrink-0">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-70" />
+              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-primary" />
+            </span>
+            <span className="reasoning-shimmer font-medium">
+              Behive sta ragionando...
+            </span>
+          </>
+        ) : (
+          <span>
+            Ragionamento
+            {durationSec && (
+              <span className="text-foreground-subtle"> · {durationSec}s</span>
+            )}
+          </span>
+        )}
+      </button>
+      <AnimatePresence initial={false}>
+        {expanded && hasLog && !thinking && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden"
+          >
+            <div className="mt-1.5 max-h-[220px] overflow-y-auto custom-scrollbar bg-surface-elevated/70 border border-border-subtle rounded-md">
+              <div className="px-3 py-2 font-mono text-[11px] leading-[1.65] text-foreground-muted space-y-1">
+                {steps.map((s, i) => (
+                  <div key={i} className="flex gap-2">
+                    <span className="text-foreground-subtle select-none shrink-0">
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
+                    <span className="break-words">{s}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
+/* ============================================================
  * CENTER PANEL — Chat
  * ============================================================ */
 
@@ -804,6 +929,12 @@ const ChatPanel = ({
                       Behive Onboarding Agent
                     </div>
                   )}
+                  {m.role === 'agent' && m.reasoning && (
+                    <ReasoningRow
+                      steps={m.reasoning}
+                      durationMs={m.durationMs}
+                    />
+                  )}
                   <div
                     className={cn(
                       'px-4 py-3 rounded-lg text-sm leading-relaxed',
@@ -840,31 +971,17 @@ const ChatPanel = ({
                 key="typing"
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
                 className="flex gap-3"
               >
                 <div className="h-8 w-8 rounded-md bg-primary/10 border border-primary/30 flex items-center justify-center shrink-0">
                   <Bot className="h-4 w-4 text-primary" />
                 </div>
-                <div className="max-w-[80%]">
+                <div className="max-w-[80%] pt-1">
                   <div className="text-[11px] font-medium text-foreground-muted mb-1">
                     Behive Onboarding Agent
                   </div>
-                  <div className="px-4 py-3 rounded-lg bg-surface border border-border">
-                    <span className="inline-flex gap-1 items-center">
-                      <span
-                        className="h-1.5 w-1.5 bg-foreground-muted rounded-full animate-bounce"
-                        style={{ animationDelay: '0ms' }}
-                      />
-                      <span
-                        className="h-1.5 w-1.5 bg-foreground-muted rounded-full animate-bounce"
-                        style={{ animationDelay: '150ms' }}
-                      />
-                      <span
-                        className="h-1.5 w-1.5 bg-foreground-muted rounded-full animate-bounce"
-                        style={{ animationDelay: '300ms' }}
-                      />
-                    </span>
-                  </div>
+                  <ReasoningRow thinking />
                 </div>
               </motion.div>
             )}
@@ -1125,7 +1242,15 @@ export const OnboardingSession = () => {
       id: uid(),
       role: 'agent',
       content:
-        "Ciao! Sono qui per aiutarti a costruire la base di conoscenza dei tuoi agenti. Inizia caricando qualche documento nella colonna a sinistra, oppure raccontami direttamente come funziona la tua azienda. Da dove vuoi partire?",
+        "Ciao! Sono l'Onboarding Agent. Iniziamo con il dominio Finance. Puoi descrivermi come funziona il processo di approvazione budget nella tua azienda?",
+      reasoning: [
+        "Avvio sessione di onboarding knowledge.",
+        "Seleziono dominio iniziale: Finance (scelta di default per onboarding enterprise).",
+        "Identifico processo ad alto valore per il dominio: approvazione budget.",
+        "Formulo domanda aperta per massimizzare l'informazione elicitata.",
+        "In attesa risposta utente per iniziare la catalogazione.",
+      ],
+      durationMs: 820,
     },
   ]);
   const [isAgentTyping, setIsAgentTyping] = useState(false);
@@ -1173,6 +1298,7 @@ export const OnboardingSession = () => {
       { id: uid(), role: 'user', content: text, attachments },
     ]);
 
+    const delay = 1100 + Math.random() * 700;
     setIsAgentTyping(true);
     setTimeout(() => {
       setIsAgentTyping(false);
@@ -1185,7 +1311,13 @@ export const OnboardingSession = () => {
         }
         setMessages((prev) => [
           ...prev,
-          { id: uid(), role: 'agent', content },
+          {
+            id: uid(),
+            role: 'agent',
+            content,
+            reasoning: turn.reasoning || [],
+            durationMs: Math.round(delay),
+          },
         ]);
         // Add the KB entries — with citation source when possible
         const enrichedAdds = (turn.kbAdds || []).map((e) => {
@@ -1204,10 +1336,16 @@ export const OnboardingSession = () => {
             role: 'agent',
             content:
               "Continua pure: ogni dettaglio aggiuntivo arricchisce la conoscenza degli agenti.",
+            reasoning: [
+              'Input utente ricevuto dopo fine script predefinito.',
+              'Nessuna domanda strutturata pianificata per questo turno.',
+              'Rispondo con un invito aperto a continuare.',
+            ],
+            durationMs: Math.round(delay),
           },
         ]);
       }
-    }, 900 + Math.random() * 500);
+    }, delay);
   };
 
   const handleChatAttach = (files) => {
