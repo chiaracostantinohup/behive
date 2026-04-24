@@ -22,21 +22,43 @@ all data mocked.
 - **Profile** (theme switcher Dark/Light) / **Help/FAQ**
 
 ## Changelog
+- **24 Apr 2026 (sera)** — Redesign completo `OnboardingSession.jsx` come
+  **workbench di knowledge ingestion** ispirato a NotebookLM, dark-first,
+  product-grade.
+  - Recording bar slim full-width: puntino rosso pulsante, label
+    "Registrazione in corso" / "Registrazione in pausa", timer
+    `HH:MM:SS`, controlli `Pausa`/`Riprendi` e `Interrompi`.
+  - **Layout tre colonne** (grid `320px | 1fr | 360px`): centro più ampio.
+  - **LEFT PANEL "Fonti"**: bottone "+ Aggiungi documento" (accept
+    `.pdf,.docx,.txt,audio/*`), search "Cerca nei documenti...",
+    empty state con icona FilePlus2 e testo richiesto. Lista documenti
+    con nome, badge tipo, data upload. Doppio click per rinominare.
+    Menu 3-dots con `Rinomina`, `Raggruppa`, `Elimina`. Folder collapsible
+    con indent, creazione via modal.
+  - **CENTER PANEL "Chat"**: avatar Bot + label "Behive Onboarding Agent"
+    su ogni messaggio agente. Opening message preciso. Script
+    `INTERVIEW_TURNS` con domande di approfondimento metodico
+    (responsabile primo contatto, BANT vs metodologia interna,
+    variazione per dimensione cliente, approvazione offerte, sistemi
+    coinvolti). Placeholder "Scrivi qui...". Toolbar sopra input con
+    "Allega file" (i file allegati finiscono anche nel pannello Fonti).
+    **Inline citation chip**: se ci sono documenti, la risposta del
+    turno 2 include un chip `{{doc:filename}}` con icona FileText.
+  - **RIGHT PANEL "Knowledge Base"**: 3 sezioni collapsible
+    `Workflow` (icona `Workflow`), `Glossario` (`BookOpen`),
+    `Data Catalog` (`Database`), ognuna con counter. Ogni entry ha:
+    titolo, type badge (per Data Catalog), descrizione (line-clamp-1
+    collapsed, full expanded), freccia expand, source badge `Fonte: Chat`
+    o `Fonte: <filename>`. Fade-in + highlight (`bg-primary/10`) per
+    1.8s quando una entry viene aggiunta. Summary bar in basso:
+    "X elementi catalogati · Ultimo aggiornamento: adesso/Xs fa/X min fa".
+  - Fix bug: `isAuthenticated` in `App.js` ora inizializzato in modo
+    sincrono da localStorage (eliminato race condition che faceva
+    rimbalzare URL profondi come `/onboarding/session` su `/onboarding`).
+
 - **24 Apr 2026 (pomeriggio)**
-  - Step 4 Onboarding: warning "registrazione in corso" ora mostrato **solo**
-    quando si seleziona `Registrazione schermo` o `Entrambi`. Icona piccola
-    inline con la label, non più blocco prominente.
-  - Nuova rotta `/onboarding/session` — `OnboardingSession.jsx`:
-    - Recording bar persistente in alto: REC con puntino rosso pulsante,
-      label metodo, timer live (MM:SS), bottoni `Pausa`/`Riprendi` e `Stop`.
-    - Stato empty con placeholder "Scrivi qui tutte le informazioni che ti
-      vengono in mente riguardo i processi della tua azienda."
-    - Dopo il primo input, conversazione simulata con agente di onboarding
-      che pone domande strutturate di approfondimento (processo, passaggi,
-      ruoli, terminologia, sistemi, colli di bottiglia, criteri di qualità).
-    - `Stop` termina la sessione e porta su `/chat/new`.
-  - Step 4 "Avvia sessione" ora porta a `/onboarding/session` invece di
-    `/chat/new`; `Esci dal setup` mantiene il bypass verso `/chat/new`.
+  - Step 4 Onboarding: warning solo per screen/both, icona inline.
+  - Prima versione `/onboarding/session` come chat semplice (sostituita).
 
 - **24 Apr 2026 (mattina)**
   - Fix padding textarea `NewChat.jsx`.

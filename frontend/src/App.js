@@ -21,7 +21,9 @@ import Profile from './pages/Profile';
 import './App.css';
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    () => localStorage.getItem('behive_authenticated') === 'true'
+  );
   
   useEffect(() => {
     // Initialize theme on app startup
@@ -36,10 +38,6 @@ function App() {
       root.classList.add(savedTheme);
       root.classList.remove(savedTheme === 'dark' ? 'light' : 'dark');
     }
-    
-    // Check if user is authenticated (mock)
-    const authStatus = localStorage.getItem('behive_authenticated');
-    setIsAuthenticated(authStatus === 'true');
   }, []);
   
   const handleLogin = () => {
