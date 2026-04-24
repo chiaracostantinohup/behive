@@ -22,6 +22,23 @@ all data mocked.
 - **Profile** (theme switcher Dark/Light) / **Help/FAQ**
 
 ## Changelog
+- **24 Apr 2026 (revisioni finali)**:
+  - **Recording bar più visibile**: bg `destructive/[0.08]` + border
+    `destructive/30` quando la registrazione è in corso; si smorza a
+    `surface-elevated` + `border` quando in pausa. Transition-colors
+    fluida tra i due stati.
+  - **Auto-espansione dominio attivo nel tracker**: `DomainRow` ora
+    inizializza `expanded = (status === 'active')` e usa `useRef` +
+    `useEffect` per sincronizzare al change di status. Quando un nuovo
+    dominio diventa active si apre automaticamente; quando va in
+    completed si collassa. L'utente può ancora togglare manualmente
+    e la scelta è rispettata finché lo status non cambia di nuovo.
+  - **Textarea sempre visibile** nel ChatPanel: aggiunto `min-h-0 flex
+    flex-col overflow-hidden` alla section, `shrink-0` su header e
+    input container, `min-h-0` sulla zona scroll. Il grid genitore ha
+    anche `min-h-0` per garantire la corretta propagazione dell'altezza.
+    La textarea resta pinned in basso anche con conversazioni lunghe.
+
 - **24 Apr 2026 (tardo)** — Domain coverage tracker:
   - Onboarding agent ora struttura la conversazione su 5 domini sequenziali:
     **Finance → Sales → Marketing → Customer Service → Product**.

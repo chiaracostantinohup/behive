@@ -453,7 +453,12 @@ const RecordingBar = ({ elapsed, paused, onTogglePause, onStop }) => {
   return (
     <div
       data-testid="onboarding-recording-bar"
-      className="w-full border-b border-border bg-surface-elevated"
+      className={cn(
+        'w-full border-b transition-colors',
+        paused
+          ? 'border-border bg-surface-elevated'
+          : 'border-destructive/30 bg-destructive/[0.08]'
+      )}
     >
       <div className="flex items-center justify-between px-5 py-2">
         <div className="flex items-center gap-3">
@@ -1148,10 +1153,10 @@ const ChatPanel = ({
 
   return (
     <section
-      className="h-full flex flex-col bg-background"
+      className="h-full min-h-0 flex flex-col bg-background overflow-hidden"
       data-testid="onboarding-panel-chat"
     >
-      <div className="px-5 pt-4 pb-3 border-b border-border">
+      <div className="px-5 pt-4 pb-3 border-b border-border shrink-0">
         <h2 className="text-xs font-semibold uppercase tracking-wider text-foreground-muted">
           Chat
         </h2>
@@ -1159,7 +1164,7 @@ const ChatPanel = ({
 
       <div
         ref={scrollRef}
-        className="flex-1 overflow-y-auto custom-scrollbar"
+        className="flex-1 min-h-0 overflow-y-auto custom-scrollbar"
       >
         <div className="max-w-2xl mx-auto px-6 py-6 space-y-5">
           <AnimatePresence initial={false}>
@@ -1251,7 +1256,7 @@ const ChatPanel = ({
       </div>
 
       {/* Input */}
-      <div className="border-t border-border bg-background">
+      <div className="border-t border-border bg-background shrink-0">
         <div className="max-w-2xl mx-auto px-6 py-4">
           {/* Toolbar */}
           <div className="flex items-center gap-1 mb-2">
@@ -1386,7 +1391,14 @@ const KBEntry = ({ entry, isNew }) => {
  * ============================================================ */
 
 const DomainRow = ({ domain, state }) => {
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(state.status === 'active');
+  const prevStatus = useRef(state.status);
+  useEffect(() => {
+    if (prevStatus.current !== state.status) {
+      setExpanded(state.status === 'active');
+      prevStatus.current = state.status;
+    }
+  }, [state.status]);
 
   return (
     <div data-testid={`domain-row-${domain.id}`}>
@@ -1824,7 +1836,7 @@ export const OnboardingSession = () => {
         onStop={handleStop}
       />
       <div
-        className="flex-1 grid overflow-hidden"
+        className="flex-1 min-h-0 grid overflow-hidden"
         style={{ gridTemplateColumns: '320px 1fr 360px' }}
       >
         <FontiPanel
