@@ -380,8 +380,8 @@ export const Projects = () => {
               {selectedProject?.sharedWith?.length > 0 ? (
                 <ScrollArea className="h-[200px] rounded-lg border border-border">
                   <div className="p-4 space-y-3">
-                    {selectedProject.sharedWith.map((user, index) => (
-                      <div key={index} className="flex items-center justify-between p-3 bg-surface-elevated rounded-lg">
+                    {selectedProject.sharedWith.map((user) => (
+                      <div key={user.email} className="flex items-center justify-between p-3 bg-surface-elevated rounded-lg">
                         <div className="flex items-center gap-3">
                           <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-medium text-sm">
                             {user.name.charAt(0).toUpperCase()}

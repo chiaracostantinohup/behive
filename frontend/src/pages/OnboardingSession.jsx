@@ -1102,7 +1102,7 @@ const ReasoningRow = ({ thinking, steps, durationMs }) => {
             <div className="mt-1.5 max-h-[220px] overflow-y-auto custom-scrollbar bg-surface-elevated/70 border border-border-subtle rounded-md">
               <div className="px-3 py-2 font-mono text-[11px] leading-[1.65] text-foreground-muted space-y-1">
                 {steps.map((s, i) => (
-                  <div key={i} className="flex gap-2">
+                  <div key={`${i}-${s.slice(0, 24)}`} className="flex gap-2">
                     <span className="text-foreground-subtle select-none shrink-0">
                       {String(i + 1).padStart(2, '0')}
                     </span>
@@ -1219,7 +1219,7 @@ const ChatPanel = ({
                         const Icon = fileIconFor(att.type);
                         return (
                           <span
-                            key={i}
+                            key={`${att.name}-${i}`}
                             className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-surface-elevated border border-border text-xs text-foreground-muted"
                           >
                             <Icon className="h-3 w-3" />

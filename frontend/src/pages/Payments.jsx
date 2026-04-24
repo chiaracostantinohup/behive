@@ -111,8 +111,8 @@ export const Payments = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {currentPlan.features.map((feature, index) =>
-            <div key={index} className="flex items-center gap-2">
+            {currentPlan.features.map((feature) =>
+            <div key={feature} className="flex items-center gap-2">
                 <Check className="h-4 w-4 text-success flex-shrink-0" />
                 <span className="text-sm text-foreground">{feature}</span>
               </div>
@@ -209,8 +209,8 @@ export const Payments = () => {
                   </div>
                   
                   <div className="space-y-3 mb-6">
-                    {plan.features.map((feature, idx) =>
-                  <div key={idx} className="flex items-start gap-2">
+                    {plan.features.map((feature) =>
+                  <div key={feature} className="flex items-start gap-2">
                         <Check className="h-4 w-4 text-success flex-shrink-0 mt-0.5" />
                         <span className="text-sm text-foreground-muted">{feature}</span>
                       </div>

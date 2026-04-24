@@ -145,8 +145,8 @@ export const Help = () => {
                   <p className="text-xs text-foreground-muted">Tutti i sistemi operativi</p>
                 </div>
                 <div className="flex items-center gap-2">
-                  {serviceStatus.map((service, idx) => (
-                    <div key={idx} className="flex items-center gap-1.5">
+                  {serviceStatus.map((service) => (
+                    <div key={service.name} className="flex items-center gap-1.5">
                       <CheckCircle className="h-4 w-4 text-success" />
                       <span className="text-xs text-foreground-muted">{service.name}</span>
                     </div>
@@ -166,7 +166,7 @@ export const Help = () => {
             <Card className="p-6">
               <Accordion type="single" collapsible className="w-full">
                 {faqItems.map((item, index) => (
-                  <AccordionItem key={index} value={`item-${index}`} className="border-border">
+                  <AccordionItem key={item.question} value={`item-${index}`} className="border-border">
                     <AccordionTrigger className="text-left hover:text-primary transition-smooth">
                       <span className="font-medium">{item.question}</span>
                     </AccordionTrigger>
@@ -187,8 +187,8 @@ export const Help = () => {
           >
             <h2 className="text-xl font-semibold text-foreground mb-4">Video Tutorial</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {videoTutorials.map((video, index) => (
-                <Card key={index} className="p-4 hover:border-primary/50 transition-smooth cursor-pointer">
+              {videoTutorials.map((video) => (
+                <Card key={video.title} className="p-4 hover:border-primary/50 transition-smooth cursor-pointer">
                   <div className="flex items-start gap-3">
                     <div className="flex-shrink-0 w-12 h-12 rounded bg-surface-elevated flex items-center justify-center">
                       <PlayCircle className="h-6 w-6 text-primary" />
@@ -215,8 +215,8 @@ export const Help = () => {
           >
             <h2 className="text-xl font-semibold text-foreground mb-4">Guide per Categoria</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {helpCategories.map((category, index) => (
-                <Card key={index} className="p-6">
+              {helpCategories.map((category) => (
+                <Card key={category.title} className="p-6">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="p-2 rounded bg-surface-elevated">
                       <category.icon className="h-5 w-5 text-foreground-muted" />
@@ -224,8 +224,8 @@ export const Help = () => {
                     <h3 className="text-lg font-semibold text-foreground">{category.title}</h3>
                   </div>
                   <ul className="space-y-2">
-                    {category.articles.map((article, idx) => (
-                      <li key={idx}>
+                    {category.articles.map((article) => (
+                      <li key={article}>
                         <button className="text-sm text-foreground-muted hover:text-primary transition-smooth w-full text-left flex items-center gap-2 group">
                           <ChevronRight className="h-3 w-3 group-hover:translate-x-0.5 transition-transform" />
                           {article}

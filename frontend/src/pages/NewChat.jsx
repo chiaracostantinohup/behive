@@ -103,7 +103,7 @@ export const NewChat = () => {
             const Icon = prompt.icon;
             return (
               <motion.button
-                key={index}
+                key={prompt.text}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
@@ -247,8 +247,8 @@ export const NewChat = () => {
               {sharedUsers.length > 0 ? (
                 <ScrollArea className="h-[200px] rounded-lg border border-border">
                   <div className="p-4 space-y-3">
-                    {sharedUsers.map((user, index) => (
-                      <div key={index} className="flex items-center justify-between p-3 bg-surface-elevated rounded-lg">
+                    {sharedUsers.map((user) => (
+                      <div key={user.email} className="flex items-center justify-between p-3 bg-surface-elevated rounded-lg">
                         <div className="flex items-center gap-3">
                           <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-medium text-sm">
                             {user.name.charAt(0).toUpperCase()}

@@ -414,37 +414,166 @@ const Step2Integrations = ({
       return;
     }
 
-    popup.document.title = `${integration.provider} — Accedi`;
-    popup.document.body.style.margin = '0';
-    popup.document.body.innerHTML = `
-      <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#fff;color:#202124;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;">
-        <div style="max-width:360px;width:100%;border:1px solid #dadce0;border-radius:12px;padding:40px 32px;text-align:center;box-shadow:0 1px 2px rgba(60,64,67,.08);">
-          <div style="height:40px;margin-bottom:20px;font-size:22px;font-weight:600;color:${integration.color};">${integration.provider}</div>
-          <h1 style="font-size:22px;margin:0 0 8px;font-weight:500;">Accedi</h1>
-          <p style="color:#5f6368;font-size:14px;margin:0 0 24px;">per continuare su <strong>Behive</strong></p>
+    const doc = popup.document;
+    doc.title = `${integration.provider} — Accedi`;
+    doc.body.style.margin = '0';
+    // Clear any existing content
+    while (doc.body.firstChild) doc.body.removeChild(doc.body.firstChild);
 
-          <input type="email" placeholder="Email o numero di telefono" style="width:100%;box-sizing:border-box;padding:14px 12px;border:1px solid #dadce0;border-radius:6px;font-size:15px;margin-bottom:12px;" />
-          <input type="password" placeholder="Password" style="width:100%;box-sizing:border-box;padding:14px 12px;border:1px solid #dadce0;border-radius:6px;font-size:15px;margin-bottom:20px;" />
+    /* Helper: build element with styles + textContent (no innerHTML) */
+    const el = (tag, styles = {}, text) => {
+      const node = doc.createElement(tag);
+      Object.assign(node.style, styles);
+      if (text != null) node.textContent = text;
+      return node;
+    };
 
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;">
-            <a href="#" style="color:#1a73e8;font-size:13px;text-decoration:none;font-weight:500;">Crea account</a>
-            <button id="oauth-continue" style="background:${integration.color};color:#fff;border:none;padding:10px 22px;border-radius:6px;font-weight:500;cursor:pointer;font-size:14px;">Avanti</button>
-          </div>
+    const outer = el('div', {
+      fontFamily:
+        "-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif",
+      background: '#fff',
+      color: '#202124',
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '24px',
+    });
 
-          <p style="color:#9aa0a6;font-size:11px;margin-top:28px;">Behive riceverà: nome, email e accesso alle risorse di ${integration.name}.</p>
-        </div>
-      </div>
-    `;
+    const card = el('div', {
+      maxWidth: '360px',
+      width: '100%',
+      border: '1px solid #dadce0',
+      borderRadius: '12px',
+      padding: '40px 32px',
+      textAlign: 'center',
+      boxShadow: '0 1px 2px rgba(60,64,67,.08)',
+    });
 
-    const btn = popup.document.getElementById('oauth-continue');
-    btn.onclick = () => {
-      popup.document.body.innerHTML = `
-        <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#fff;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;">
-          <div style="width:44px;height:44px;border:3px solid #eee;border-top-color:${integration.color};border-radius:50%;animation:spin 1s linear infinite;"></div>
-          <p style="color:#5f6368;font-size:14px;">Autenticazione in corso...</p>
-          <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
-        </div>
-      `;
+    const brand = el(
+      'div',
+      {
+        height: '40px',
+        marginBottom: '20px',
+        fontSize: '22px',
+        fontWeight: '600',
+        color: integration.color,
+      },
+      integration.provider
+    );
+
+    const heading = el(
+      'h1',
+      { fontSize: '22px', margin: '0 0 8px', fontWeight: '500' },
+      'Accedi'
+    );
+
+    const subtitle = el('p', {
+      color: '#5f6368',
+      fontSize: '14px',
+      margin: '0 0 24px',
+    });
+    subtitle.appendChild(doc.createTextNode('per continuare su '));
+    const strong = doc.createElement('strong');
+    strong.textContent = 'Behive';
+    subtitle.appendChild(strong);
+
+    const inputBase = {
+      width: '100%',
+      boxSizing: 'border-box',
+      padding: '14px 12px',
+      border: '1px solid #dadce0',
+      borderRadius: '6px',
+      fontSize: '15px',
+    };
+    const emailInput = el('input', { ...inputBase, marginBottom: '12px' });
+    emailInput.type = 'email';
+    emailInput.placeholder = 'Email o numero di telefono';
+    const pwdInput = el('input', { ...inputBase, marginBottom: '20px' });
+    pwdInput.type = 'password';
+    pwdInput.placeholder = 'Password';
+
+    const footer = el('div', {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginTop: '16px',
+    });
+    const link = el(
+      'a',
+      {
+        color: '#1a73e8',
+        fontSize: '13px',
+        textDecoration: 'none',
+        fontWeight: '500',
+      },
+      'Crea account'
+    );
+    link.href = '#';
+    const submitBtn = el(
+      'button',
+      {
+        background: integration.color,
+        color: '#fff',
+        border: 'none',
+        padding: '10px 22px',
+        borderRadius: '6px',
+        fontWeight: '500',
+        cursor: 'pointer',
+        fontSize: '14px',
+      },
+      'Avanti'
+    );
+    footer.appendChild(link);
+    footer.appendChild(submitBtn);
+
+    const disclaimer = el(
+      'p',
+      {
+        color: '#9aa0a6',
+        fontSize: '11px',
+        marginTop: '28px',
+      },
+      `Behive riceverà: nome, email e accesso alle risorse di ${integration.name}.`
+    );
+
+    card.append(brand, heading, subtitle, emailInput, pwdInput, footer, disclaimer);
+    outer.appendChild(card);
+    doc.body.appendChild(outer);
+
+    submitBtn.onclick = () => {
+      // Clear then show loading state (still no innerHTML)
+      while (doc.body.firstChild) doc.body.removeChild(doc.body.firstChild);
+
+      const loadingWrap = el('div', {
+        fontFamily:
+          "-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif",
+        background: '#fff',
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '16px',
+      });
+      const spinner = el('div', {
+        width: '44px',
+        height: '44px',
+        border: '3px solid #eee',
+        borderTopColor: integration.color,
+        borderRadius: '50%',
+        animation: 'spin 1s linear infinite',
+      });
+      const loadingText = el(
+        'p',
+        { color: '#5f6368', fontSize: '14px' },
+        'Autenticazione in corso...'
+      );
+      const styleTag = doc.createElement('style');
+      styleTag.textContent = '@keyframes spin{to{transform:rotate(360deg)}}';
+      loadingWrap.append(spinner, loadingText, styleTag);
+      doc.body.appendChild(loadingWrap);
+
       setTimeout(() => {
         onConnect(integration.id);
         popup.close();
