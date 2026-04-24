@@ -22,7 +22,34 @@ all data mocked.
 - **Profile** (theme switcher Dark/Light) / **Help/FAQ**
 
 ## Changelog
-- **24 Apr 2026 (notte)** — Refinement chat workbench:
+- **24 Apr 2026 (tardo)** — Domain coverage tracker:
+  - Onboarding agent ora struttura la conversazione su 5 domini sequenziali:
+    **Finance → Sales → Marketing → Customer Service → Product**.
+    3 topic per dominio (15 totali) + 1 turno di closing.
+  - **Transition messages**: il primo turno di un nuovo dominio inizia con
+    "Ottimo, abbiamo coperto [dominio precedente]. Passiamo ora al dominio
+    [nuovo]." poi la prima domanda del nuovo dominio.
+  - Nuovo componente **`DomainTracker`** in cima al right panel:
+    - Sezione "Copertura domini" sopra "Knowledge Base".
+    - Ogni dominio mostra stato (completed = `CheckCircle2` verde filled,
+      active = `Loader2` animate-spin + `animate-ping` primary, pending =
+      `Circle` empty foreground-subtle), counter `X/3`, chevron.
+    - Click sul dominio → espande lista indentata di topic, ognuno con
+      icona di stato (✓ covered / spinner current / dot pending).
+    - Tipografia: dominio completed/active = `text-foreground`, pending =
+      `text-foreground-muted`. Topic completed = `text-foreground-muted`,
+      current = `text-foreground`, pending = `text-foreground-subtle`.
+  - `askedList` memo calcolato dal `turnIndex`, passato al
+    `KnowledgePanel` per il tracker. Aggiornamento in tempo reale: dopo
+    ogni reply agente, il tracker si ripopola con i topic coperti.
+  - `DOMAINS` constant con id/label/topics[]. `OPENING_META` per il
+    messaggio iniziale (Finance / "Autorità di approvazione").
+  - KB entries distribuite nei 5 domini: Approvazione budget +
+    Budget Owner + SAP Finance + Audit Trail (Finance), MEDDIC +
+    Pipeline di vendita + HubSpot CRM (Sales), Google Analytics +
+    Multi-touch Attribution + Lead Scoring (Marketing), Zendesk +
+    CSAT + Escalation ticket (Support), RICE scoring + Roadmap review
+    (Product). Totale: 15 elementi catalogati a sessione completa.
   - **Opening proattivo**: l'agente apre la conversazione appena la
     schermata carica, senza empty state. Messaggio iniziale esatto sul
     dominio Finance ("...come funziona il processo di approvazione

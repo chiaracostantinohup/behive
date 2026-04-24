@@ -23,6 +23,9 @@ import {
   Database,
   Bot,
   Sparkles,
+  CheckCircle2,
+  Circle,
+  Loader2,
   X,
 } from 'lucide-react';
 import { Button } from '../components/ui/button';
@@ -67,22 +70,78 @@ const formatDate = (d) => {
 };
 
 /* ============================================================
- * Scripted Interview
- * Each turn = (agent question, optional KB entries added after)
+ * Scripted Interview — 5 domains, sequential
+ * Finance → Sales → Marketing → Customer Service → Product
+ * Each turn has { domain, topic, reply, reasoning, kbAdds }.
+ * The OPENING message (rendered on mount) is Finance / first topic.
+ * Each subsequent turn fires when the user sends a message.
  * ============================================================ */
 
-const INTERVIEW_TURNS = [
+const DOMAINS = [
   {
+    id: 'finance',
+    label: 'Finance',
+    topics: [
+      'Autorità di approvazione',
+      'Sistemi di tracking',
+      'Audit e chiusura',
+    ],
+  },
+  {
+    id: 'sales',
+    label: 'Sales',
+    topics: [
+      'Metodologia di qualifica',
+      'Stage della pipeline',
+      'Handoff SDR → AE',
+    ],
+  },
+  {
+    id: 'marketing',
+    label: 'Marketing',
+    topics: [
+      'Canali di acquisizione',
+      'Modello di attribution',
+      'Lead scoring',
+    ],
+  },
+  {
+    id: 'support',
+    label: 'Customer Service',
+    topics: [
+      'Canali di supporto',
+      'SLA e priorità',
+      'Percorsi di escalation',
+    ],
+  },
+  {
+    id: 'product',
+    label: 'Product',
+    topics: [
+      'Processo di roadmap',
+      'Ciclo di release',
+      'Feedback loop',
+    ],
+  },
+];
+
+const OPENING_META = {
+  domain: 'finance',
+  topic: 'Autorità di approvazione',
+};
+
+const INTERVIEW_TURNS = [
+  /* ---------- FINANCE ---------- */
+  {
+    domain: 'finance',
+    topic: 'Sistemi di tracking',
     reply:
-      "Interessante. Chi ha l'autorità finale di approvazione su un budget che supera, ad esempio, i 50.000€? È una singola persona o un comitato?",
+      "Chiaro. E quali sistemi usate per tracciare queste richieste di budget? Un ERP tipo SAP, un tool dedicato, o fogli condivisi?",
     reasoning: [
-      "Analizzo la risposta dell'utente sul processo di approvazione budget.",
-      "Identifico entità menzionate: 'approvazione', 'budget'.",
-      "Pattern rilevato: processo multi-step con dipendenze gerarchiche probabili.",
-      "Controllo knowledge base: nessun workflow preesistente su approvazione budget.",
-      "Decisione: catalogare il processo come nuovo workflow (6 step placeholder).",
-      "Prossima domanda da porre: identificazione dei decision-maker senior.",
-      "Formulo follow-up sulla soglia di autorità finale.",
+      "Identificato ruolo responsabile dell'approvazione finale.",
+      "Aggiungo 'Budget Owner' al glossario aziendale.",
+      'Nessun sistema tecnico ancora menzionato — gap nel data catalog.',
+      'Preparo domanda mirata su ERP / tooling finanziario.',
     ],
     kbAdds: [
       {
@@ -91,50 +150,25 @@ const INTERVIEW_TURNS = [
         description: '6 step identificati',
         source: 'Chat',
       },
-    ],
-  },
-  {
-    reply:
-      "Chiaro. Esistono livelli di approvazione basati sull'importo? Se sì, quali sono le soglie che avete definito internamente?",
-    reasoning: [
-      "L'utente ha indicato un ruolo responsabile dell'approvazione finale.",
-      "Aggiungo il ruolo come termine di dominio al glossario (candidato: 'Budget Owner').",
-      "Verifica incrociata con frameworks noti (SOX, FinOps).",
-      "Inferisco presenza di matrice di autorità per importo → da confermare.",
-      "Salvo definizione preliminare nel glossario.",
-      "Preparo domanda sulle soglie di escalation.",
-    ],
-    kbAdds: [
       {
         section: 'glossary',
         title: 'Budget Owner',
         description:
-          "Ruolo interno responsabile dell'approvazione finale di una richiesta di budget oltre una determinata soglia. Ha autorità di firma e risponde direttamente alla Direzione Finanziaria.",
+          "Ruolo interno responsabile dell'approvazione finale di una richiesta di budget oltre una determinata soglia.",
         source: 'Chat',
       },
     ],
   },
   {
+    domain: 'finance',
+    topic: 'Audit e chiusura',
     reply:
-      "Perfetto, sto mappando le soglie. Quali sistemi usate per tracciare e archiviare queste richieste di budget? Un ERP tipo SAP, un tool dedicato, o fogli condivisi?",
+      "Perfetto. Un'ultima domanda su questo processo: una volta approvato, come viene tracciata la chiusura della pratica? Audit trail interno, report mensile, entrambi?",
     reasoning: [
-      "Rilevate soglie numeriche nel messaggio utente → le catalogo come parametri del workflow.",
-      "Aggiorno il workflow 'Approvazione budget' con i livelli di autorità.",
-      "Nessun sistema tecnico ancora menzionato: gap nel data catalog.",
-      "Preparo domanda mirata su ERP / tooling finanziario.",
-      "Obiettivo: collegare il processo ai sistemi per il data catalog.",
-    ],
-    kbAdds: [],
-  },
-  {
-    reply:
-      "Ottimo. E come gestite le eccezioni — richieste urgenti fuori dal ciclo standard? C'è un percorso accelerato o passa comunque dalla stessa catena?",
-    reasoning: [
-      "Identificato sistema: probabilmente SAP o tool ERP equivalente.",
-      "Aggiungo entità al data catalog come 'Sistema', fonte: Chat.",
-      "Collego mentalmente il sistema al workflow di approvazione budget.",
-      "Hp: il sistema contiene anche un audit trail delle approvazioni → da confermare.",
-      "Prossimo topic utile: gestione delle eccezioni (approvazioni urgenti).",
+      "Identificato sistema ERP: probabilmente SAP o equivalente.",
+      "Aggiungo entità al data catalog come 'Sistema'.",
+      "Collego il sistema al workflow 'Approvazione budget'.",
+      'Prossima area: chiusura pratica e audit trail.',
     ],
     kbAdds: [
       {
@@ -145,40 +179,267 @@ const INTERVIEW_TURNS = [
       },
     ],
   },
+
+  /* ---------- SALES (transition) ---------- */
   {
+    domain: 'sales',
+    topic: 'Metodologia di qualifica',
+    transition: 'finance',
     reply:
-      "Perfetto. Un'ultima domanda su questo processo: una volta approvato il budget, come viene notificata la chiusura della pratica? C'è un audit trail, un report mensile, entrambi?",
+      "Ottimo, abbiamo coperto Finance. Passiamo ora al dominio Sales. Usate un framework formale tipo BANT o MEDDIC per qualificare i lead, o avete una metodologia interna?",
     reasoning: [
-      "Eccezioni / percorsi accelerati sono un punto critico per gli agenti operativi.",
-      "Salvo sotto-workflow 'Fast-track approvazione urgente'.",
-      "Aggiungo termine al glossario: 'Escalation Path'.",
-      "Verifico coerenza con il workflow principale: ok, è una variante.",
-      "Prossima area: chiusura pratica e audit.",
+      "Finance: raccolto abbastanza per una prima catalogazione.",
+      'Salvo sotto-workflow audit come riferimento futuro.',
+      "Transizione al dominio successivo: Sales.",
+      'Parto dalla metodologia di qualifica — topic di apertura standard.',
     ],
     kbAdds: [
       {
-        section: 'workflow',
-        title: 'Fast-track approvazione urgente',
-        description: 'Percorso accelerato per richieste fuori ciclo',
-        source: 'Chat',
-      },
-      {
         section: 'glossary',
-        title: 'Escalation Path',
+        title: 'Audit Trail',
         description:
-          'Sequenza di ruoli a cui inoltrare una richiesta di approvazione budget quando la normale catena non è disponibile o i tempi sono critici.',
+          "Registro cronologico delle azioni compiute sul processo di approvazione budget, utilizzato per compliance e revisione.",
         source: 'Chat',
       },
     ],
   },
   {
+    domain: 'sales',
+    topic: 'Stage della pipeline',
     reply:
-      "Perfetto, ho una mappa solida del processo di approvazione budget. Lo trovi catalogato a destra. Vuoi passare a un altro processo del dominio Finance — per esempio il ciclo di fatturazione — o preferisci approfondire questo?",
+      "Utile. Quali sono gli stage principali della vostra pipeline di vendita? Dall'entrata del lead fino al closed-won.",
     reasoning: [
-      "Chiusura iterazione sul processo 'Approvazione budget'.",
-      "Knowledge base consolidata: 2 workflow, 2 termini di glossario, 1 sistema.",
-      "Gap residui: dettaglio ruoli intermedi, tempi SLA, integrazione con tesoreria.",
-      "Proposta: offrire scelta fra approfondimento o nuovo topic Finance.",
+      'Metodologia di qualifica identificata.',
+      "Aggiungo termine al glossario (MEDDIC o custom).",
+      "Obiettivo: mappare gli stage della pipeline come workflow.",
+    ],
+    kbAdds: [
+      {
+        section: 'glossary',
+        title: 'MEDDIC',
+        description:
+          "Framework di qualifica B2B basato su Metrics, Economic buyer, Decision criteria, Decision process, Identify pain, Champion.",
+        source: 'Chat',
+      },
+    ],
+  },
+  {
+    domain: 'sales',
+    topic: 'Handoff SDR → AE',
+    reply:
+      "Chiaro. E come avviene il passaggio da SDR ad Account Executive? Qual è il criterio di handoff e come viene formalizzato?",
+    reasoning: [
+      'Mappati gli stage principali della pipeline.',
+      "Creo workflow 'Pipeline di vendita' con gli stage raccolti.",
+      'Handoff tra ruoli è spesso un punto critico — lo indago.',
+    ],
+    kbAdds: [
+      {
+        section: 'workflow',
+        title: 'Pipeline di vendita',
+        description: '5 stage mappati: Lead → Qualified → Demo → Proposal → Closed',
+        source: 'Chat',
+      },
+    ],
+  },
+
+  /* ---------- MARKETING (transition) ---------- */
+  {
+    domain: 'marketing',
+    topic: 'Canali di acquisizione',
+    transition: 'sales',
+    reply:
+      "Ottimo, abbiamo coperto Sales. Passiamo ora al dominio Marketing. Quali sono i top 3 canali che generano lead qualificati per voi oggi?",
+    reasoning: [
+      'Criterio di handoff SDR → AE registrato.',
+      "Sales consolidato: workflow + metodologia + passaggi di ruolo.",
+      'Transizione al dominio Marketing.',
+      'Inizio dai canali di acquisizione — dato fondamentale per attribution.',
+    ],
+    kbAdds: [
+      {
+        section: 'data',
+        title: 'HubSpot CRM',
+        type: 'Sistema',
+        source: 'Chat',
+      },
+    ],
+  },
+  {
+    domain: 'marketing',
+    topic: 'Modello di attribution',
+    reply:
+      "Come attribuite i lead ai canali? Usate un modello first-touch, last-touch, multi-touch o lineare?",
+    reasoning: [
+      'Canali principali identificati.',
+      "Collego i canali al sistema di tracking (probabilmente Google Analytics o HubSpot).",
+      'Prossimo step: capire come vengono attribuiti economicamente.',
+    ],
+    kbAdds: [
+      {
+        section: 'data',
+        title: 'Google Analytics',
+        type: 'Sistema',
+        source: 'Chat',
+      },
+    ],
+  },
+  {
+    domain: 'marketing',
+    topic: 'Lead scoring',
+    reply:
+      "Avete un sistema di lead scoring? Se sì, quali segnali pesate di più — comportamentali, demografici, fit aziendale?",
+    reasoning: [
+      "Modello di attribution registrato nel glossario.",
+      "Collego il modello al workflow di Sales per coerenza.",
+      'Lead scoring è il ponte naturale tra Marketing e Sales.',
+    ],
+    kbAdds: [
+      {
+        section: 'glossary',
+        title: 'Multi-touch Attribution',
+        description:
+          'Modello che distribuisce il credito per la conversione su tutti i touchpoint del customer journey, non solo il primo o l\'ultimo.',
+        source: 'Chat',
+      },
+    ],
+  },
+
+  /* ---------- CUSTOMER SERVICE (transition) ---------- */
+  {
+    domain: 'support',
+    topic: 'Canali di supporto',
+    transition: 'marketing',
+    reply:
+      "Ottimo, abbiamo coperto Marketing. Passiamo ora al dominio Customer Service. Quali canali usate per ricevere richieste dai clienti — email, chat, telefono, sistema di ticket?",
+    reasoning: [
+      'Lead scoring consolidato nel glossario.',
+      'Marketing: pronto per handoff ai Sales agent.',
+      "Transizione al dominio Customer Service.",
+      'Parto dai canali di ingresso — base per capire il volume.',
+    ],
+    kbAdds: [
+      {
+        section: 'glossary',
+        title: 'Lead Scoring',
+        description:
+          'Metodologia che assegna un punteggio ai lead in base a comportamento, demografia e fit, per prioritizzare gli sforzi commerciali.',
+        source: 'Chat',
+      },
+    ],
+  },
+  {
+    domain: 'support',
+    topic: 'SLA e priorità',
+    reply:
+      "Avete SLA definiti per le risposte? E come classificate la priorità di un ticket — tempo di risposta, severity, impatto sul business?",
+    reasoning: [
+      'Canali di supporto identificati.',
+      "Mappo il sistema di ticketing al data catalog (Zendesk probabile).",
+      'SLA e priorità sono la spina dorsale del processo di support.',
+    ],
+    kbAdds: [
+      {
+        section: 'data',
+        title: 'Zendesk',
+        type: 'Sistema',
+        source: 'Chat',
+      },
+    ],
+  },
+  {
+    domain: 'support',
+    topic: 'Percorsi di escalation',
+    reply:
+      "Chiaro. Quando un ticket viene escalato, e a chi? C'è un percorso di escalation formalizzato o avviene caso per caso?",
+    reasoning: [
+      'SLA e severity mappati.',
+      "Aggiungo termine CSAT al glossario per futuro uso.",
+      "Escalation è il punto più critico del support — voglio documentarlo bene.",
+    ],
+    kbAdds: [
+      {
+        section: 'glossary',
+        title: 'CSAT',
+        description:
+          "Customer Satisfaction Score — metrica che misura la soddisfazione del cliente dopo un'interazione con il supporto.",
+        source: 'Chat',
+      },
+    ],
+  },
+
+  /* ---------- PRODUCT (transition) ---------- */
+  {
+    domain: 'product',
+    topic: 'Processo di roadmap',
+    transition: 'support',
+    reply:
+      "Ottimo, abbiamo coperto Customer Service. Passiamo all'ultimo dominio: Product. Come decidete cosa entra nella roadmap — un comitato, il PM leader, uno scoring framework come RICE?",
+    reasoning: [
+      'Escalation path formalizzato nel workflow support.',
+      "Customer Service: mappato end-to-end.",
+      "Ultimo dominio: Product. Parto dal processo di prioritizzazione.",
+    ],
+    kbAdds: [
+      {
+        section: 'workflow',
+        title: 'Escalation ticket',
+        description: '3 livelli di escalation, ownership mappata',
+        source: 'Chat',
+      },
+    ],
+  },
+  {
+    domain: 'product',
+    topic: 'Ciclo di release',
+    reply:
+      "Interessante. E il ciclo di release? Sprint a cadenza fissa (es. 2 settimane) o continuous deployment? Chi ha l'autorità di dire 'si rilascia'?",
+    reasoning: [
+      'Processo di roadmap identificato.',
+      "Aggiungo al glossario il framework usato (RICE, ICE, o custom).",
+      'Prossima area: come la decisione diventa codice rilasciato.',
+    ],
+    kbAdds: [
+      {
+        section: 'glossary',
+        title: 'RICE scoring',
+        description:
+          "Framework di prioritizzazione basato su Reach, Impact, Confidence, Effort. Usato per stimare il valore relativo di una feature.",
+        source: 'Chat',
+      },
+    ],
+  },
+  {
+    domain: 'product',
+    topic: 'Feedback loop',
+    reply:
+      "Ultima domanda: come raccogliete e prioritizzate i feedback dei clienti? Chi li centralizza, quali strumenti usate, e come si riconnettono alla roadmap?",
+    reasoning: [
+      'Ciclo di release mappato (sprint / CD / hybrid).',
+      "Creo workflow 'Release cycle' collegandolo alla roadmap.",
+      "Manca il loop con i clienti — topic finale di Product.",
+    ],
+    kbAdds: [
+      {
+        section: 'workflow',
+        title: 'Roadmap review',
+        description: 'Ciclo mensile di revisione priorità con PM + Eng lead',
+        source: 'Chat',
+      },
+    ],
+  },
+
+  /* ---------- CLOSING ---------- */
+  {
+    domain: 'done',
+    topic: null,
+    reply:
+      "Abbiamo coperto tutti e cinque i domini principali. Il knowledge base iniziale è pronto — lo vedi consolidato a destra. Puoi tornare a questa sessione in qualsiasi momento per approfondire un dominio o aggiungerne di nuovi (HR, Legal, IT). Grazie, sei stato estremamente efficace.",
+    reasoning: [
+      "Feedback loop documentato e collegato al workflow di roadmap.",
+      "Tutti i 5 domini coperti con almeno 3 topic ciascuno.",
+      "Knowledge base consolidato: workflow, glossario, data catalog popolati.",
+      "Chiusura formale della sessione di onboarding.",
     ],
     kbAdds: [],
   },
@@ -1120,6 +1381,169 @@ const KBEntry = ({ entry, isNew }) => {
   );
 };
 
+/* ============================================================
+ * Domain Coverage Tracker — persistent right-panel indicator
+ * ============================================================ */
+
+const DomainRow = ({ domain, state }) => {
+  const [expanded, setExpanded] = useState(false);
+
+  return (
+    <div data-testid={`domain-row-${domain.id}`}>
+      <button
+        type="button"
+        onClick={() => setExpanded((v) => !v)}
+        className="group w-full flex items-center gap-2.5 py-1.5 px-1 -mx-1 rounded hover:bg-surface-elevated transition-fast text-left"
+      >
+        {/* Status indicator */}
+        <span className="relative h-4 w-4 shrink-0 flex items-center justify-center">
+          {state.status === 'completed' && (
+            <CheckCircle2
+              className="h-4 w-4 text-success fill-success/25"
+              strokeWidth={2.25}
+            />
+          )}
+          {state.status === 'active' && (
+            <>
+              <span className="absolute inset-0 rounded-full bg-primary/30 animate-ping" />
+              <Loader2 className="relative h-3.5 w-3.5 text-primary animate-spin" />
+            </>
+          )}
+          {state.status === 'pending' && (
+            <Circle
+              className="h-3.5 w-3.5 text-foreground-subtle"
+              strokeWidth={1.75}
+            />
+          )}
+        </span>
+
+        <span
+          className={cn(
+            'text-sm flex-1 truncate',
+            state.status === 'completed' && 'text-foreground',
+            state.status === 'active' && 'text-foreground font-medium',
+            state.status === 'pending' && 'text-foreground-muted'
+          )}
+        >
+          {domain.label}
+        </span>
+
+        <span className="text-[10px] text-foreground-subtle shrink-0 tabular-nums">
+          {state.coveredTopics.length}/{domain.topics.length}
+        </span>
+
+        <ChevronRight
+          className={cn(
+            'h-3 w-3 text-foreground-subtle shrink-0 transition-transform',
+            expanded && 'rotate-90'
+          )}
+        />
+      </button>
+
+      <AnimatePresence initial={false}>
+        {expanded && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.18 }}
+            className="overflow-hidden"
+          >
+            <ul className="pl-6 pr-1 pb-1.5 pt-0.5 space-y-0.5">
+              {domain.topics.map((topic) => {
+                const isCovered = state.coveredTopics.includes(topic);
+                const isCurrent =
+                  state.currentTopic === topic && state.status === 'active';
+                return (
+                  <li
+                    key={topic}
+                    className="flex items-center gap-2 py-0.5"
+                    data-testid={`domain-topic-${domain.id}-${topic.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
+                  >
+                    <span className="h-3 w-3 shrink-0 flex items-center justify-center">
+                      {isCovered ? (
+                        <CheckCircle2
+                          className="h-3 w-3 text-success fill-success/25"
+                          strokeWidth={2.5}
+                        />
+                      ) : isCurrent ? (
+                        <Loader2 className="h-2.5 w-2.5 text-primary animate-spin" />
+                      ) : (
+                        <span className="h-1.5 w-1.5 rounded-full bg-foreground-subtle/60" />
+                      )}
+                    </span>
+                    <span
+                      className={cn(
+                        'text-[11px] leading-tight',
+                        isCovered && 'text-foreground-muted',
+                        isCurrent && 'text-foreground',
+                        !isCovered && !isCurrent && 'text-foreground-subtle'
+                      )}
+                    >
+                      {topic}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
+const getDomainState = (domainId, askedList) => {
+  // askedList = array of { domain, topic } — all questions asked so far
+  // Last item = current question (not yet answered). Preceding = answered/covered.
+  if (askedList.length === 0) {
+    return { status: 'pending', coveredTopics: [], currentTopic: null };
+  }
+  const current = askedList[askedList.length - 1];
+  const answered = askedList.slice(0, -1);
+  const domainAnswered = answered
+    .filter((a) => a.domain === domainId && a.topic)
+    .map((a) => a.topic);
+
+  const allTopics = DOMAINS.find((d) => d.id === domainId)?.topics || [];
+  const allAnswered = allTopics.every((t) => domainAnswered.includes(t));
+  const isCurrent = current.domain === domainId;
+
+  let status = 'pending';
+  if (allAnswered && !isCurrent) status = 'completed';
+  else if (isCurrent) status = 'active';
+
+  return {
+    status,
+    coveredTopics: domainAnswered,
+    currentTopic: isCurrent ? current.topic : null,
+  };
+};
+
+const DomainTracker = ({ askedList }) => {
+  return (
+    <div
+      className="border-b border-border"
+      data-testid="onboarding-domain-tracker"
+    >
+      <div className="px-4 pt-4 pb-2 flex items-center justify-between">
+        <h3 className="text-[11px] font-semibold uppercase tracking-wider text-foreground-muted">
+          Copertura domini
+        </h3>
+      </div>
+      <div className="px-3 pb-3 space-y-0.5">
+        {DOMAINS.map((d) => (
+          <DomainRow
+            key={d.id}
+            domain={d}
+            state={getDomainState(d.id, askedList)}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+
 const KBSection = ({ title, icon: Icon, entries, newIds }) => {
   const [open, setOpen] = useState(true);
   return (
@@ -1161,7 +1585,7 @@ const KBSection = ({ title, icon: Icon, entries, newIds }) => {
   );
 };
 
-const KnowledgePanel = ({ workflow, glossary, data, newIds, lastUpdate }) => {
+const KnowledgePanel = ({ workflow, glossary, data, newIds, lastUpdate, askedList }) => {
   const total = workflow.length + glossary.length + data.length;
   const updateLabel = useMemo(() => {
     if (!lastUpdate) return '—';
@@ -1177,12 +1601,13 @@ const KnowledgePanel = ({ workflow, glossary, data, newIds, lastUpdate }) => {
       className="h-full flex flex-col border-l border-border bg-background"
       data-testid="onboarding-panel-kb"
     >
-      <div className="px-4 pt-4 pb-3 border-b border-border">
-        <h2 className="text-xs font-semibold uppercase tracking-wider text-foreground-muted">
-          Knowledge Base
-        </h2>
-      </div>
       <div className="flex-1 overflow-y-auto custom-scrollbar">
+        <DomainTracker askedList={askedList} />
+        <div className="px-4 pt-4 pb-2">
+          <h2 className="text-[11px] font-semibold uppercase tracking-wider text-foreground-muted">
+            Knowledge Base
+          </h2>
+        </div>
         <KBSection
           title="Workflow"
           icon={Workflow}
@@ -1255,6 +1680,18 @@ export const OnboardingSession = () => {
   ]);
   const [isAgentTyping, setIsAgentTyping] = useState(false);
   const [turnIndex, setTurnIndex] = useState(0);
+
+  /* Domain tracker — questions already asked (last item = currently being asked) */
+  const askedList = useMemo(
+    () => [
+      OPENING_META,
+      ...INTERVIEW_TURNS.slice(0, turnIndex).map((t) => ({
+        domain: t.domain,
+        topic: t.topic,
+      })),
+    ],
+    [turnIndex]
+  );
 
   /* Knowledge Base */
   const [workflow, setWorkflow] = useState([]);
@@ -1408,6 +1845,7 @@ export const OnboardingSession = () => {
           data={dataCatalog}
           newIds={newIds}
           lastUpdate={lastUpdate}
+          askedList={askedList}
         />
       </div>
     </div>
