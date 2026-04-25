@@ -1,31 +1,19 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Card } from '../components/ui/card';
 import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
-import { Label } from '../components/ui/label';
-import { Textarea } from '../components/ui/textarea';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../components/ui/dialog';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
-import { ScrollArea } from '../components/ui/scroll-area';
-import { Badge } from '../components/ui/badge';
-import { FolderKanban, MessageSquare, FileText, Clock, Plus, Settings, X, Share2, UserPlus, Eye, Edit3 } from 'lucide-react';
+import { FolderKanban, Plus } from 'lucide-react';
 import Topbar from '../components/Topbar';
+import {
+  ProjectCard,
+  NewProjectCard,
+} from '../components/projects/ProjectCard';
+import {
+  NewProjectModal,
+  ProjectSettingsModal,
+  ShareProjectModal,
+} from '../components/projects/ProjectModals';
 
-export const Projects = () => {
-  const navigate = useNavigate();
-  const [showNewProjectModal, setShowNewProjectModal] = useState(false);
-  const [showSettingsModal, setShowSettingsModal] = useState(false);
-  const [showShareModal, setShowShareModal] = useState(false);
-  const [selectedProject, setSelectedProject] = useState(null);
-  const [projectName, setProjectName] = useState('');
-  const [projectInstructions, setProjectInstructions] = useState('');
-  const [attachedFiles, setAttachedFiles] = useState([]);
-  const [shareEmail, setShareEmail] = useState('');
-  const [hoveredProject, setHoveredProject] = useState(null);
-
-  const projects = [
+const PROJECTS = [
   {
     id: '1',
     name: 'Analisi Finanziaria Q1',
@@ -35,8 +23,8 @@ export const Projects = () => {
     lastUpdate: '2 ore fa',
     sharedWith: [
       { email: 'laura@company.com', name: 'Laura Bianchi', permission: 'view' },
-      { email: 'giuseppe@company.com', name: 'Giuseppe Verdi', permission: 'edit' }
-    ]
+      { email: 'giuseppe@company.com', name: 'Giuseppe Verdi', permission: 'edit' },
+    ],
   },
   {
     id: '2',
@@ -45,7 +33,7 @@ export const Projects = () => {
     chats: 8,
     files: 6,
     lastUpdate: 'ieri',
-    sharedWith: []
+    sharedWith: [],
   },
   {
     id: '3',
@@ -55,9 +43,29 @@ export const Projects = () => {
     files: 3,
     lastUpdate: '3 giorni fa',
     sharedWith: [
-      { email: 'laura@company.com', name: 'Laura Bianchi', permission: 'edit' }
-    ]
-  }];
+      { email: 'laura@company.com', name: 'Laura Bianchi', permission: 'edit' },
+    ],
+  },
+];
+
+const MOCK_FILES = [
+  { name: 'Financial_Report_Q1.pdf', size: '2.4 MB' },
+  { name: 'Budget_Analysis.xlsx', size: '1.1 MB' },
+];
+
+const DEFAULT_INSTRUCTIONS =
+  'Analizza i dati finanziari con focus su riduzione costi e ottimizzazione budget. Genera report executive con grafici e KPI principali.';
+
+export const Projects = () => {
+  const navigate = useNavigate();
+  const [showNewProjectModal, setShowNewProjectModal] = useState(false);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [projectInstructions, setProjectInstructions] = useState('');
+  const [attachedFiles, setAttachedFiles] = useState([]);
+  const [shareEmail, setShareEmail] = useState('');
+  const [hoveredProject, setHoveredProject] = useState(null);
 
   const handleShareProject = (project) => {
     setSelectedProject(project);
@@ -66,40 +74,19 @@ export const Projects = () => {
 
   const handleAddShare = () => {
     if (shareEmail && selectedProject) {
-      // Mock: add user to shared list
-      const newUser = {
-        email: shareEmail,
-        name: shareEmail.split('@')[0],
-        permission: 'view'
-      };
-      
-      const updatedProjects = projects.map(p => 
-        p.id === selectedProject.id 
-          ? { ...p, sharedWith: [...p.sharedWith, newUser] }
-          : p
-      );
-      
       setShareEmail('');
-      alert(`Progetto condiviso con ${shareEmail}`);
+      window.alert(`Progetto condiviso con ${shareEmail}`);
     }
   };
 
   const handleChangePermission = (userEmail, newPermission) => {
-    // Mock: change user permission
-    alert(`Permission changed to ${newPermission} for ${userEmail}`);
+    window.alert(`Permission changed to ${newPermission} for ${userEmail}`);
   };
-
-
-  const mockFiles = [
-  { name: 'Financial_Report_Q1.pdf', size: '2.4 MB' },
-  { name: 'Budget_Analysis.xlsx', size: '1.1 MB' }];
-
 
   const handleOpenSettings = (project) => {
     setSelectedProject(project);
-    setProjectName(project.name);
-    setProjectInstructions('Analizza i dati finanziari con focus su riduzione costi e ottimizzazione budget. Genera report executive con grafici e KPI principali.');
-    setAttachedFiles(mockFiles);
+    setProjectInstructions(DEFAULT_INSTRUCTIONS);
+    setAttachedFiles(MOCK_FILES);
     setShowSettingsModal(true);
   };
 
@@ -109,343 +96,91 @@ export const Projects = () => {
 
   return (
     <div className="h-full flex flex-col overflow-hidden">
-      {/* Topbar */}
       <Topbar />
-      
+
       <div className="flex-1 overflow-y-auto custom-scrollbar p-8">
-      <div className="max-w-6xl mx-auto space-y-8">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-semibold text-foreground mb-2">Progetti</h1>
-            <p className="text-foreground-muted">
-              Organizza le tue conversazioni in progetti tematici
-            </p>
-          </div>
-          <Button variant="premium" onClick={() => setShowNewProjectModal(true)} className="inline-flex items-center justify-center whitespace-nowrap transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-primary-hover h-9 font-medium text-sm gap-2 px-4 py-2 !rounded-md shadow-glow text-primary-foreground bg-primary">
-            <Plus className="h-4 w-4 mr-2" />
-            Nuovo Progetto
-          </Button>
-        </div>
-        
-        {/* Projects Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {projects.map((project, index) =>
-            <motion.div
-              key={project.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              onMouseEnter={() => setHoveredProject(project.id)}
-              onMouseLeave={() => setHoveredProject(null)}>
-
-              <Card 
-                className="border hover:border-primary/50 transition-smooth group cursor-pointer !py-[40px] !px-[40px] rounded-xl shadow text-card-foreground bg-card"
-                onClick={() => navigate(`/projects/${project.id}`)}
-              >
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 rounded bg-surface-elevated">
-                      <FolderKanban className="h-5 w-5 text-foreground-muted" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-foreground">{project.name}</h3>
-                    </div>
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="opacity-0 group-hover:opacity-100 transition-smooth !rounded-md"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleOpenSettings(project);
-                      }}>
-
-                      <Settings className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className={`transition-smooth !rounded-md ${hoveredProject === project.id ? 'opacity-100' : 'opacity-0'}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleShareProject(project);
-                      }}>
-
-                      <Share2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-                
-                <p className="text-sm text-foreground-muted mb-4">{project.description}</p>
-                
-                <div className="flex items-center gap-4 text-xs text-foreground-subtle">
-                  <div className="flex items-center gap-1">
-                    <MessageSquare className="h-3 w-3" />
-                    <span>{project.chats} chat</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <FileText className="h-3 w-3" />
-                    <span>{project.files} file</span>
-                  </div>
-                  <div className="flex items-center gap-1 ml-auto">
-                    <Clock className="h-3 w-3" />
-                    <span>{project.lastUpdate}</span>
-                  </div>
-                </div>
-              </Card>
-            </motion.div>
-            )}
-          
-          {/* New Project Card */}
-          <Card
-              className="border border-dashed border-border-subtle hover:border-primary/50 transition-smooth cursor-pointer !pt-[0px] !pb-[0px] !pl-[0px] !pr-[0px] rounded-xl shadow text-card-foreground bg-card"
-              onClick={() => setShowNewProjectModal(true)}>
-
-            <div className="h-full flex flex-col items-center justify-center text-center !pt-[16px] !pb-[16px]">
-              <div className="p-3 rounded bg-surface-elevated mb-3">
-                <Plus className="h-6 w-6 text-foreground-muted" />
-              </div>
-              <h3 className="font-medium text-foreground mb-1">Crea nuovo progetto</h3>
-              <p className="text-sm text-foreground-muted">
-                Organizza chat e documenti per tema
+        <div className="max-w-6xl mx-auto space-y-8">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-semibold text-foreground mb-2">
+                Progetti
+              </h1>
+              <p className="text-foreground-muted">
+                Organizza le tue conversazioni in progetti tematici
               </p>
             </div>
-          </Card>
-        </div>
-        
-        {/* Empty Folder State */}
-        <div className="mt-12 text-center py-12">
-          <div className="inline-flex p-4 rounded-lg bg-surface-elevated mb-4">
-            <FolderKanban className="h-8 w-8 text-foreground-muted" />
-          </div>
-          <h3 className="text-lg font-medium text-foreground mb-2">
-            Cartelle in arrivo
-          </h3>
-          <p className="text-sm text-foreground-muted">
-            Presto potrai organizzare i progetti in cartelle
-          </p>
-        </div>
-      </div>
-      
-      {/* New Project Modal */}
-      <Dialog open={showNewProjectModal} onOpenChange={setShowNewProjectModal}>
-        <DialogContent className="bg-surface border-border">
-          <DialogHeader>
-            <DialogTitle className="text-foreground">Nuovo Progetto</DialogTitle>
-            <DialogDescription className="text-foreground-muted">
-              Crea un nuovo progetto per organizzare chat e documenti
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4 py-4">
-            <div className="space-y-2">
-              <Label htmlFor="project-name">Nome Progetto</Label>
-              <Input
-                  id="project-name"
-                  placeholder="Es. Analisi Finanziaria Q1"
-                  className="bg-background border-border" />
-
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="project-desc">Descrizione</Label>
-              <Textarea
-                  id="project-desc"
-                  placeholder="Breve descrizione del progetto..."
-                  className="bg-background border-border min-h-[80px]" />
-
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setShowNewProjectModal(false)} className="inline-flex items-center justify-center whitespace-nowrap transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-border hover:bg-surface-elevated h-9 font-medium text-sm gap-2 px-4 py-2 !rounded-md text-foreground bg-transparent">
-              Annulla
-            </Button>
-            <Button variant="premium" className="inline-flex items-center justify-center whitespace-nowrap transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-primary-hover h-9 font-medium text-sm gap-2 px-4 py-2 !rounded-md shadow-glow text-primary-foreground bg-primary">
-              Crea Progetto
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-      
-      {/* Project Settings Modal */}
-      <Dialog open={showSettingsModal} onOpenChange={setShowSettingsModal}>
-        <DialogContent className="bg-surface border-border max-w-2xl">
-          <DialogHeader>
-            <DialogTitle className="text-foreground">Impostazioni progetto</DialogTitle>
-            <DialogDescription className="text-foreground-muted">
-              {selectedProject?.name}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-6 py-4">
-            {/* Instructions */}
-            <div className="space-y-2">
-              <Label htmlFor="instructions" className="text-base font-semibold">
-                Istruzioni per il progetto
-              </Label>
-              <Textarea
-                  id="instructions"
-                  value={projectInstructions}
-                  onChange={(e) => setProjectInstructions(e.target.value)}
-                  placeholder="Scrivi le istruzioni che Behive dovrà seguire per questo progetto..."
-                  className="bg-background border-border min-h-[120px]" />
-
-            </div>
-            
-            {/* File Attachment */}
-            <div className="space-y-2">
-              <Label className="text-base font-semibold">File di contesto</Label>
-              <div className="space-y-3">
-                {/* Attached Files List */}
-                {attachedFiles.map((file) =>
-                  <div
-                    key={file.name}
-                    className="flex items-center justify-between p-3 bg-surface-elevated rounded-lg border border-border">
-
-                    <div className="flex items-center gap-3">
-                      <FileText className="h-4 w-4 text-foreground-muted" />
-                      <div>
-                        <p className="text-sm font-medium text-foreground">{file.name}</p>
-                        <p className="text-xs text-foreground-subtle">{file.size}</p>
-                      </div>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => handleRemoveFile(file.name)}>
-
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </div>
-                  )}
-                
-                {/* Upload Button */}
-                <Button variant="outline" className="w-full">
-                  <Plus className="h-4 w-4 mr-2" />
-                  Carica file
-                </Button>
-                <p className="text-xs text-foreground-subtle">
-                  Formati supportati: PDF, DOCX, XLSX, CSV
-                </p>
-              </div>
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setShowSettingsModal(false)} className="inline-flex items-center justify-center whitespace-nowrap transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-border hover:bg-surface-elevated h-9 font-medium text-sm gap-2 px-4 py-2 !rounded-md text-foreground bg-transparent">
-              Annulla
-            </Button>
-            <Button variant="premium" className="inline-flex items-center justify-center whitespace-nowrap transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-primary-hover h-9 font-medium text-sm gap-2 px-4 py-2 !rounded-md shadow-glow text-primary-foreground bg-primary">
-              Salva modifiche
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Share Project Modal */}
-      <Dialog open={showShareModal} onOpenChange={setShowShareModal}>
-        <DialogContent className="bg-surface border-border max-w-2xl">
-          <DialogHeader>
-            <DialogTitle className="text-foreground">Condividi Progetto</DialogTitle>
-            <DialogDescription className="text-foreground-muted">
-              {selectedProject?.name}
-            </DialogDescription>
-          </DialogHeader>
-          
-          <div className="space-y-6 py-4">
-            {/* Add User */}
-            <div className="space-y-3">
-              <Label htmlFor="share-email">Invita utente</Label>
-              <div className="flex gap-2">
-                <Input
-                  id="share-email"
-                  type="email"
-                  placeholder="email@example.com"
-                  value={shareEmail}
-                  onChange={(e) => setShareEmail(e.target.value)}
-                  className="bg-background border-border flex-1"
-                />
-                <Button 
-                  onClick={handleAddShare}
-                  disabled={!shareEmail}
-                  className="!rounded-md"
-                >
-                  <UserPlus className="h-4 w-4 mr-2" />
-                  Aggiungi
-                </Button>
-              </div>
-            </div>
-
-            {/* Shared Users List */}
-            <div className="space-y-3">
-              <Label>Utenti con accesso ({selectedProject?.sharedWith?.length || 0})</Label>
-              {selectedProject?.sharedWith?.length > 0 ? (
-                <ScrollArea className="h-[200px] rounded-lg border border-border">
-                  <div className="p-4 space-y-3">
-                    {selectedProject.sharedWith.map((user) => (
-                      <div key={user.email} className="flex items-center justify-between p-3 bg-surface-elevated rounded-lg">
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-medium text-sm">
-                            {user.name.charAt(0).toUpperCase()}
-                          </div>
-                          <div>
-                            <p className="text-sm font-medium text-foreground">{user.name}</p>
-                            <p className="text-xs text-foreground-muted">{user.email}</p>
-                          </div>
-                        </div>
-                        
-                        <Select 
-                          value={user.permission} 
-                          onValueChange={(val) => handleChangePermission(user.email, val)}
-                        >
-                          <SelectTrigger className="w-[120px] h-8 bg-background border-border">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent className="bg-surface border-border">
-                            <SelectItem value="view">
-                              <div className="flex items-center gap-2">
-                                <Eye className="h-3 w-3" />
-                                <span>Solo Vista</span>
-                              </div>
-                            </SelectItem>
-                            <SelectItem value="edit">
-                              <div className="flex items-center gap-2">
-                                <Edit3 className="h-3 w-3" />
-                                <span>Modifica</span>
-                              </div>
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    ))}
-                  </div>
-                </ScrollArea>
-              ) : (
-                <div className="text-center py-8 text-foreground-muted">
-                  <Share2 className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                  <p className="text-sm">Nessun utente ha accesso a questo progetto</p>
-                  <p className="text-xs mt-1">Aggiungi collaboratori usando il campo sopra</p>
-                </div>
-              )}
-            </div>
-          </div>
-          
-          <DialogFooter>
-            <Button 
-              variant="outline" 
-              onClick={() => {
-                setShowShareModal(false);
-                setShareEmail('');
-              }}
-              className="!rounded-md"
+            <Button
+              variant="premium"
+              onClick={() => setShowNewProjectModal(true)}
+              className="inline-flex items-center justify-center whitespace-nowrap transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-primary-hover h-9 font-medium text-sm gap-2 px-4 py-2 !rounded-md shadow-glow text-primary-foreground bg-primary"
             >
-              Chiudi
+              <Plus className="h-4 w-4 mr-2" />
+              Nuovo Progetto
             </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {PROJECTS.map((project, index) => (
+              <ProjectCard
+                key={project.id}
+                project={project}
+                index={index}
+                onClick={() => navigate(`/projects/${project.id}`)}
+                onOpenSettings={handleOpenSettings}
+                onShare={handleShareProject}
+                hovered={hoveredProject === project.id}
+                onHoverEnter={() => setHoveredProject(project.id)}
+                onHoverLeave={() => setHoveredProject(null)}
+              />
+            ))}
+
+            <NewProjectCard onClick={() => setShowNewProjectModal(true)} />
+          </div>
+
+          <div className="mt-12 text-center py-12">
+            <div className="inline-flex p-4 rounded-lg bg-surface-elevated mb-4">
+              <FolderKanban className="h-8 w-8 text-foreground-muted" />
+            </div>
+            <h3 className="text-lg font-medium text-foreground mb-2">
+              Cartelle in arrivo
+            </h3>
+            <p className="text-sm text-foreground-muted">
+              Presto potrai organizzare i progetti in cartelle
+            </p>
+          </div>
+        </div>
+
+        <NewProjectModal
+          open={showNewProjectModal}
+          onOpenChange={setShowNewProjectModal}
+        />
+
+        <ProjectSettingsModal
+          open={showSettingsModal}
+          onOpenChange={setShowSettingsModal}
+          project={selectedProject}
+          instructions={projectInstructions}
+          setInstructions={setProjectInstructions}
+          attachedFiles={attachedFiles}
+          onRemoveFile={handleRemoveFile}
+        />
+
+        <ShareProjectModal
+          open={showShareModal}
+          onOpenChange={setShowShareModal}
+          project={selectedProject}
+          shareEmail={shareEmail}
+          setShareEmail={setShareEmail}
+          onAddShare={handleAddShare}
+          onChangePermission={handleChangePermission}
+          onClose={() => {
+            setShowShareModal(false);
+            setShareEmail('');
+          }}
+        />
       </div>
-    </div>);
-
-
+    </div>
+  );
 };
 
 export default Projects;

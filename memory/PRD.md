@@ -22,6 +22,36 @@ all data mocked.
 - **Profile** (theme switcher Dark/Light) / **Help/FAQ**
 
 ## Changelog
+- **24 Apr 2026 (refactor strutturale)** — Code review fix completo:
+  - **Critical XSS** (`Onboarding.jsx`): `openOAuthPopup` riscritta con
+    DOM API pure (`createElement`, `textContent`, style assignment).
+    Zero `innerHTML`.
+  - **Array index keys** sostituiti con chiavi stabili in 6 file
+    (OnboardingSession, NewChat, Help, Projects, Payments).
+  - **High-complexity refactor** dei 7 componenti grandi:
+    - `Sidebar.jsx` (433 → ~270 LOC) → `sidebar/SidebarNavLink`,
+      `SidebarChatRow`, `SidebarDialogs`. Eliminata triple
+      duplicazione del menu chat. `useMemo` su lista pinned/today/yesterday.
+    - `Chat.jsx` (295 → 130 LOC) → `chat/agentDetection`,
+      `ChatMessage`, `ChatComposer`, `ChatBreadcrumb`. `useCallback`
+      su `handleSend`.
+    - `Integrations.jsx` (360 → ~250 LOC) → `integrations/IntegrationGrid`,
+      `DatabaseTable`, `DatabaseModals` (3 modali estratte).
+    - `Projects.jsx` (451 → ~190 LOC) → `projects/ProjectCard`,
+      `ProjectModals` (3 modali estratte).
+    - `NewChat.jsx` (328 → ~155 LOC) → `chat/QuickPrompts`,
+      `AgentFilterChips`, `ShareChatModal`.
+    - `Profile.jsx` (362 → ~45 LOC) → `profile/ProfileCards`
+      (PersonalInfo, CompanyInfo, ThemeSettings, ActiveContract) +
+      nuovo hook `hooks/useTheme.js` (estratta logica theme con
+      `useCallback`).
+    - `Agents.jsx` (339 → ~145 LOC) → `agents/AgentCards`
+      (Active/Available/Empty), `AgentModals` (Limit + Request).
+  - Lint pulito (0 issues su tutto `/app/frontend/src`).
+  - Tutti gli edit visivi preservati: `!rounded-md`, `!rounded-[99px]`,
+    `shadow-glow`, `text-[#6B8FFF]`, classi inline-flex lunghe della
+    visual UI.
+
 - **24 Apr 2026 (revisioni finali)**:
   - **Recording bar più visibile**: bg `destructive/[0.08]` + border
     `destructive/30` quando la registrazione è in corso; si smorza a
