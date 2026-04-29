@@ -12,6 +12,8 @@ import Agents from './pages/Agents';
 import Projects from './pages/Projects';
 import ProjectChats from './pages/ProjectChats';
 import Integrations from './pages/Integrations';
+import Knowledge from './pages/Knowledge';
+import KnowledgeNewSession from './pages/KnowledgeNewSession';
 import UsersRoles from './pages/UsersRoles';
 import Alerts from './pages/Alerts';
 import ServiceStatus from './pages/ServiceStatus';
@@ -66,6 +68,10 @@ function App() {
             isAuthenticated ? <OnboardingSession /> : <Navigate to="/login" replace />
           } />
           
+          <Route path="/knowledge/new-session" element={
+            isAuthenticated ? <KnowledgeNewSession /> : <Navigate to="/login" replace />
+          } />
+          
           <Route path="/" element={
             isAuthenticated ? <Layout onLogout={handleLogout} /> : <Navigate to="/login" replace />
           }>
@@ -74,6 +80,7 @@ function App() {
             <Route path="chat/new" element={<NewChat />} />
             <Route path="chat/:id" element={<Chat />} />
             <Route path="agents" element={<Agents />} />
+            <Route path="knowledge" element={<Knowledge />} />
             <Route path="projects" element={<Projects />} />
             <Route path="projects/:projectId" element={<ProjectChats />} />
             <Route path="integrations" element={<Integrations />} />

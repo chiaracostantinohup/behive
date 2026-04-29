@@ -13,6 +13,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Pin,
+  BookOpen,
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { Button } from './ui/button';
@@ -28,6 +29,7 @@ import {
 const NAV_ITEMS = [
   { icon: MessageSquare, label: 'Chat', path: '/chat' },
   { icon: Boxes, label: 'Agenti', path: '/agents' },
+  { icon: BookOpen, label: 'Knowledge', path: '/knowledge' },
   { icon: FolderKanban, label: 'Progetti', path: '/projects' },
   { icon: Plug, label: 'Integrazioni', path: '/integrations' },
 ];
